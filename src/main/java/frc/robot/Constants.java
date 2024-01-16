@@ -63,6 +63,27 @@ public final class Constants {
     public static final boolean kGyroReversed = true;
   }
 
+  // This class is private because it will be referenced by the Buttons class and everything else will reference Buttons
+  private static final class StandardButtons {
+    public static final int x = 1;
+    public static final int a = 2;
+    public static final int b = 3;
+    public static final int y = 4;
+    public static final int lb = 5;
+    public static final int rb = 6;
+    public static final int lt = 7;
+    public static final int rt = 8;
+    public static final int back = 9;
+    public static final int start = 10;
+    public static final int leftJoystickPressed = 11;
+    public static final int rightJoystickPressed = 12;
+  }
+
+  public static final class Buttons {
+    public static final int kSetXButton = StandardButtons.x;
+    public static final int kGoToButton = StandardButtons.a;
+  }
+
   public static final class ModuleConstants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T,
     // 13T, or 14T.
