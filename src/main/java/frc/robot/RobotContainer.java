@@ -36,6 +36,8 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
+  private boolean shouldGoToPos = false;
+
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -72,8 +74,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling passing it to a
    * {@link JoystickButton}.
    */
+
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, 2)
+    new JoystickButton(m_driverController, Constants.Buttons.kSetXButton)
         .whileTrue(m_robotDrive.setXCommand()); // Button.kR1.value
 
     Trigger m_resetGyro = new Trigger(() -> m_resetGyroChooser.getSelected());
@@ -83,6 +86,13 @@ public class RobotContainer {
               m_robotDrive.zeroHeading();
             },
             m_robotDrive));
+    
+    JoystickButton toggleGoToPose = new JoystickButton(m_driverController, Constants.Buttons.kGoToButton);
+    toggleGoToPose.onTrue(new InstantCommand(() -> {shouldGoToPos = true;}));
+    toggleGoToPose.onFalse(new InstantCommand(() -> {shouldGoToPos = false;}));
+    Trigger m_shouldGoToPos = new Trigger(() -> shouldGoToPos);
+    m_shouldGoToPos.onTrue(goToPosStop(1, 3));
+
   }
 
   /**
@@ -133,5 +143,98 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+  }
+
+  /**
+   * @return Command to go from the robot's current position to the given x and y, then stop
+   * @param xPose The goal x position
+   * @param yPose The goal y position
+   */
+  public Command goToPosStop(double xPose, double yPose) {
+    // Create config for trajectory
+    TrajectoryConfig config2 =
+        new TrajectoryConfig(
+                AutoConstants.kMaxSpeedMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(DriveConstants.kDriveKinematics);
+
+    // An example trajectory to follow. All units in meters.
+    Trajectory toPosTrajectory =
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(m_robotDrive.getPose().getX(), m_robotDrive.getPose().getY(), m_robotDrive.getPose().getRotation()),
+            // Pass through these two interior waypoints, making an 's' curve path
+            List.of(),
+            // End 3 meters straight ahead of where we started, facing forward
+            new Pose2d(xPose, yPose, m_robotDrive.getPose().getRotation()),
+            config2);
+
+    var thetaController =
+        new ProfiledPIDController(
+            AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    SwerveControllerCommand toPosCommand =
+        new SwerveControllerCommand(
+            toPosTrajectory,
+            m_robotDrive::getPose, // Functional interface to feed supplier
+            DriveConstants.kDriveKinematics,
+
+            // Position controllers
+            new PIDController(AutoConstants.kPXController, 0, 0),
+            new PIDController(AutoConstants.kPYController, 0, 0),
+            thetaController,
+            m_robotDrive::setModuleStates,
+            m_robotDrive);
+
+    // Run path following command, then stop at the end.
+    return toPosCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+  }
+
+  /**
+   * @return Command to go from the robot's current position to the given Pose2d, then stop
+   * @param pose The goal position
+   */
+  public Command goToPosStop(Pose2d pose) {
+    // Create config for trajectory
+    TrajectoryConfig config2 =
+        new TrajectoryConfig(
+                AutoConstants.kMaxSpeedMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(DriveConstants.kDriveKinematics);
+
+    // An example trajectory to follow. All units in meters.
+    Trajectory toPosTrajectory =
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(m_robotDrive.getPose().getX(), m_robotDrive.getPose().getY(), m_robotDrive.getPose().getRotation()),
+            // Pass through these two interior waypoints, making an 's' curve path
+            List.of(),
+            // End 3 meters straight ahead of where we started, facing forward
+            pose,
+            config2);
+
+    var thetaController =
+        new ProfiledPIDController(
+            AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    SwerveControllerCommand toPosCommand =
+        new SwerveControllerCommand(
+            toPosTrajectory,
+            m_robotDrive::getPose, // Functional interface to feed supplier
+            DriveConstants.kDriveKinematics,
+
+            // Position controllers
+            new PIDController(AutoConstants.kPXController, 0, 0),
+            new PIDController(AutoConstants.kPYController, 0, 0),
+            thetaController,
+            m_robotDrive::setModuleStates,
+            m_robotDrive);
+
+    // Run path following command, then stop at the end.
+    return toPosCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
   }
 }
