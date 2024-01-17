@@ -245,7 +245,7 @@ public class RobotContainer {
         () -> {
           return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
               && Math.abs(m_robotDrive.getPose().getY() - pose.getY()) < centimetersOff / 100
-              && !interruptGoToPos;
+              && interruptGoToPos;
         },
         m_robotDrive);
   }
