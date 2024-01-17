@@ -12,10 +12,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -36,7 +38,12 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
-  private boolean shouldGoToPos = false;
+  // Whether the button for going to pose is pressed
+  private boolean goToPosPressed = false;
+  // If set to true and robot is going to pose, stops  
+  private boolean interruptGoToPos = false;
+
+  // setGoToPos, isGoingToPos
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -86,12 +93,24 @@ public class RobotContainer {
               m_robotDrive.zeroHeading();
             },
             m_robotDrive));
-    
-    JoystickButton toggleGoToPose = new JoystickButton(m_driverController, Constants.Buttons.kGoToButton);
-    toggleGoToPose.onTrue(new InstantCommand(() -> {shouldGoToPos = true;}));
-    toggleGoToPose.onFalse(new InstantCommand(() -> {shouldGoToPos = false;}));
-    Trigger m_shouldGoToPos = new Trigger(() -> shouldGoToPos);
-    m_shouldGoToPos.onTrue(goToPosStop(1, 3));
+  
+    // This uses when the button is pressed to set goToPosPressed
+    JoystickButton m_goToPosPressed = new JoystickButton(m_driverController, Constants.Buttons.kGoToButton);
+    m_goToPosPressed.onTrue(new InstantCommand(() -> {goToPosPressed = true;}));
+    m_goToPosPressed.onFalse(new InstantCommand(() -> {goToPosPressed = false;}));
+
+    SmartDashboard.putNumber("xPoseWhenSet", 0);
+    SmartDashboard.putNumber("yPoseWhenSet", 0);
+    new Trigger(() -> goToPosPressed).onTrue(goToPosStop(new Pose2d(SmartDashboard.getNumber("xPoseWhenSet", 0), SmartDashboard.getNumber("yPoseWhenSet", 0), new Rotation2d(0)), 10));
+
+    JoystickButton m_interruptGoToPos = new JoystickButton(m_driverController, Constants.Buttons.kInterruptGoTo);
+    m_interruptGoToPos.onTrue(new InstantCommand(() -> {interruptGoToPos = true;}));
+    // Trigger m_goToPosToggled = new Trigger(() -> {return goToPosPressed;});
+    // m_goToPosToggled.onTrue(new InstantCommand(() -> {goToPosToggled = true;}));
+
+    // Trigger m_setGoToPosition = new Trigger(() -> goToPosToggled);
+
+    // m_setGoToPos.onTrue(goToPosStop(1, 3).andThen(new InstantCommand(() -> {setGoToPos = false;})));
 
   }
 
@@ -146,57 +165,13 @@ public class RobotContainer {
   }
 
   /**
-   * @return Command to go from the robot's current position to the given x and y, then stop
-   * @param xPose The goal x position
-   * @param yPose The goal y position
-   */
-  public Command goToPosStop(double xPose, double yPose) {
-    // Create config for trajectory
-    TrajectoryConfig config2 =
-        new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics);
-
-    // An example trajectory to follow. All units in meters.
-    Trajectory toPosTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(m_robotDrive.getPose().getX(), m_robotDrive.getPose().getY(), m_robotDrive.getPose().getRotation()),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(xPose, yPose, m_robotDrive.getPose().getRotation()),
-            config2);
-
-    var thetaController =
-        new ProfiledPIDController(
-            AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand toPosCommand =
-        new SwerveControllerCommand(
-            toPosTrajectory,
-            m_robotDrive::getPose, // Functional interface to feed supplier
-            DriveConstants.kDriveKinematics,
-
-            // Position controllers
-            new PIDController(AutoConstants.kPXController, 0, 0),
-            new PIDController(AutoConstants.kPYController, 0, 0),
-            thetaController,
-            m_robotDrive::setModuleStates,
-            m_robotDrive);
-
-    // Run path following command, then stop at the end.
-    return toPosCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
-  }
-
-  /**
+   * Does not currently go to the rotation
    * @return Command to go from the robot's current position to the given Pose2d, then stop
    * @param pose The goal position
+   * @param centimetersOff The number of centimeters the robot should be within to end the path
    */
-  public Command goToPosStop(Pose2d pose) {
+  public Command goToPosStop(Pose2d pose, double centimetersOff) {
+    interruptGoToPos = false;
     // Create config for trajectory
     TrajectoryConfig config2 =
         new TrajectoryConfig(
@@ -235,6 +210,6 @@ public class RobotContainer {
             m_robotDrive);
 
     // Run path following command, then stop at the end.
-    return toPosCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+    return new FunctionalCommand(null, (Runnable) toPosCommand.andThen(() -> {m_robotDrive.drive(0, 0, 0, false, false);}), null, () -> {return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100 && Math.abs(m_robotDrive.getPose().getY() - pose.getY()) < centimetersOff / 100 && !interruptGoToPos;}, m_robotDrive);
   }
 }

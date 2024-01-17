@@ -82,6 +82,7 @@ public final class Constants {
   public static final class Buttons {
     public static final int kSetXButton = StandardButtons.x;
     public static final int kGoToButton = StandardButtons.a;
+    public static final int kInterruptGoTo = StandardButtons.b;
   }
 
   public static final class ModuleConstants {
