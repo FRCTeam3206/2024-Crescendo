@@ -63,7 +63,8 @@ public final class Constants {
     public static final boolean kGyroReversed = true;
   }
 
-  // This class is private because it will be referenced by the Buttons class and everything else will reference Buttons
+  // This class is private because it will be referenced by the Buttons class and everything else
+  // will reference Buttons
   private static final class StandardButtons {
     public static final int x = 1;
     public static final int a = 2;

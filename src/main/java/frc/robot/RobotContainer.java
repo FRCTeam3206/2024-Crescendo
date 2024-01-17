@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,7 +39,7 @@ public class RobotContainer {
 
   // Whether the button for going to pose is pressed
   private boolean goToPosPressed = false;
-  // If set to true and robot is going to pose, stops  
+  // If set to true and robot is going to pose, stops
   private boolean interruptGoToPos = false;
 
   // setGoToPos, isGoingToPos
@@ -81,7 +80,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling passing it to a
    * {@link JoystickButton}.
    */
-
   private void configureButtonBindings() {
     new JoystickButton(m_driverController, Constants.Buttons.kSetXButton)
         .whileTrue(m_robotDrive.setXCommand()); // Button.kR1.value
@@ -93,24 +91,46 @@ public class RobotContainer {
               m_robotDrive.zeroHeading();
             },
             m_robotDrive));
-  
+
     // This uses when the button is pressed to set goToPosPressed
-    JoystickButton m_goToPosPressed = new JoystickButton(m_driverController, Constants.Buttons.kGoToButton);
-    m_goToPosPressed.onTrue(new InstantCommand(() -> {goToPosPressed = true;}));
-    m_goToPosPressed.onFalse(new InstantCommand(() -> {goToPosPressed = false;}));
+    JoystickButton m_goToPosPressed =
+        new JoystickButton(m_driverController, Constants.Buttons.kGoToButton);
+    m_goToPosPressed.onTrue(
+        new InstantCommand(
+            () -> {
+              goToPosPressed = true;
+            }));
+    m_goToPosPressed.onFalse(
+        new InstantCommand(
+            () -> {
+              goToPosPressed = false;
+            }));
 
     SmartDashboard.putNumber("xPoseWhenSet", 0);
     SmartDashboard.putNumber("yPoseWhenSet", 0);
-    new Trigger(() -> goToPosPressed).onTrue(goToPosStop(new Pose2d(SmartDashboard.getNumber("xPoseWhenSet", 0), SmartDashboard.getNumber("yPoseWhenSet", 0), new Rotation2d(0)), 10));
+    new Trigger(() -> goToPosPressed)
+        .onTrue(
+            goToPosStop(
+                new Pose2d(
+                    SmartDashboard.getNumber("xPoseWhenSet", 0),
+                    SmartDashboard.getNumber("yPoseWhenSet", 0),
+                    new Rotation2d(0)),
+                10));
 
-    JoystickButton m_interruptGoToPos = new JoystickButton(m_driverController, Constants.Buttons.kInterruptGoTo);
-    m_interruptGoToPos.onTrue(new InstantCommand(() -> {interruptGoToPos = true;}));
+    JoystickButton m_interruptGoToPos =
+        new JoystickButton(m_driverController, Constants.Buttons.kInterruptGoTo);
+    m_interruptGoToPos.onTrue(
+        new InstantCommand(
+            () -> {
+              interruptGoToPos = true;
+            }));
     // Trigger m_goToPosToggled = new Trigger(() -> {return goToPosPressed;});
     // m_goToPosToggled.onTrue(new InstantCommand(() -> {goToPosToggled = true;}));
 
     // Trigger m_setGoToPosition = new Trigger(() -> goToPosToggled);
 
-    // m_setGoToPos.onTrue(goToPosStop(1, 3).andThen(new InstantCommand(() -> {setGoToPos = false;})));
+    // m_setGoToPos.onTrue(goToPosStop(1, 3).andThen(new InstantCommand(() -> {setGoToPos =
+    // false;})));
 
   }
 
@@ -166,6 +186,7 @@ public class RobotContainer {
 
   /**
    * Does not currently go to the rotation
+   *
    * @return Command to go from the robot's current position to the given Pose2d, then stop
    * @param pose The goal position
    * @param centimetersOff The number of centimeters the robot should be within to end the path
@@ -184,7 +205,10 @@ public class RobotContainer {
     Trajectory toPosTrajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
-            new Pose2d(m_robotDrive.getPose().getX(), m_robotDrive.getPose().getY(), m_robotDrive.getPose().getRotation()),
+            new Pose2d(
+                m_robotDrive.getPose().getX(),
+                m_robotDrive.getPose().getY(),
+                m_robotDrive.getPose().getRotation()),
             // Pass through these two interior waypoints, making an 's' curve path
             List.of(),
             // End 3 meters straight ahead of where we started, facing forward
@@ -210,6 +234,19 @@ public class RobotContainer {
             m_robotDrive);
 
     // Run path following command, then stop at the end.
-    return new FunctionalCommand(null, (Runnable) toPosCommand.andThen(() -> {m_robotDrive.drive(0, 0, 0, false, false);}), null, () -> {return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100 && Math.abs(m_robotDrive.getPose().getY() - pose.getY()) < centimetersOff / 100 && !interruptGoToPos;}, m_robotDrive);
+    return new FunctionalCommand(
+        null,
+        (Runnable)
+            toPosCommand.andThen(
+                () -> {
+                  m_robotDrive.drive(0, 0, 0, false, false);
+                }),
+        null,
+        () -> {
+          return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
+              && Math.abs(m_robotDrive.getPose().getY() - pose.getY()) < centimetersOff / 100
+              && !interruptGoToPos;
+        },
+        m_robotDrive);
   }
 }
