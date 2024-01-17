@@ -26,6 +26,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import java.util.List;
+import java.util.function.DoubleSupplier;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -241,6 +242,29 @@ public class RobotContainer {
                 () -> {
                   m_robotDrive.drive(0, 0, 0, false, false);
                 }),
+        null,
+        () -> {
+          return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
+              && Math.abs(m_robotDrive.getPose().getY() - pose.getY()) < centimetersOff / 100
+              && interruptGoToPos;
+        },
+        m_robotDrive);
+  }
+
+  public Command goToPoseWithFeedback(Pose2d pose, double centimetersOff) {
+    double startXDistFromGoal = pose.getX() - m_robotDrive.getPose().getX();
+    double startYDistFromGoal = pose.getY() - m_robotDrive.getPose().getY();
+    DoubleSupplier getXSpeed =
+        () -> {
+          return ((pose.getX() - m_robotDrive.getPose().getX()) / startXDistFromGoal);
+        };
+    DoubleSupplier getYSpeed =
+        () -> {
+          return ((pose.getY() - m_robotDrive.getPose().getY()) / startYDistFromGoal);
+        };
+    return new FunctionalCommand(
+        null,
+        (Runnable) m_robotDrive.driveCommand(getXSpeed, getYSpeed, () -> 0, true, true),
         null,
         () -> {
           return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
