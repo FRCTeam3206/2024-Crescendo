@@ -251,7 +251,7 @@ public class RobotContainer {
         m_robotDrive);
   }
 
-  public Command goToPoseWithFeedback(Pose2d pose, double centimetersOff) {
+  public Command goToPoseWithFeedbackStop(Pose2d pose, double centimetersOff) {
     double startXDistFromGoal = pose.getX() - m_robotDrive.getPose().getX();
     double startYDistFromGoal = pose.getY() - m_robotDrive.getPose().getY();
     DoubleSupplier getXSpeed =
@@ -264,7 +264,7 @@ public class RobotContainer {
         };
     return new FunctionalCommand(
         null,
-        (Runnable) m_robotDrive.driveCommand(getXSpeed, getYSpeed, () -> 0, true, true),
+        (Runnable) m_robotDrive.driveCommand(getXSpeed, getYSpeed, () -> 0, true, true).andThen(() -> {m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, true, true);}),
         null,
         () -> {
           return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
