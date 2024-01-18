@@ -22,8 +22,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import java.util.function.DoubleSupplier;
+import monologue.Annotations.Log;
+import monologue.Logged;
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase implements Logged {
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft =
       new MAXSwerveModule(
@@ -53,9 +55,9 @@ public class DriveSubsystem extends SubsystemBase {
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
 
   // Slew rate filter variables for controlling lateral acceleration
-  private double m_currentRotation = 0.0;
-  private double m_currentTranslationDir = 0.0;
-  private double m_currentTranslationMag = 0.0;
+  @Log.NT private double m_currentRotation = 0.0;
+  @Log.NT private double m_currentTranslationDir = 0.0;
+  @Log.NT private double m_currentTranslationMag = 0.0;
 
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
@@ -92,7 +94,7 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
         });
     m_field.setRobotPose(m_odometry.getPoseMeters());
-    SmartDashboard.putNumber("Gyro", ahrs.getAngle());
+    // SmartDashboard.putNumber("Gyro", ahrs.getAngle());
   }
 
   /**
@@ -286,11 +288,13 @@ public class DriveSubsystem extends SubsystemBase {
   public Command zeroHeadingCommand() {
     return runOnce(this::zeroHeading);
   }
+
   /**
    * Returns the heading of the robot.
    *
    * @return the robot's heading in degrees, from -180 to 180
    */
+  @Log.NT
   public double getHeading() {
     return ahrs.getRotation2d().getDegrees();
   }
