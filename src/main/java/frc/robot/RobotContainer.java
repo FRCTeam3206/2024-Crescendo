@@ -44,9 +44,9 @@ public class RobotContainer implements Logged {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    m_resetGyroChooser.setDefaultOption("Don't reset gyro", false);
-    m_resetGyroChooser.addOption("Reset gyro", true);
-    SmartDashboard.putData("Reset Gyro", m_resetGyroChooser);
+    // m_resetGyroChooser.setDefaultOption("Don't reset gyro", false);
+    // m_resetGyroChooser.addOption("Reset gyro", true);
+    // SmartDashboard.putData("Reset Gyro", m_resetGyroChooser);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -77,13 +77,15 @@ public class RobotContainer implements Logged {
     new JoystickButton(m_driverController, 2)
         .whileTrue(m_robotDrive.setXCommand()); // Button.kR1.value
 
-    Trigger m_resetGyro = new Trigger(() -> m_resetGyroChooser.getSelected());
-    m_resetGyro.onTrue(
-        new InstantCommand(
-            () -> {
-              m_robotDrive.zeroHeading();
-            },
-            m_robotDrive));
+    SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
+
+    // Trigger m_resetGyro = new Trigger(() -> m_resetGyroChooser.getSelected());
+    // m_resetGyro.onTrue(
+    //     new InstantCommand(
+    //         () -> {
+    //           m_robotDrive.zeroHeading();
+    //         },
+    //         m_robotDrive));
   }
 
   /**

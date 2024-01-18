@@ -283,6 +283,9 @@ public class DriveSubsystem extends SubsystemBase {
     ahrs.reset();
   }
 
+  public Command zeroHeadingCommand() {
+    return runOnce(this::zeroHeading);
+  }
   /**
    * Returns the heading of the robot.
    *
