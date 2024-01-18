@@ -13,7 +13,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -38,7 +37,7 @@ public class RobotContainer implements Logged {
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
-//   SendableChooser<Boolean> m_resetGyroChooser = new SendableChooser<>();
+  //   SendableChooser<Boolean> m_resetGyroChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -63,7 +62,9 @@ public class RobotContainer implements Logged {
             () ->
                 -MathUtil.applyDeadband(
                     m_driverController.getRawAxis(2), OIConstants.kDriveDeadband),
-            () -> {return SmartDashboard.getBoolean("Field Relative", true);},
+            () -> {
+              return SmartDashboard.getBoolean("Field Relative", true);
+            },
             true));
   }
 
