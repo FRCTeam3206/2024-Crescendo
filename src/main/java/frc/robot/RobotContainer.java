@@ -50,6 +50,8 @@ public class RobotContainer implements Logged {
     configureButtonBindings();
 
     // Configure default commands
+    SmartDashboard.putBoolean("Field Relative", true);
+
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
@@ -61,7 +63,7 @@ public class RobotContainer implements Logged {
             () ->
                 -MathUtil.applyDeadband(
                     m_driverController.getRawAxis(2), OIConstants.kDriveDeadband),
-            true,
+            () -> {return SmartDashboard.getBoolean("Field Relative", true);},
             true));
   }
 
