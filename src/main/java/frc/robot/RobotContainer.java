@@ -26,6 +26,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.DoubleSupplier;
 
 /*
@@ -82,9 +83,11 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    // Setting X
     new JoystickButton(m_driverController, Constants.Buttons.kSetXButton)
         .whileTrue(m_robotDrive.setXCommand()); // Button.kR1.value
 
+    // Reset gyro chooser
     Trigger m_resetGyro = new Trigger(() -> m_resetGyroChooser.getSelected());
     m_resetGyro.onTrue(
         new InstantCommand(
@@ -93,31 +96,35 @@ public class RobotContainer {
             },
             m_robotDrive));
 
-    // This uses when the button is pressed to set goToPosPressed
+    // Going to position on button press
+    // Options for what this position will be
+    SmartDashboard.putNumber("xPoseGoalWhenSet", 5);
+    SmartDashboard.putNumber("yPoseGoalWhenSet", 0);
+    SmartDashboard.putNumber("rotDegreesGoalWhenSet", 0);
+    // Variable set true when button pressed
     JoystickButton m_goToPosPressed =
         new JoystickButton(m_driverController, Constants.Buttons.kGoToButton);
     m_goToPosPressed.onTrue(
         new InstantCommand(
             () -> {
               goToPosPressed = true;
-            }));
-    m_goToPosPressed.onFalse(
-        new InstantCommand(
-            () -> {
               goToPosPressed = false;
             }));
-
-    SmartDashboard.putNumber("xPoseWhenSet", 0);
-    SmartDashboard.putNumber("yPoseWhenSet", 0);
+    // m_goToPosPressed.onFalse(
+    //     new InstantCommand(
+    //         () -> {
+    //           goToPosPressed = false;
+    //         }));
+    // Goes to pos when variable becomes true
     new Trigger(() -> goToPosPressed)
         .onTrue(
             goToPosStop(
                 new Pose2d(
-                    SmartDashboard.getNumber("xPoseWhenSet", 0),
-                    SmartDashboard.getNumber("yPoseWhenSet", 0),
-                    new Rotation2d(0)),
+                    SmartDashboard.getNumber("xPoseGoalWhenSet", 5),
+                    SmartDashboard.getNumber("yPoseGoalWhenSet", 0),
+                    new Rotation2d(SmartDashboard.getNumber("rotDegreesGoalWhenSet", 0) * (Math.PI / 180))),
                 10));
-
+    // Sets interrupt variable true when button pressed
     JoystickButton m_interruptGoToPos =
         new JoystickButton(m_driverController, Constants.Buttons.kInterruptGoTo);
     m_interruptGoToPos.onTrue(
@@ -183,6 +190,10 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+  }
+
+  public Command setDriveZero() {
+    return m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, true, true);
   }
 
   /**
@@ -252,6 +263,33 @@ public class RobotContainer {
   }
 
   public Command goToPoseWithFeedbackStop(Pose2d pose, double centimetersOff) {
+    BiFunction<DoubleSupplier, DoubleSupplier, Double> average = (DoubleSupplier a, DoubleSupplier b) -> {return (a.getAsDouble() + b.getAsDouble()) / 2;};
+
+    DoubleSupplier xFromGoal = () -> {return pose.getX() - m_robotDrive.getPose().getX();};
+    DoubleSupplier yFromGoal = () -> {return pose.getY() - m_robotDrive.getPose().getY();};
+    double startXDistFromGoal = xFromGoal.getAsDouble();
+    double startYDistFromGoal = yFromGoal.getAsDouble();
+
+    DoubleSupplier xPercentComplete = () -> {return xFromGoal.getAsDouble() / startXDistFromGoal;};
+    DoubleSupplier yPercentComplete = () -> {return yFromGoal.getAsDouble() / startYDistFromGoal;};
+    DoubleSupplier rotSpeed = () -> {return average.apply(xPercentComplete, yPercentComplete);};
+
+    return new FunctionalCommand(
+        null,
+        (Runnable) m_robotDrive.driveCommand(xPercentComplete, yPercentComplete, rotSpeed, true, true).andThen(setDriveZero()),
+        null,
+        () -> {
+          return Math.abs(xFromGoal.getAsDouble()) < centimetersOff / 100
+              && Math.abs(yFromGoal.getAsDouble()) < centimetersOff / 100
+              && interruptGoToPos;
+        },
+        m_robotDrive);
+  }
+
+  /**
+   * goToPoseWithFeedbackStop() should usually be used instead.
+   */
+  public Command goToPoseWithFeedbackStopNoRotation(Pose2d pose, double centimetersOff) {
     double startXDistFromGoal = pose.getX() - m_robotDrive.getPose().getX();
     double startYDistFromGoal = pose.getY() - m_robotDrive.getPose().getY();
     DoubleSupplier getXSpeed =
