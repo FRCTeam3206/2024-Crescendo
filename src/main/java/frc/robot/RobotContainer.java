@@ -248,12 +248,12 @@ public class RobotContainer {
     // Run path following command, then stop at the end.
     return new FunctionalCommand(
         null,
-        (Runnable)
-            toPosCommand.andThen(
-                () -> {
-                  m_robotDrive.drive(0, 0, 0, false, false);
-                }),
-        null,
+        () -> {toPosCommand.execute();},
+            // toPosCommand.andThen(
+            //     () -> {
+            //       m_robotDrive.drive(0, 0, 0, false, false);
+            //     }),
+        (Boolean input) -> {setDriveZero();},
         () -> {
           return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
               && Math.abs(m_robotDrive.getPose().getY() - pose.getY()) < centimetersOff / 100
@@ -302,8 +302,13 @@ public class RobotContainer {
         };
     return new FunctionalCommand(
         null,
-        (Runnable) m_robotDrive.driveCommand(getXSpeed, getYSpeed, () -> 0, true, true).andThen(() -> {m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, true, true);}),
-        null,
+        () -> {
+            m_robotDrive.driveCommand(getXSpeed, getYSpeed, () -> 0, true, true);
+        },
+        // (Runnable) m_robotDrive.driveCommand(getXSpeed, getYSpeed, () -> 0, true, true).andThen(() -> {m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, true, true);}),
+        (Boolean input) -> {
+            setDriveZero();
+        },
         () -> {
           return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
               && Math.abs(m_robotDrive.getPose().getY() - pose.getY()) < centimetersOff / 100
