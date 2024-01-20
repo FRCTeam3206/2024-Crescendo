@@ -234,7 +234,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
       DoubleSupplier rot,
       BooleanSupplier fieldRelative,
       boolean rateLimit) {
-    return run(
+    return this.run(
         () -> {
           drive(
               xSpeed.getAsDouble(),
@@ -246,7 +246,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command stopCommand() {
-    return runOnce(() -> drive(0, 0, 0, true, true));
+    return this.runOnce(() -> drive(0, 0, 0, true, true));
   }
 
   /** Sets the wheels into an X formation to prevent movement. */
@@ -259,7 +259,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
 
   /** Creates a command that continually sets the wheels into an X formation to prevent movement. */
   public Command setXCommand() {
-    return run(this::setX);
+    return this.run(this::setX);
   }
 
   /**
@@ -290,7 +290,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command zeroHeadingCommand() {
-    return runOnce(this::zeroHeading).ignoringDisable(true).withName("Reset Gyro");
+    return this.runOnce(this::zeroHeading).ignoringDisable(true).withName("Reset Gyro");
   }
 
   /**
