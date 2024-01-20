@@ -246,7 +246,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command stopCommand() {
-    return runOnce(()->drive(0, 0, 0, true, true));
+    return runOnce(() -> drive(0, 0, 0, true, true));
   }
 
   /** Sets the wheels into an X formation to prevent movement. */
