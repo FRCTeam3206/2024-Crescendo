@@ -124,6 +124,22 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
+
+    @SuppressWarnings("unused")
+    private static final class StandardButtons {
+      public static final int x = 1;
+      public static final int a = 2;
+      public static final int b = 3;
+      public static final int y = 4;
+      public static final int lb = 5;
+      public static final int rb = 6;
+      public static final int lt = 7;
+      public static final int rt = 8;
+      public static final int back = 9;
+      public static final int start = 10;
+      public static final int leftStickPressed = 11;
+      public static final int rightStickPressed = 12;
+    }
   }
 
   public static final class AutoConstants {
