@@ -286,7 +286,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command zeroHeadingCommand() {
-    return runOnce(this::zeroHeading);
+    return runOnce(this::zeroHeading).ignoringDisable(true).withName("Reset Gyro");
   }
 
   /**
