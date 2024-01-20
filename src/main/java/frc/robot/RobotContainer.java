@@ -122,7 +122,8 @@ public class RobotContainer {
                 new Pose2d(
                     SmartDashboard.getNumber("xPoseGoalWhenSet", 5),
                     SmartDashboard.getNumber("yPoseGoalWhenSet", 0),
-                    new Rotation2d(SmartDashboard.getNumber("rotDegreesGoalWhenSet", 0) * (Math.PI / 180))),
+                    new Rotation2d(
+                        SmartDashboard.getNumber("rotDegreesGoalWhenSet", 0) * (Math.PI / 180))),
                 10));
     // Sets interrupt variable true when button pressed
     JoystickButton m_interruptGoToPos =
@@ -248,12 +249,16 @@ public class RobotContainer {
     // Run path following command, then stop at the end.
     return new FunctionalCommand(
         null,
-        () -> {toPosCommand.execute();},
-            // toPosCommand.andThen(
-            //     () -> {
-            //       m_robotDrive.drive(0, 0, 0, false, false);
-            //     }),
-        (Boolean input) -> {setDriveZero();},
+        () -> {
+          toPosCommand.execute();
+        },
+        // toPosCommand.andThen(
+        //     () -> {
+        //       m_robotDrive.drive(0, 0, 0, false, false);
+        //     }),
+        (Boolean input) -> {
+          setDriveZero();
+        },
         () -> {
           return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
               && Math.abs(m_robotDrive.getPose().getY() - pose.getY()) < centimetersOff / 100
@@ -263,24 +268,48 @@ public class RobotContainer {
   }
 
   public Command goToPoseWithFeedbackStop(Pose2d pose, double centimetersOff) {
-    BiFunction<DoubleSupplier, DoubleSupplier, Double> average = (DoubleSupplier a, DoubleSupplier b) -> {return (a.getAsDouble() + b.getAsDouble()) / 2;};
+    BiFunction<DoubleSupplier, DoubleSupplier, Double> average =
+        (DoubleSupplier a, DoubleSupplier b) -> {
+          return (a.getAsDouble() + b.getAsDouble()) / 2;
+        };
 
-    DoubleSupplier xFromGoal = () -> {return pose.getX() - m_robotDrive.getPose().getX();};
-    DoubleSupplier yFromGoal = () -> {return pose.getY() - m_robotDrive.getPose().getY();};
+    DoubleSupplier xFromGoal =
+        () -> {
+          return pose.getX() - m_robotDrive.getPose().getX();
+        };
+    DoubleSupplier yFromGoal =
+        () -> {
+          return pose.getY() - m_robotDrive.getPose().getY();
+        };
     double startXDistFromGoal = xFromGoal.getAsDouble();
     double startYDistFromGoal = yFromGoal.getAsDouble();
 
-    DoubleSupplier xPercentComplete = () -> {return xFromGoal.getAsDouble() / startXDistFromGoal;};
-    DoubleSupplier yPercentComplete = () -> {return yFromGoal.getAsDouble() / startYDistFromGoal;};
-    DoubleSupplier rotSpeed = () -> {return average.apply(xPercentComplete, yPercentComplete);};
+    DoubleSupplier xPercentComplete =
+        () -> {
+          return xFromGoal.getAsDouble() / startXDistFromGoal;
+        };
+    DoubleSupplier yPercentComplete =
+        () -> {
+          return yFromGoal.getAsDouble() / startYDistFromGoal;
+        };
+    DoubleSupplier rotSpeed =
+        () -> {
+          return average.apply(xPercentComplete, yPercentComplete);
+        };
 
-    Command driveTo = m_robotDrive.driveCommand(xPercentComplete, yPercentComplete, rotSpeed, true, true);
+    Command driveTo =
+        m_robotDrive.driveCommand(xPercentComplete, yPercentComplete, rotSpeed, true, true);
 
     return new FunctionalCommand(
         null,
-        () -> {driveTo.execute();},
-        // (Runnable) m_robotDrive.driveCommand(xPercentComplete, yPercentComplete, rotSpeed, true, true).andThen(setDriveZero()),
-        (Boolean input) -> {setDriveZero();},
+        () -> {
+          driveTo.execute();
+        },
+        // (Runnable) m_robotDrive.driveCommand(xPercentComplete, yPercentComplete, rotSpeed, true,
+        // true).andThen(setDriveZero()),
+        (Boolean input) -> {
+          setDriveZero();
+        },
         () -> {
           return Math.abs(xFromGoal.getAsDouble()) < centimetersOff / 100
               && Math.abs(yFromGoal.getAsDouble()) < centimetersOff / 100
@@ -289,9 +318,7 @@ public class RobotContainer {
         m_robotDrive);
   }
 
-  /**
-   * goToPoseWithFeedbackStop() should usually be used instead.
-   */
+  /** goToPoseWithFeedbackStop() should usually be used instead. */
   public Command goToPoseWithFeedbackStopNoRotation(Pose2d pose, double centimetersOff) {
     double startXDistFromGoal = pose.getX() - m_robotDrive.getPose().getX();
     double startYDistFromGoal = pose.getY() - m_robotDrive.getPose().getY();
@@ -309,11 +336,12 @@ public class RobotContainer {
     return new FunctionalCommand(
         null,
         () -> {
-            driveTo.execute();
+          driveTo.execute();
         },
-        // (Runnable) m_robotDrive.driveCommand(getXSpeed, getYSpeed, () -> 0, true, true).andThen(() -> {m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, true, true);}),
+        // (Runnable) m_robotDrive.driveCommand(getXSpeed, getYSpeed, () -> 0, true,
+        // true).andThen(() -> {m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, true, true);}),
         (Boolean input) -> {
-            setDriveZero();
+          setDriveZero();
         },
         () -> {
           return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
