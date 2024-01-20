@@ -95,7 +95,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           m_rearRight.getPosition()
         });
     m_field.setRobotPose(m_odometry.getPoseMeters());
-    // SmartDashboard.putNumber("Gyro", ahrs.getAngle());
   }
 
   /**

@@ -38,14 +38,8 @@ public class RobotContainer implements Logged {
   // The driver's controller
   CommandJoystick m_driverController = new CommandJoystick(OIConstants.kDriverControllerPort);
 
-  //   SendableChooser<Boolean> m_resetGyroChooser = new SendableChooser<>();
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // m_resetGyroChooser.setDefaultOption("Don't reset gyro", false);
-    // m_resetGyroChooser.addOption("Reset gyro", true);
-    // SmartDashboard.putData("Reset Gyro", m_resetGyroChooser);
-
     // Configure the button bindings
     configureButtonBindings();
 
@@ -53,16 +47,14 @@ public class RobotContainer implements Logged {
     SmartDashboard.putBoolean("Field Relative", true);
 
     m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
+        // Uses a joystick.
+        // x and y motion is controlled by the x and y axis of the stick.
+        // turning is controlled by rotating (twisting) the stick
         m_robotDrive.driveCommand(
+            () -> -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
+            () -> -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
             () ->
-                -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
-            () ->
-                -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
-            () ->
-                -MathUtil.applyDeadband(
-                    m_driverController.getZ(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getTwist(), OIConstants.kDriveDeadband),
             () -> {
               return SmartDashboard.getBoolean("Field Relative", true);
             },
@@ -79,14 +71,6 @@ public class RobotContainer implements Logged {
     m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
-
-    // Trigger m_resetGyro = new Trigger(() -> m_resetGyroChooser.getSelected());
-    // m_resetGyro.onTrue(
-    //     new InstantCommand(
-    //         () -> {
-    //           m_robotDrive.zeroHeading();
-    //         },
-    //         m_robotDrive));
   }
 
   /**
