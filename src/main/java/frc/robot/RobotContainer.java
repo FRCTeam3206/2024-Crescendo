@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -35,7 +36,7 @@ public class RobotContainer implements Logged {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  CommandJoystick m_driverController = new CommandJoystick(OIConstants.kDriverControllerPort);
 
   //   SendableChooser<Boolean> m_resetGyroChooser = new SendableChooser<>();
 
@@ -56,12 +57,12 @@ public class RobotContainer implements Logged {
         // Turning is controlled by the X axis of the right stick.
         m_robotDrive.driveCommand(
             () ->
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
             () ->
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
             () ->
                 -MathUtil.applyDeadband(
-                    m_driverController.getRawAxis(2), OIConstants.kDriveDeadband),
+                    m_driverController.getZ(), OIConstants.kDriveDeadband),
             () -> {
               return SmartDashboard.getBoolean("Field Relative", true);
             },
@@ -75,8 +76,7 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, 2)
-        .whileTrue(m_robotDrive.setXCommand()); // Button.kR1.value
+    m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
 
