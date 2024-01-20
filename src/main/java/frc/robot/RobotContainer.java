@@ -13,18 +13,17 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import java.util.List;
+import monologue.Logged;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -32,37 +31,33 @@ import java.util.List;
  * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
  * (including subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements Logged {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-
-  SendableChooser<Boolean> m_resetGyroChooser = new SendableChooser<>();
+  CommandJoystick m_driverController = new CommandJoystick(OIConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    m_resetGyroChooser.setDefaultOption("Don't reset gyro", false);
-    m_resetGyroChooser.addOption("Reset gyro", true);
-    SmartDashboard.putData("Reset Gyro", m_resetGyroChooser);
-
     // Configure the button bindings
     configureButtonBindings();
 
     // Configure default commands
+    SmartDashboard.putBoolean("Field Relative", true);
+
     m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
+        // Uses a joystick.
+        // x and y motion is controlled by the x and y axis of the stick.
+        // turning is controlled by rotating (twisting) the stick
         m_robotDrive.driveCommand(
+            () -> -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
+            () -> -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
             () ->
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-            () ->
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-            () ->
-                -MathUtil.applyDeadband(
-                    m_driverController.getRawAxis(2), OIConstants.kDriveDeadband),
-            true,
+                -MathUtil.applyDeadband(m_driverController.getTwist(), OIConstants.kDriveDeadband),
+            () -> {
+              return SmartDashboard.getBoolean("Field Relative", true);
+            },
             true));
   }
 
@@ -73,16 +68,9 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, 2)
-        .whileTrue(m_robotDrive.setXCommand()); // Button.kR1.value
+    m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
 
-    Trigger m_resetGyro = new Trigger(() -> m_resetGyroChooser.getSelected());
-    m_resetGyro.onTrue(
-        new InstantCommand(
-            () -> {
-              m_robotDrive.zeroHeading();
-            },
-            m_robotDrive));
+    SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
   }
 
   /**

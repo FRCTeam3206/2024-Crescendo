@@ -21,9 +21,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import monologue.Annotations.Log;
+import monologue.Logged;
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase implements Logged {
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft =
       new MAXSwerveModule(
@@ -53,9 +56,9 @@ public class DriveSubsystem extends SubsystemBase {
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
 
   // Slew rate filter variables for controlling lateral acceleration
-  private double m_currentRotation = 0.0;
-  private double m_currentTranslationDir = 0.0;
-  private double m_currentTranslationMag = 0.0;
+  @Log.NT private double m_currentRotation = 0.0;
+  @Log.NT private double m_currentTranslationDir = 0.0;
+  @Log.NT private double m_currentTranslationMag = 0.0;
 
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
@@ -92,7 +95,6 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
         });
     m_field.setRobotPose(m_odometry.getPoseMeters());
-    SmartDashboard.putNumber("Gyro", ahrs.getAngle());
   }
 
   /**
@@ -230,17 +232,21 @@ public class DriveSubsystem extends SubsystemBase {
       DoubleSupplier xSpeed,
       DoubleSupplier ySpeed,
       DoubleSupplier rot,
-      boolean fieldRelative,
+      BooleanSupplier fieldRelative,
       boolean rateLimit) {
-    return run(
+    return this.run(
         () -> {
           drive(
               xSpeed.getAsDouble(),
               ySpeed.getAsDouble(),
               rot.getAsDouble(),
-              fieldRelative,
+              fieldRelative.getAsBoolean(),
               rateLimit);
         });
+  }
+
+  public Command stopCommand() {
+    return this.runOnce(() -> drive(0, 0, 0, true, true));
   }
 
   /** Sets the wheels into an X formation to prevent movement. */
@@ -253,7 +259,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a command that continually sets the wheels into an X formation to prevent movement. */
   public Command setXCommand() {
-    return run(this::setX);
+    return this.run(this::setX);
   }
 
   /**
@@ -283,11 +289,16 @@ public class DriveSubsystem extends SubsystemBase {
     ahrs.reset();
   }
 
+  public Command zeroHeadingCommand() {
+    return this.runOnce(this::zeroHeading).ignoringDisable(true).withName("Reset Gyro");
+  }
+
   /**
    * Returns the heading of the robot.
    *
    * @return the robot's heading in degrees, from -180 to 180
    */
+  @Log.NT
   public double getHeading() {
     return ahrs.getRotation2d().getDegrees();
   }
