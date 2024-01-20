@@ -274,10 +274,13 @@ public class RobotContainer {
     DoubleSupplier yPercentComplete = () -> {return yFromGoal.getAsDouble() / startYDistFromGoal;};
     DoubleSupplier rotSpeed = () -> {return average.apply(xPercentComplete, yPercentComplete);};
 
+    Command driveTo = m_robotDrive.driveCommand(xPercentComplete, yPercentComplete, rotSpeed, true, true);
+
     return new FunctionalCommand(
         null,
-        (Runnable) m_robotDrive.driveCommand(xPercentComplete, yPercentComplete, rotSpeed, true, true).andThen(setDriveZero()),
-        null,
+        () -> {driveTo.execute();},
+        // (Runnable) m_robotDrive.driveCommand(xPercentComplete, yPercentComplete, rotSpeed, true, true).andThen(setDriveZero()),
+        (Boolean input) -> {setDriveZero();},
         () -> {
           return Math.abs(xFromGoal.getAsDouble()) < centimetersOff / 100
               && Math.abs(yFromGoal.getAsDouble()) < centimetersOff / 100
@@ -300,10 +303,13 @@ public class RobotContainer {
         () -> {
           return ((pose.getY() - m_robotDrive.getPose().getY()) / startYDistFromGoal);
         };
+
+    Command driveTo = m_robotDrive.driveCommand(getXSpeed, getYSpeed, () -> 0, true, true);
+
     return new FunctionalCommand(
         null,
         () -> {
-            m_robotDrive.driveCommand(getXSpeed, getYSpeed, () -> 0, true, true);
+            driveTo.execute();
         },
         // (Runnable) m_robotDrive.driveCommand(getXSpeed, getYSpeed, () -> 0, true, true).andThen(() -> {m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, true, true);}),
         (Boolean input) -> {
