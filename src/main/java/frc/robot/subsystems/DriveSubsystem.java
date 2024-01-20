@@ -245,6 +245,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
         });
   }
 
+  public Command stopCommand() {
+    return runOnce(()->drive(0, 0, 0, true, true));
+  }
+
   /** Sets the wheels into an X formation to prevent movement. */
   public void setX() {
     m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
