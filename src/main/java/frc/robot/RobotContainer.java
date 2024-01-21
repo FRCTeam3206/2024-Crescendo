@@ -17,10 +17,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.ToPoseFeedbackCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import java.util.List;
 import monologue.Logged;
@@ -37,6 +39,7 @@ public class RobotContainer implements Logged {
 
   // The driver's controller
   CommandJoystick m_driverController = new CommandJoystick(OIConstants.kDriverControllerPort);
+  CommandXboxController m_controller = new CommandXboxController(OIConstants.kControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -71,6 +74,21 @@ public class RobotContainer implements Logged {
     m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
+
+    SmartDashboard.putNumber("X Goal (Feet)", 0);
+    SmartDashboard.putNumber("Y Goal (Feet)", 0);
+    SmartDashboard.putNumber("Rotation Goal (Degrees)", 0);
+    SmartDashboard.putNumber("Inches off", 10);
+    m_controller
+        .button(OIConstants.Buttons.kGoToPos)
+        .whileTrue(
+            new ToPoseFeedbackCommand(
+                m_robotDrive,
+                SmartDashboard.getNumber("X Goal (Feet)", 0),
+                SmartDashboard.getNumber("Y Goal (Feet)", 0),
+                SmartDashboard.getNumber("Rotation Goal (Degrees)", 0),
+                SmartDashboard.getNumber("Inches off", 10),
+                0.25));
   }
 
   /**

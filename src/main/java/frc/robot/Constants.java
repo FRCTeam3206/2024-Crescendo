@@ -123,6 +123,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
 
     @SuppressWarnings("unused")
@@ -139,6 +140,10 @@ public final class Constants {
       public static final int start = 10;
       public static final int leftStickPressed = 11;
       public static final int rightStickPressed = 12;
+    }
+
+    public static final class Buttons {
+      public static final int kGoToPos = StandardButtons.a;
     }
   }
 
