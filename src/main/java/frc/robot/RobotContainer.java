@@ -260,14 +260,15 @@ public class RobotContainer {
           setDriveZero();
         },
         () -> {
-          return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
-              && Math.abs(m_robotDrive.getPose().getY() - pose.getY()) < centimetersOff / 100
-              && interruptGoToPos;
+          return (Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
+              && Math.abs(m_robotDrive.getPose().getY() - pose.getY()) < centimetersOff / 100)
+              || interruptGoToPos;
         },
         m_robotDrive);
   }
 
   public Command goToPoseWithFeedbackStop(Pose2d pose, double centimetersOff) {
+    interruptGoToPos = false;
     BiFunction<DoubleSupplier, DoubleSupplier, Double> average =
         (DoubleSupplier a, DoubleSupplier b) -> {
           return (a.getAsDouble() + b.getAsDouble()) / 2;
@@ -311,15 +312,16 @@ public class RobotContainer {
           setDriveZero();
         },
         () -> {
-          return Math.abs(xFromGoal.getAsDouble()) < centimetersOff / 100
-              && Math.abs(yFromGoal.getAsDouble()) < centimetersOff / 100
-              && interruptGoToPos;
+          return (Math.abs(xFromGoal.getAsDouble()) < centimetersOff / 100
+              && Math.abs(yFromGoal.getAsDouble()) < centimetersOff / 100)
+              || interruptGoToPos;
         },
         m_robotDrive);
   }
 
   /** goToPoseWithFeedbackStop() should usually be used instead. */
   public Command goToPoseWithFeedbackStopNoRotation(Pose2d pose, double centimetersOff) {
+    interruptGoToPos = false;
     double startXDistFromGoal = pose.getX() - m_robotDrive.getPose().getX();
     double startYDistFromGoal = pose.getY() - m_robotDrive.getPose().getY();
     DoubleSupplier getXSpeed =
@@ -344,9 +346,9 @@ public class RobotContainer {
           setDriveZero();
         },
         () -> {
-          return Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
-              && Math.abs(m_robotDrive.getPose().getY() - pose.getY()) < centimetersOff / 100
-              && interruptGoToPos;
+          return (Math.abs(m_robotDrive.getPose().getX() - pose.getX()) < centimetersOff / 100
+              && Math.abs(m_robotDrive.getPose().getY() - pose.getY()) < centimetersOff / 100)
+              || interruptGoToPos;
         },
         m_robotDrive);
   }
