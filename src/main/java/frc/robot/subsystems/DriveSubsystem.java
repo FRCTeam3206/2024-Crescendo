@@ -93,6 +93,8 @@ public class DriveSubsystem extends SubsystemBase {
         });
     m_field.setRobotPose(m_odometry.getPoseMeters());
     SmartDashboard.putNumber("Gyro", ahrs.getAngle());
+    SmartDashboard.putNumber("X Position Meters", getPose().getX());
+    SmartDashboard.putNumber("Y Position Meters", getPose().getY());
   }
 
   /**

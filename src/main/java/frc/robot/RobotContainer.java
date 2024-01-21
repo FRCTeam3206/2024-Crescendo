@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,7 +48,8 @@ public class RobotContainer {
   // setGoToPos, isGoingToPos
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  Joystick m_joystick = new Joystick(0);
+  XboxController m_driverController = new XboxController(1);
 
   SendableChooser<Boolean> m_resetGyroChooser = new SendableChooser<>();
 
@@ -66,12 +68,12 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         m_robotDrive.driveCommand(
             () ->
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_joystick.getY(), OIConstants.kDriveDeadband),
             () ->
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_joystick.getX(), OIConstants.kDriveDeadband),
             () ->
                 -MathUtil.applyDeadband(
-                    m_driverController.getRawAxis(2), OIConstants.kDriveDeadband),
+                    m_joystick.getTwist(), OIConstants.kDriveDeadband),
             true,
             true));
   }
@@ -118,7 +120,7 @@ public class RobotContainer {
     // Goes to pos when variable becomes true
     new Trigger(() -> goToPosPressed)
         .onTrue(
-            goToPosStop(
+            goToPoseWithFeedbackStop(
                 new Pose2d(
                     SmartDashboard.getNumber("xPoseGoalWhenSet", 5),
                     SmartDashboard.getNumber("yPoseGoalWhenSet", 0),
@@ -248,7 +250,7 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return new FunctionalCommand(
-        null,
+        () -> {},
         () -> {
           toPosCommand.execute();
         },
@@ -287,11 +289,11 @@ public class RobotContainer {
 
     DoubleSupplier xPercentComplete =
         () -> {
-          return xFromGoal.getAsDouble() / startXDistFromGoal;
+          return 0.25 * xFromGoal.getAsDouble() / startXDistFromGoal;
         };
     DoubleSupplier yPercentComplete =
         () -> {
-          return yFromGoal.getAsDouble() / startYDistFromGoal;
+          return 0.25 * yFromGoal.getAsDouble() / startYDistFromGoal;
         };
     DoubleSupplier rotSpeed =
         () -> {
@@ -302,7 +304,7 @@ public class RobotContainer {
         m_robotDrive.driveCommand(xPercentComplete, yPercentComplete, rotSpeed, true, true);
 
     return new FunctionalCommand(
-        null,
+        () -> {},
         () -> {
           driveTo.execute();
         },
@@ -336,7 +338,7 @@ public class RobotContainer {
     Command driveTo = m_robotDrive.driveCommand(getXSpeed, getYSpeed, () -> 0, true, true);
 
     return new FunctionalCommand(
-        null,
+        () -> {},
         () -> {
           driveTo.execute();
         },
