@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -11,12 +12,22 @@ public class ToPoseFeedbackCommand extends Command {
   private double metersOff;
   private double maxOutput;
 
-  public ToPoseFeedbackCommand(DriveSubsystem robotDrive, Pose2d goalPose, double centimetersOff) {
+  public ToPoseFeedbackCommand(
+      DriveSubsystem robotDrive,
+      double xFeet,
+      double yFeet,
+      double rotationDegrees,
+      double inchesOff,
+      double maxOutput) {
     this.robotDrive = robotDrive;
     startPose = robotDrive.getPose();
-    this.goalPose = goalPose;
-    metersOff = centimetersOff / 100;
-    this.maxOutput = 0.25;
+    this.goalPose =
+        new Pose2d(
+            100 * 2.54 * xFeet / 12,
+            100 * 2.54 * yFeet / 12,
+            new Rotation2d(rotationDegrees * Math.PI / 180));
+    metersOff = inchesOff / (100 * 2.54);
+    this.maxOutput = maxOutput;
   }
 
   public ToPoseFeedbackCommand(
