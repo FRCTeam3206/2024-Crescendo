@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -86,7 +87,7 @@ public class RobotContainer implements Logged {
                 m_robotDrive,
                 SmartDashboard.getNumber("X Goal (Feet)", 0),
                 SmartDashboard.getNumber("Y Goal (Feet)", 0),
-                SmartDashboard.getNumber("Rotation Goal (Degrees)", 0),
+                new Rotation2d(Units.degreesToRadians(SmartDashboard.getNumber("Rotation Goal (Degrees)", 0))),
                 SmartDashboard.getNumber("Inches off", 10),
                 0.25));
   }
