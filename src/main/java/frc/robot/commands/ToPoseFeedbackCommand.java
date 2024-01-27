@@ -10,7 +10,7 @@ import frc.utils.SwerveUtils;
 public class ToPoseFeedbackCommand extends Command {
   DriveSubsystem robotDrive;
   private final Pose2d goalPose;
-  private final double halfStartMetersFromGoal;
+  private final double startMetersFromGoal;
   private final double startRadiansFromGoal;
   private final double metersOffToStop;
   private final double maxPercentOutput;
@@ -40,8 +40,8 @@ public class ToPoseFeedbackCommand extends Command {
             Units.feetToMeters(xFeet),
             Units.feetToMeters(yFeet),
             rotation == null ? robotDrive.getPose().getRotation() : rotation);
-    halfStartMetersFromGoal = metersFromGoal() / 2;
-    startRadiansFromGoal = radiansFromGoal();
+    startMetersFromGoal = metersFromGoal();
+    startRadiansFromGoal = radiansToGoal();
     metersOffToStop = Units.inchesToMeters(inchesOff);
     this.maxPercentOutput = maxPercentOutput;
   }
@@ -63,8 +63,8 @@ public class ToPoseFeedbackCommand extends Command {
       double maxPercentOutput) {
     this.robotDrive = robotDrive;
     this.goalPose = goalPose;
-    halfStartMetersFromGoal = metersFromGoal() / 2;
-    startRadiansFromGoal = radiansFromGoal();
+    startMetersFromGoal = metersFromGoal();
+    startRadiansFromGoal = radiansToGoal();
     this.metersOffToStop = centimetersOffToStop / 100;
     this.maxPercentOutput = maxPercentOutput;
   }
@@ -93,9 +93,17 @@ public class ToPoseFeedbackCommand extends Command {
   /**
    * @return The radians remaining to get to the goal
    */
-  private double radiansFromGoal() {
-    return SwerveUtils.WrapAngle(goalPose.getRotation().getRadians())
-        - SwerveUtils.WrapAngle(robotDrive.getPose().getRotation().getRadians());
+  private double getRawRadiansFromGoal() {
+    return SwerveUtils.WrapAngle(robotDrive.getPose().getRotation().getRadians())
+        - SwerveUtils.WrapAngle(goalPose.getRotation().getRadians());
+  }
+
+  private double radiansToGoal() {
+    if (Math.abs(getRawRadiansFromGoal()) < Math.PI) {
+      return getRawRadiansFromGoal();
+    } else {
+      return - Math.signum(getRawRadiansFromGoal()) * (Math.PI - Math.abs(getRawRadiansFromGoal()));
+    }
   }
 
   /**
@@ -109,9 +117,7 @@ public class ToPoseFeedbackCommand extends Command {
    * @return The speed the robot should go linearly towards the target pose.
    */
   private double calculateRawSpeed() {
-    return Math.abs(metersFromGoal()) > Math.abs(halfStartMetersFromGoal)
-        ? maxPercentOutput
-        : maxPercentOutput * (metersFromGoal() / Math.abs(halfStartMetersFromGoal));
+    return maxPercentOutput * (metersFromGoal() / Math.abs(startMetersFromGoal));
   }
 
   /**
@@ -132,11 +138,9 @@ public class ToPoseFeedbackCommand extends Command {
    * @return Calculated rotation speed (radians / s)
    */
   private double calculateRotationSpeed() {
-    return Math.abs(radiansFromGoal()) > Math.abs(0.25 * startRadiansFromGoal)
-        ? Math.signum(radiansFromGoal()) * maxPercentOutput
-        : Math.signum(radiansFromGoal())
-            * maxPercentOutput
-            * Math.abs(radiansFromGoal() / (0.25 * startRadiansFromGoal));
+    return Math.signum(radiansToGoal())
+        * maxPercentOutput
+        * Math.abs(radiansToGoal() / (0.25 * startRadiansFromGoal));
   }
 
   @Override
