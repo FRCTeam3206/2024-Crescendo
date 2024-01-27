@@ -90,7 +90,8 @@ public class RobotContainer implements Logged {
                 m_robotDrive,
                 SmartDashboard.getNumber("X Goal (Feet)", 0),
                 SmartDashboard.getNumber("Y Goal (Feet)", 0),
-                new Rotation2d(Units.degreesToRadians(SmartDashboard.getNumber("Rotation Goal (Degrees)", 0))),
+                new Rotation2d(
+                    Units.degreesToRadians(SmartDashboard.getNumber("Rotation Goal (Degrees)", 0))),
                 SmartDashboard.getNumber("Inches off", 10),
                 0.25));
   }

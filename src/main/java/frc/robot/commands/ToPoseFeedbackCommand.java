@@ -16,12 +16,15 @@ public class ToPoseFeedbackCommand extends Command {
   private final double maxPercentOutput;
 
   /**
-   * Constructs a command to go to a pose with feedback given measurements of pose in imperial, mostly for testing purposes
+   * Constructs a command to go to a pose with feedback given measurements of pose in imperial,
+   * mostly for testing purposes
+   *
    * @param robotDrive The robot drive to use
    * @param xFeet X position goal
    * @param yFeet Y position goal
    * @param rotation Rotation goal of position, which is set to current rotation if null
-   * @param inchesOff The maximum number of inches the robot can be away from the goal position to stop
+   * @param inchesOff The maximum number of inches the robot can be away from the goal position to
+   *     stop
    * @param maxPercentOutput The maximum percent output to use
    */
   public ToPoseFeedbackCommand(
@@ -32,7 +35,11 @@ public class ToPoseFeedbackCommand extends Command {
       double inchesOff,
       double maxPercentOutput) {
     this.robotDrive = robotDrive;
-    goalPose = new Pose2d(Units.feetToMeters(xFeet), Units.feetToMeters(yFeet), rotation == null ? robotDrive.getPose().getRotation() : rotation);
+    goalPose =
+        new Pose2d(
+            Units.feetToMeters(xFeet),
+            Units.feetToMeters(yFeet),
+            rotation == null ? robotDrive.getPose().getRotation() : rotation);
     halfStartMetersFromGoal = metersFromGoal() / 2;
     startRadiansFromGoal = radiansFromGoal();
     metersOffToStop = Units.inchesToMeters(inchesOff);
@@ -40,14 +47,20 @@ public class ToPoseFeedbackCommand extends Command {
   }
 
   /**
-   * Constructs a command to go to a pose with feedback given a Pose2d (this can be used with Pose2ds that are known to be at certain locations)
+   * Constructs a command to go to a pose with feedback given a Pose2d (this can be used with
+   * Pose2ds that are known to be at certain locations)
+   *
    * @param robotDrive The robot drive to use
    * @param goalPose The goal position
-   * @param centimetersOffToStop The maximum number of centimeters the robot can be away from the goal position to stop
+   * @param centimetersOffToStop The maximum number of centimeters the robot can be away from the
+   *     goal position to stop
    * @param maxPercentOutput The maximum percent output to use
    */
   public ToPoseFeedbackCommand(
-      DriveSubsystem robotDrive, Pose2d goalPose, double centimetersOffToStop, double maxPercentOutput) {
+      DriveSubsystem robotDrive,
+      Pose2d goalPose,
+      double centimetersOffToStop,
+      double maxPercentOutput) {
     this.robotDrive = robotDrive;
     this.goalPose = goalPose;
     halfStartMetersFromGoal = metersFromGoal() / 2;
@@ -121,7 +134,9 @@ public class ToPoseFeedbackCommand extends Command {
   private double calculateRotationSpeed() {
     return Math.abs(radiansFromGoal()) > Math.abs(0.25 * startRadiansFromGoal)
         ? Math.signum(radiansFromGoal()) * maxPercentOutput
-        : Math.signum(radiansFromGoal()) * maxPercentOutput * Math.abs(radiansFromGoal() / (0.25 * startRadiansFromGoal));
+        : Math.signum(radiansFromGoal())
+            * maxPercentOutput
+            * Math.abs(radiansFromGoal() / (0.25 * startRadiansFromGoal));
   }
 
   @Override
