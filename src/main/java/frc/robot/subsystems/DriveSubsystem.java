@@ -64,9 +64,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
-  private Field2d m_field = new Field2d();
+  private final Field2d m_field = new Field2d();
 
   // Odometry class for tracking robot pose
+  @Log.NT
   SwerveDriveOdometry m_odometry =
       new SwerveDriveOdometry(
           DriveConstants.kDriveKinematics,

@@ -39,6 +39,7 @@ public class RobotContainer implements Logged {
   @Log.NT private final String currentBranch = BuildConstants.GIT_BRANCH;
 
   // The driver's controller
+  @Log.NT
   CommandJoystick m_driverController = new CommandJoystick(OIConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
