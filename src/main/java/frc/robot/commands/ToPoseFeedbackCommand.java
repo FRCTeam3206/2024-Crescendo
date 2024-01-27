@@ -138,9 +138,7 @@ public class ToPoseFeedbackCommand extends Command {
    * @return Calculated rotation speed (radians / s)
    */
   private double calculateRotationSpeed() {
-    return Math.signum(radiansToGoal())
-        * maxPercentOutput
-        * Math.abs(radiansToGoal() / (0.25 * startRadiansFromGoal));
+    return maxPercentOutput * radiansToGoal() / startRadiansFromGoal;
   }
 
   @Override
