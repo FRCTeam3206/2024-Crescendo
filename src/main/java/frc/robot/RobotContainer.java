@@ -26,6 +26,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ToPoseFeedbackCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import java.util.List;
+import monologue.Annotations.Log;
 import monologue.Logged;
 
 /*
@@ -37,6 +38,8 @@ import monologue.Logged;
 public class RobotContainer implements Logged {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+
+  @Log.NT private final String currentBranch = BuildConstants.GIT_BRANCH;
 
   // The driver's controller
   CommandJoystick m_driverController = new CommandJoystick(OIConstants.kDriverControllerPort);
