@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.Robot;
 
 public class MAXSwerveModule {
   private final CANSparkMax m_drivingSparkMax;
@@ -117,6 +118,11 @@ public class MAXSwerveModule {
   public SwerveModuleState getState() {
     // Apply chassis angular offset to the encoder position to get the position
     // relative to the chassis.
+    if (Robot.isSimulation()) {
+      // No physics here, just assume that the module state is the desired state
+      return new SwerveModuleState(m_desiredState.speedMetersPerSecond,
+          new Rotation2d(m_desiredState.angle.getRadians()));
+    }
     return new SwerveModuleState(
         m_drivingEncoder.getVelocity(),
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
