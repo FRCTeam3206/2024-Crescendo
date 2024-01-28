@@ -96,6 +96,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     m_field.setRobotPose(getPose());
   }
 
+  @Log.NT
   /**
    * Returns the currently-estimated pose of the robot.
    *
@@ -172,7 +173,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    * @param rateLimit Whether to enable rate limiting for smoother control.
    */
-  public void drive(
+  public void driveSpeed(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit){
+    drivePercent(xSpeed/DriveConstants.kMaxSpeedMetersPerSecond, ySpeed/DriveConstants.kMaxSpeedMetersPerSecond, rot/DriveConstants.kMaxAngularSpeed, fieldRelative, rateLimit);
+  }
+  public void drivePercent(
       double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
 
     double xSpeedCommanded;
@@ -266,7 +270,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    *     https://docs.wpilib.org/en/stable/docs/software/basic-programming/functions-as-data.html
    *     </a>
    */
-  public Command driveCommand(
+  public Command driveSpeedCommand(
       DoubleSupplier xSpeed,
       DoubleSupplier ySpeed,
       DoubleSupplier rot,
@@ -274,7 +278,23 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
       boolean rateLimit) {
     return this.run(
         () -> {
-          drive(
+          driveSpeed(
+              xSpeed.getAsDouble(),
+              ySpeed.getAsDouble(),
+              rot.getAsDouble(),
+              fieldRelative.getAsBoolean(),
+              rateLimit);
+        });
+  }
+  public Command drivePercentCommand(
+      DoubleSupplier xSpeed,
+      DoubleSupplier ySpeed,
+      DoubleSupplier rot,
+      BooleanSupplier fieldRelative,
+      boolean rateLimit) {
+    return this.run(
+        () -> {
+          drivePercent(
               xSpeed.getAsDouble(),
               ySpeed.getAsDouble(),
               rot.getAsDouble(),
@@ -284,7 +304,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command stopCommand() {
-    return this.runOnce(() -> drive(0, 0, 0, true, true));
+    return this.runOnce(() -> drivePercent(0, 0, 0, true, true));
   }
 
   /** Sets the wheels into an X formation to prevent movement. */

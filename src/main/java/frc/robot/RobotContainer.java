@@ -54,7 +54,7 @@ public class RobotContainer implements Logged {
         // Uses a joystick.
         // x and y motion is controlled by the x and y axis of the stick.
         // turning is controlled by rotating (twisting) the stick
-        m_robotDrive.driveCommand(
+        m_robotDrive.drivePercentCommand(
             () -> -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
             () -> -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
             () ->
@@ -124,6 +124,6 @@ public class RobotContainer implements Logged {
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+    return swerveControllerCommand.andThen(() -> m_robotDrive.driveSpeed(0, 0, 0, false, false));
   }
 }
