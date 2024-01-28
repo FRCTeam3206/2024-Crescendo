@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -95,7 +94,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     // Update the odometry in the periodic block
     updateOdometry();
     m_field.setRobotPose(getPose());
-   }
+  }
 
   /**
    * Returns the currently-estimated pose of the robot.
@@ -108,27 +107,29 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   /**
-   * Updates the odometry (including for sim).
-   * Should be called from periodic().
-   * This code comes from Team 2713:
+   * Updates the odometry (including for sim). Should be called from periodic(). This code comes
+   * from Team 2713:
    * https://github.com/FRC2713/Robot2022-v2/blob/main/src/main/java/frc/robot/subsystems/SwerveIO/BabySwerver.java#L126-151
    */
   private void updateOdometry() {
     m_odometry.update(
         m_gyro.getRotation2d(),
         new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()
         });
 
     if (Robot.isSimulation()) {
-      double timeDelta = 0.020;  // standard loop time is 20 ms
+      double timeDelta = 0.020; // standard loop time is 20 ms
 
       SwerveModuleState[] measuredStates =
           new SwerveModuleState[] {
-            m_frontLeft.getState(), m_frontRight.getState(), m_rearLeft.getState(), m_rearRight.getState()
+            m_frontLeft.getState(),
+            m_frontRight.getState(),
+            m_rearLeft.getState(),
+            m_rearRight.getState()
           };
       ChassisSpeeds speeds = DriveConstants.kDriveKinematics.toChassisSpeeds(measuredStates);
       simOdometryPose =
@@ -139,7 +140,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
                   speeds.omegaRadiansPerSecond * timeDelta));
     }
   }
-
 
   /**
    * Resets the odometry to the specified pose.
@@ -245,6 +245,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+
     this.log("Desired States", swerveModuleStates);
   }
 
@@ -349,9 +350,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
-  /**
-   * Update the gyro when simulating the robot.
-   */
+  /** Update the gyro when simulating the robot. */
   @Override
   public void simulationPeriodic() {
     super.simulationPeriodic();
