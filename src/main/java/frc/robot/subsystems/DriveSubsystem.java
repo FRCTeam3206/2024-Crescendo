@@ -5,9 +5,13 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -20,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Robot;
 import frc.utils.SwerveUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -53,31 +58,32 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
+  private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
   // Slew rate filter variables for controlling lateral acceleration
-  @Log.NT private double m_currentRotation = 0.0;
-  @Log.NT private double m_currentTranslationDir = 0.0;
-  @Log.NT private double m_currentTranslationMag = 0.0;
+  private double m_currentRotation = 0.0;
+  private double m_currentTranslationDir = 0.0;
+  private double m_currentTranslationMag = 0.0;
 
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
-  private final Field2d m_field = new Field2d();
-
   // Odometry class for tracking robot pose
-  @Log.NT
   SwerveDriveOdometry m_odometry =
       new SwerveDriveOdometry(
           DriveConstants.kDriveKinematics,
-          ahrs.getRotation2d(),
+          m_gyro.getRotation2d(),
           new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
           });
+
+  private Pose2d simOdometryPose = m_odometry.getPoseMeters();
+
+  private Field2d m_field = new Field2d();
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -87,25 +93,53 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    m_odometry.update(
-        ahrs.getRotation2d(),
-        new SwerveModulePosition[] {
-          m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
-          m_rearLeft.getPosition(),
-          m_rearRight.getPosition()
-        });
-    m_field.setRobotPose(m_odometry.getPoseMeters());
-  }
+    updateOdometry();
+    m_field.setRobotPose(getPose());
+   }
 
   /**
    * Returns the currently-estimated pose of the robot.
    *
    * @return The pose.
    */
+  @Log.NT
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
   }
+
+  /**
+   * Updates the odometry (including for sim).
+   * Should be called from periodic().
+   * This code comes from Team 2713:
+   * https://github.com/FRC2713/Robot2022-v2/blob/main/src/main/java/frc/robot/subsystems/SwerveIO/BabySwerver.java#L126-151
+   */
+  private void updateOdometry() {
+    m_odometry.update(
+        m_gyro.getRotation2d(),
+        new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_rearLeft.getPosition(),
+            m_rearRight.getPosition()
+        });
+
+    if (Robot.isSimulation()) {
+      double timeDelta = 0.020;  // standard loop time is 20 ms
+
+      SwerveModuleState[] measuredStates =
+          new SwerveModuleState[] {
+            m_frontLeft.getState(), m_frontRight.getState(), m_rearLeft.getState(), m_rearRight.getState()
+          };
+      ChassisSpeeds speeds = DriveConstants.kDriveKinematics.toChassisSpeeds(measuredStates);
+      simOdometryPose =
+          simOdometryPose.exp(
+              new Twist2d(
+                  speeds.vxMetersPerSecond * timeDelta,
+                  speeds.vyMetersPerSecond * timeDelta,
+                  speeds.omegaRadiansPerSecond * timeDelta));
+    }
+  }
+
 
   /**
    * Resets the odometry to the specified pose.
@@ -114,7 +148,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    */
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(
-        ahrs.getRotation2d(),
+        m_gyro.getRotation2d(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -122,6 +156,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           m_rearRight.getPosition()
         },
         pose);
+    simOdometryPose = pose;
   }
 
   public void resetDirection() {
@@ -202,7 +237,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
         DriveConstants.kDriveKinematics.toSwerveModuleStates(
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                    xSpeedDelivered, ySpeedDelivered, rotDelivered, ahrs.getRotation2d())
+                    xSpeedDelivered, ySpeedDelivered, rotDelivered, m_gyro.getRotation2d())
                 : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -210,6 +245,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+    this.log("Desired States", swerveModuleStates);
   }
 
   /**
@@ -287,7 +323,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    ahrs.reset();
+    m_gyro.reset();
   }
 
   public Command zeroHeadingCommand() {
@@ -301,7 +337,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    */
   @Log.NT
   public double getHeading() {
-    return ahrs.getRotation2d().getDegrees();
+    return m_gyro.getRotation2d().getDegrees();
   }
 
   /**
@@ -310,6 +346,18 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return ahrs.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+  }
+
+  /**
+   * Update the gyro when simulating the robot.
+   */
+  @Override
+  public void simulationPeriodic() {
+    super.simulationPeriodic();
+
+    int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+    SimDouble gyroSimAngle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+    gyroSimAngle.set(-getPose().getRotation().getDegrees());
   }
 }
