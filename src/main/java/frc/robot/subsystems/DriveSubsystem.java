@@ -104,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    */
   @Log.NT
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return (Robot.isReal()) ? m_odometry.getPoseMeters() : simOdometryPose;
   }
 
   /**
