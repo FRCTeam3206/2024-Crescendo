@@ -120,8 +120,8 @@ public class MAXSwerveModule {
     // relative to the chassis.
     if (Robot.isSimulation()) {
       // No physics here, just assume that the module state is the desired state
-      return new SwerveModuleState(m_desiredState.speedMetersPerSecond,
-          new Rotation2d(m_desiredState.angle.getRadians()));
+      return new SwerveModuleState(
+          m_desiredState.speedMetersPerSecond, new Rotation2d(m_desiredState.angle.getRadians()));
     }
     return new SwerveModuleState(
         m_drivingEncoder.getVelocity(),
