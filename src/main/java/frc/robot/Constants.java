@@ -123,6 +123,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
 
     @SuppressWarnings("unused")
@@ -140,6 +141,10 @@ public final class Constants {
       public static final int leftStickPressed = 11;
       public static final int rightStickPressed = 12;
     }
+
+    public static final class Buttons {
+      public static final int kGoToPos = StandardButtons.a;
+    }
   }
 
   public static final class AutoConstants {
@@ -152,6 +157,8 @@ public final class Constants {
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;
 
+    public static final double kMaxDistanceMetersAtFullSpeed = 2;
+    public static final double kMaxDeltaThetaAtFullSpeed = Math.PI/4;
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
         new TrapezoidProfile.Constraints(
