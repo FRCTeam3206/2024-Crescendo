@@ -75,7 +75,7 @@ public class RobotContainer implements Logged {
    */
   private void configureButtonBindings() {
     m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
-    m_driverController.button(4).whileTrue(new TrapezoidalDriveToPosition(new Pose2d(1.8,.5,new Rotation2d(-Math.PI/2)), .05, .05, m_robotDrive));
+    m_driverController.button(4).whileTrue(new TrapezoidalDriveToPosition(new Pose2d(0,0,new Rotation2d(-Math.PI/2)), .05, .05, m_robotDrive));
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
     SmartDashboard.putData("Reset Odometry", new InstantCommand(() -> m_robotDrive.resetOdometry(m_robotDrive.getPose())));
   }
