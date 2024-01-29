@@ -10,7 +10,7 @@ import frc.utils.SwerveUtils;
 
 public class DriveToPosition extends Command{
     private Pose2d target;
-    DriveSubsystem drive=new DriveSubsystem();
+    DriveSubsystem drive;
     double minDeltaPos,minDeltaTheta;
     public DriveToPosition(Pose2d target, double minDeltaPos, double minDeltaTheta, DriveSubsystem drive){
         this.target=target;

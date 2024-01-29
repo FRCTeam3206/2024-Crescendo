@@ -96,7 +96,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     m_field.setRobotPose(getPose());
   }
 
-  @Log.NT
   /**
    * Returns the currently-estimated pose of the robot.
    *

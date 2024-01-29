@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.DriveToPosition;
+import frc.robot.commands.TrapezoidalDriveToPosition;
 import frc.robot.subsystems.DriveSubsystem;
 import java.util.List;
 import monologue.Annotations.Log;
@@ -73,7 +75,7 @@ public class RobotContainer implements Logged {
    */
   private void configureButtonBindings() {
     m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
-
+    m_driverController.button(4).whileTrue(new TrapezoidalDriveToPosition(new Pose2d(1.8,.5,new Rotation2d(-Math.PI/2)), .05, .05, m_robotDrive));
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
   }
 
