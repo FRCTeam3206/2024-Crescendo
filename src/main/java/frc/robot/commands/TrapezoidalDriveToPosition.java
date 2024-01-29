@@ -19,6 +19,7 @@ public class TrapezoidalDriveToPosition extends Command{
     private final TrapezoidProfile angleProfile =
       new TrapezoidProfile(new TrapezoidProfile.Constraints(AutoConstants.kMaxAngularSpeedRadiansPerSecond,AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
+    private TrapezoidProfile.State angleGoal = new TrapezoidProfile.State();
     public TrapezoidalDriveToPosition(Pose2d target, double minDeltaPos, double minDeltaTheta, DriveSubsystem drive){
         this.target=target;
         this.drive=drive;
@@ -31,6 +32,10 @@ public class TrapezoidalDriveToPosition extends Command{
     }
     private double deltaY(){
         return target.getY()-drive.getPose().getY();
+    }
+    private double deltaT(){
+        double dt=target.getRotation().getRadians()-drive.getPose().getRotation().getRadians();
+        return SwerveUtils.WrapAngle(dt+Math.PI)-Math.PI;
     }
     double lastPoseVelocity=0;
     double lastAngleVelocity=0;
@@ -49,13 +54,16 @@ public class TrapezoidalDriveToPosition extends Command{
         double ySpeed=Math.signum(deltaY())*Math.abs(speed*Math.sin(angleTo));
         SmartDashboard.putNumber("YSpeed", ySpeed);
         
-        double dt=target.getRotation().getRadians()-drive.getPose().getRotation().getRadians();
+        double dt=deltaT();
         SmartDashboard.putNumber("Des Rotation",target.getRotation().getRadians());
         SmartDashboard.putNumber("Current Rotation",drive.getPose().getRotation().getRadians());
-        dt=SwerveUtils.WrapAngle(dt+Math.PI)-Math.PI;//Wrap from -180-180
         SmartDashboard.putNumber("Delta Theta", dt);
-        double angularSpeed=-angleProfile.calculate(kDt, new TrapezoidProfile.State(dt,lastAngleVelocity), goal).velocity;
-        
+        double angularSpeed=-angleProfile.calculate(kDt, new TrapezoidProfile.State(dt,lastAngleVelocity), angleGoal).velocity;
+        lastAngleVelocity=angularSpeed;
+        SmartDashboard.putNumber("Angle Speed",angularSpeed);
         drive.driveSpeed(xSpeed, ySpeed, angularSpeed, true, false);
+    }
+    public boolean isFinished(){
+        return Math.sqrt(Math.pow(deltaX(),2)+Math.pow(deltaY(),2))<minDeltaPos&&deltaT()<minDeltaTheta;
     }
 }
