@@ -83,7 +83,10 @@ public class RobotContainer implements Logged {
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
     SmartDashboard.putData(
         "Reset Odometry",
-        new InstantCommand(() -> {m_robotDrive.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));}));
+        new InstantCommand(
+            () -> {
+              m_robotDrive.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+            }));
   }
 
   /**
