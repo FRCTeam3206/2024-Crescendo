@@ -63,6 +63,9 @@ public class TrapezoidalDriveToPosition extends Command implements Logged {
         angularSpeed=-angularSpeed;
         drive.driveSpeed(xSpeed, ySpeed, angularSpeed, true, false);
     }
+    public void end(boolean interrupted) {
+        drive.driveSpeed(0, 0, 0, true, true);
+    }
     public boolean isFinished(){
         return Math.sqrt(Math.pow(deltaX(),2)+Math.pow(deltaY(),2))<minDeltaPos&&Math.abs(deltaT())<minDeltaTheta;
     }
