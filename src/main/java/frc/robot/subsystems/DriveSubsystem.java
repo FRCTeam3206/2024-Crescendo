@@ -172,9 +172,16 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    * @param rateLimit Whether to enable rate limiting for smoother control.
    */
-  public void driveSpeed(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit){
-    drivePercent(xSpeed/DriveConstants.kMaxSpeedMetersPerSecond, ySpeed/DriveConstants.kMaxSpeedMetersPerSecond, rot/DriveConstants.kMaxAngularSpeed, fieldRelative, rateLimit);
+  public void driveSpeed(
+      double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+    drivePercent(
+        xSpeed / DriveConstants.kMaxSpeedMetersPerSecond,
+        ySpeed / DriveConstants.kMaxSpeedMetersPerSecond,
+        rot / DriveConstants.kMaxAngularSpeed,
+        fieldRelative,
+        rateLimit);
   }
+
   public void drivePercent(
       double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
 
@@ -285,6 +292,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
               rateLimit);
         });
   }
+
   public Command drivePercentCommand(
       DoubleSupplier xSpeed,
       DoubleSupplier ySpeed,

@@ -158,7 +158,7 @@ public final class Constants {
     public static final double kPThetaController = 1;
 
     public static final double kMaxDistanceMetersAtFullSpeed = 2;
-    public static final double kMaxDeltaThetaAtFullSpeed = Math.PI/4;
+    public static final double kMaxDeltaThetaAtFullSpeed = Math.PI / 4;
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
         new TrapezoidProfile.Constraints(
