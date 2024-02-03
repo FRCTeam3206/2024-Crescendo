@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -86,7 +87,7 @@ public class RobotContainer implements Logged {
     // Create config for trajectory
     TrajectoryConfig config =
         new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
+                AutoConstants.kMaxSpeedMetersPerSecond * 0.5,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(DriveConstants.kDriveKinematics);
@@ -97,9 +98,9 @@ public class RobotContainer implements Logged {
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(),
+            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(1, 1, new Rotation2d(0)),
+            new Pose2d(3, 0, new Rotation2d(Math.PI)),
             config);
 
     var thetaController =
@@ -124,6 +125,6 @@ public class RobotContainer implements Logged {
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+    return swerveControllerCommand.andThen(m_robotDrive::stopCommand);
   }
 }
