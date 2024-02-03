@@ -82,6 +82,14 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
 
   private Pose2d simOdometryPose = m_odometry.getPoseMeters();
 
+  SwerveModuleState[] m_desiredStates =
+      new SwerveModuleState[] {
+        m_frontLeft.getState(),
+        m_frontRight.getState(),
+        m_rearLeft.getState(),
+        m_rearRight.getState()
+      };
+
   private Field2d m_field = new Field2d();
 
   /** Creates a new DriveSubsystem. */
@@ -121,24 +129,27 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           m_rearRight.getPosition()
         });
 
-    if (Robot.isSimulation()) {
-      double timeDelta = 0.020; // standard loop time is 20 ms
+    SwerveModuleState[] measuredStates =
+        new SwerveModuleState[] {
+          m_frontLeft.getState(),
+          m_frontRight.getState(),
+          m_rearLeft.getState(),
+          m_rearRight.getState()
+        };
 
-      SwerveModuleState[] measuredStates =
-          new SwerveModuleState[] {
-            m_frontLeft.getState(),
-            m_frontRight.getState(),
-            m_rearLeft.getState(),
-            m_rearRight.getState()
-          };
-      ChassisSpeeds speeds = DriveConstants.kDriveKinematics.toChassisSpeeds(measuredStates);
-      simOdometryPose =
-          simOdometryPose.exp(
-              new Twist2d(
-                  speeds.vxMetersPerSecond * timeDelta,
-                  speeds.vyMetersPerSecond * timeDelta,
-                  speeds.omegaRadiansPerSecond * timeDelta));
-    }
+    this.log("Desired States", m_desiredStates);
+    this.log("Current States", measuredStates);
+
+    // if (Robot.isSimulation()) {
+    //   double timeDelta = 0.020; // standard loop time is 20 ms
+    //   ChassisSpeeds speeds = DriveConstants.kDriveKinematics.toChassisSpeeds(measuredStates);
+    //   simOdometryPose =
+    //       simOdometryPose.exp(
+    //           new Twist2d(
+    //               speeds.vxMetersPerSecond * timeDelta,
+    //               speeds.vyMetersPerSecond * timeDelta,
+    //               speeds.omegaRadiansPerSecond * timeDelta));
+    // }
   }
 
   /**
@@ -233,20 +244,20 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
-    var swerveModuleStates =
+    var desiredStates =
         DriveConstants.kDriveKinematics.toSwerveModuleStates(
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(
                     xSpeedDelivered, ySpeedDelivered, rotDelivered, m_gyro.getRotation2d())
                 : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    m_frontLeft.setDesiredState(swerveModuleStates[0]);
-    m_frontRight.setDesiredState(swerveModuleStates[1]);
-    m_rearLeft.setDesiredState(swerveModuleStates[2]);
-    m_rearRight.setDesiredState(swerveModuleStates[3]);
-
-    this.log("Desired States", swerveModuleStates);
+    // m_desiredStates = swerveModuleStates;
+    setModuleStates(desiredStates);
+    //             SwerveDriveKinematics.desaturateWheelSpeeds(
+    //     swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+    // m_frontLeft.setDesiredState(swerveModuleStates[0]);
+    // m_frontRight.setDesiredState(swerveModuleStates[1]);
+    // m_rearLeft.setDesiredState(swerveModuleStates[2]);
+    // m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
   /**
@@ -289,10 +300,18 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
 
   /** Sets the wheels into an X formation to prevent movement. */
   public void setX() {
-    m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-    m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+    var desiredStates =
+        new SwerveModuleState[] {
+          new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+          new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+          new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+          new SwerveModuleState(0, Rotation2d.fromDegrees(45))
+        };
+    setModuleStates(desiredStates);
+    // m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+    // m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+    // m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+    // m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
   /** Creates a command that continually sets the wheels into an X formation to prevent movement. */
@@ -312,6 +331,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     m_frontRight.setDesiredState(desiredStates[1]);
     m_rearLeft.setDesiredState(desiredStates[2]);
     m_rearRight.setDesiredState(desiredStates[3]);
+    m_desiredStates = desiredStates;
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
@@ -358,5 +378,14 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
     SimDouble gyroSimAngle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
     gyroSimAngle.set(-getPose().getRotation().getDegrees());
+
+    double timeDelta = 0.020; // standard loop time is 20 ms
+    ChassisSpeeds speeds = DriveConstants.kDriveKinematics.toChassisSpeeds(m_desiredStates);
+    simOdometryPose =
+        simOdometryPose.exp(
+            new Twist2d(
+                speeds.vxMetersPerSecond * timeDelta,
+                speeds.vyMetersPerSecond * timeDelta,
+                speeds.omegaRadiansPerSecond * timeDelta));
   }
 }
