@@ -13,11 +13,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -100,6 +102,31 @@ public class RobotContainer implements Logged {
       new Pose2d(0, 0, new Rotation2d(0)),
       List.of(),
       new Pose2d(2, 0, new Rotation2d(0))
+    ));
+
+    autonChooser.addOption("Figure 8", generateAutonomousCommand(
+      new Pose2d(0, 0, new Rotation2d(0)),
+      List.of(
+        new Translation2d(5.5, 1),
+        new Translation2d(8.3, 4),
+        new Translation2d(11, 7),
+        new Translation2d(15.7, 4),
+        new Translation2d(11, 1),
+        new Translation2d(8.3, 4),
+        new Translation2d(5.5, 7),
+        new Translation2d(.7, 4)
+      ),
+      new Pose2d(1, 1, new Rotation2d(0)))
+    );
+
+    Pose2d start = new Pose2d(1.9, 7.8 - Units.feetToMeters(6), new Rotation2d(0));
+    Pose2d note = new Pose2d(2.3, 5.55, new Rotation2d(0));
+    Pose2d amp = new Pose2d(1.9, 7.8, new Rotation2d(Math.PI));
+    autonChooser.addOption("Score note in amp", new SequentialCommandGroup(
+      generateAutonomousCommand(start, List.of(), note),
+      // pickUpNote(),
+      generateAutonomousCommand(note, List.of(), amp)
+      // scoreToAmp()
     ));
 
     SmartDashboard.putData(autonChooser);
