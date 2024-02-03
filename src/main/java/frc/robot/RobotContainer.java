@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -87,47 +86,50 @@ public class RobotContainer implements Logged {
   }
 
   public void autons() {
-    autonChooser.setDefaultOption("Nothing", m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, () -> true, true));
+    autonChooser.setDefaultOption(
+        "Nothing", m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, () -> true, true));
 
-    autonChooser.addOption("S Path", generateAutonomousCommand(
-      // Start at the origin facing the +X direction
-      new Pose2d(0, 0, new Rotation2d(0)),
-      // Pass through these two interior waypoints, making an 's' curve path
-      List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-      // End 3 meters straight ahead of where we started, facing forward
-      new Pose2d(3, 0, new Rotation2d(Math.PI))
-    ));
+    autonChooser.addOption(
+        "S Path",
+        generateAutonomousCommand(
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+            // Pass through these two interior waypoints, making an 's' curve path
+            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+            // End 3 meters straight ahead of where we started, facing forward
+            new Pose2d(3, 0, new Rotation2d(Math.PI))));
 
-    autonChooser.addOption("Forward 2 Meters", generateAutonomousCommand(
-      new Pose2d(0, 0, new Rotation2d(0)),
-      List.of(),
-      new Pose2d(2, 0, new Rotation2d(0))
-    ));
+    autonChooser.addOption(
+        "Forward 2 Meters",
+        generateAutonomousCommand(
+            new Pose2d(0, 0, new Rotation2d(0)), List.of(), new Pose2d(2, 0, new Rotation2d(0))));
 
-    autonChooser.addOption("Figure 8", generateAutonomousCommand(
-      new Pose2d(0, 0, new Rotation2d(0)),
-      List.of(
-        new Translation2d(5.5, 1),
-        new Translation2d(8.3, 4),
-        new Translation2d(11, 7),
-        new Translation2d(15.7, 4),
-        new Translation2d(11, 1),
-        new Translation2d(8.3, 4),
-        new Translation2d(5.5, 7),
-        new Translation2d(.7, 4)
-      ),
-      new Pose2d(1, 1, new Rotation2d(0)))
-    );
+    autonChooser.addOption(
+        "Figure 8",
+        generateAutonomousCommand(
+            new Pose2d(0, 0, new Rotation2d(0)),
+            List.of(
+                new Translation2d(5.5, 1),
+                new Translation2d(8.3, 4),
+                new Translation2d(11, 7),
+                new Translation2d(15.7, 4),
+                new Translation2d(11, 1),
+                new Translation2d(8.3, 4),
+                new Translation2d(5.5, 7),
+                new Translation2d(.7, 4)),
+            new Pose2d(1, 1, new Rotation2d(0))));
 
     Pose2d start = new Pose2d(1.9, 7.8 - Units.feetToMeters(6), new Rotation2d(0));
     Pose2d note = new Pose2d(2.3, 5.55, new Rotation2d(0));
     Pose2d amp = new Pose2d(1.9, 7.8, new Rotation2d(Math.PI));
-    autonChooser.addOption("Score note in amp", new SequentialCommandGroup(
-      generateAutonomousCommand(start, List.of(), note),
-      // pickUpNote(),
-      generateAutonomousCommand(note, List.of(), amp)
-      // scoreToAmp()
-    ));
+    autonChooser.addOption(
+        "Score note in amp",
+        new SequentialCommandGroup(
+            generateAutonomousCommand(start, List.of(), note),
+            // pickUpNote(),
+            generateAutonomousCommand(note, List.of(), amp)
+            // scoreToAmp()
+            ));
 
     SmartDashboard.putData(autonChooser);
   }
@@ -144,7 +146,8 @@ public class RobotContainer implements Logged {
    *
    * @return the command to run in autonomous
    */
-  public Command generateAutonomousCommand(Pose2d startPose, List<Translation2d> waypoints, Pose2d endPose) {
+  public Command generateAutonomousCommand(
+      Pose2d startPose, List<Translation2d> waypoints, Pose2d endPose) {
     // Create config for trajectory
     TrajectoryConfig config =
         new TrajectoryConfig(
