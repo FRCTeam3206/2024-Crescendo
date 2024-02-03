@@ -14,8 +14,10 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -43,10 +45,14 @@ public class RobotContainer implements Logged {
   @Log.NT
   CommandJoystick m_driverController = new CommandJoystick(OIConstants.kDriverControllerPort);
 
+  SendableChooser<Command> autonChooser = new SendableChooser<Command>();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+
+    autons();
 
     // Configure default commands
     SmartDashboard.putBoolean("Field Relative", true);
@@ -78,12 +84,40 @@ public class RobotContainer implements Logged {
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
   }
 
+  public void autons() {
+    autonChooser.setDefaultOption("Nothing", m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, () -> true, true));
+
+    autonChooser.addOption("S Path", generateAutonomousCommand(
+      // Start at the origin facing the +X direction
+      new Pose2d(0, 0, new Rotation2d(0)),
+      // Pass through these two interior waypoints, making an 's' curve path
+      List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+      // End 3 meters straight ahead of where we started, facing forward
+      new Pose2d(3, 0, new Rotation2d(Math.PI))
+    ));
+
+    autonChooser.addOption("Forward 2 Meters", generateAutonomousCommand(
+      new Pose2d(0, 0, new Rotation2d(0)),
+      List.of(),
+      new Pose2d(2, 0, new Rotation2d(0))
+    ));
+
+    SmartDashboard.putData(autonChooser);
+  }
+
+  public Command getAutonomousCommand() {
+    if (autonChooser.getSelected() == null) {
+      return m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, () -> true, true);
+    }
+    return autonChooser.getSelected();
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  public Command generateAutonomousCommand(Pose2d startPose, List<Translation2d> waypoints, Pose2d endPose) {
     // Create config for trajectory
     TrajectoryConfig config =
         new TrajectoryConfig(
@@ -93,15 +127,8 @@ public class RobotContainer implements Logged {
             .setKinematics(DriveConstants.kDriveKinematics);
 
     // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(Math.PI)),
-            config);
+    Trajectory trajectory =
+        TrajectoryGenerator.generateTrajectory(startPose, waypoints, endPose, config);
 
     var thetaController =
         new ProfiledPIDController(
@@ -110,7 +137,7 @@ public class RobotContainer implements Logged {
 
     SwerveControllerCommand swerveControllerCommand =
         new SwerveControllerCommand(
-            exampleTrajectory,
+            trajectory,
             m_robotDrive::getPose, // Functional interface to feed supplier
             DriveConstants.kDriveKinematics,
 
@@ -121,8 +148,8 @@ public class RobotContainer implements Logged {
             m_robotDrive::setModuleStates,
             m_robotDrive);
 
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    // // Reset odometry to the starting pose of the trajectory.
+    // m_robotDrive.resetOdometry(trajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(m_robotDrive::stopCommand);
