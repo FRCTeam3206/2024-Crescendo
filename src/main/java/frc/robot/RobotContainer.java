@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -84,6 +85,10 @@ public class RobotContainer implements Logged {
     m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
+
+    SmartDashboard.putNumber("X to Reset", 0);
+    SmartDashboard.putNumber("Y to Reset", 0);
+    SmartDashboard.putData("Reset Pose", new InstantCommand(() -> {m_robotDrive.resetOdometry(new Pose2d(SmartDashboard.getNumber("X to Reset", 0), SmartDashboard.getNumber("Y to Reset", 0), m_robotDrive.getPose().getRotation()));}));
   }
 
   public void autons() {
@@ -123,6 +128,7 @@ public class RobotContainer implements Logged {
     Pose2d note = new Pose2d(2.3, 5.55, new Rotation2d(0));
     Pose2d amp = new Pose2d(1.9, 7.8, new Rotation2d(Math.PI));
     autonChooser.addOption("Score note in amp", new SequentialCommandGroup(
+      new InstantCommand(() -> {m_robotDrive.resetOdometry(start);}),
       generateAutonomousCommand(start, List.of(), note),
       // pickUpNote(),
       generateAutonomousCommand(note, List.of(), amp)
