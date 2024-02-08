@@ -121,6 +121,18 @@ public final class Constants {
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
 
+  public static final class ShootakeConstants {
+    public static final double kXboxDeadband = 0.05;
+    public static final int kTopCANID = 6;
+    public static final int kBottomCANID = 7;
+    public static final int kFingerPort = 0;
+
+    public static final double kIntakeSpeed = 0.5;
+
+    public static final double kShootakeFreeSpeed = 5400.0;
+    public static final double kShootakeLoadSpeedThreshold = 5250.0;
+  }
+
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
