@@ -104,6 +104,7 @@ public class RobotContainer implements Logged {
     // m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
     xbox.a().whileTrue(shootake.intakeCommand());
     xbox.b().onTrue(shootake.shootCommand());
+    xbox.y().whileTrue(arm.holdAngle(0));
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
 
