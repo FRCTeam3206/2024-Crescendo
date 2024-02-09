@@ -133,6 +133,10 @@ public final class Constants {
     public static final double kShootakeLoadSpeedThreshold = 5250.0;
   }
 
+  public static final class ArmConstants {
+    public static final int kArmCANId = 5;
+  }
+
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
