@@ -102,6 +102,8 @@ public class RobotContainer implements Logged {
    */
   private void configureButtonBindings() {
     // m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
+    xbox.povUp().whileTrue(arm.intakePosition());
+    xbox.povDown().whileTrue(arm.shootPosition());
     xbox.a().whileTrue(shootake.intakeCommand());
     xbox.b().onTrue(shootake.shootCommand());
     xbox.y().whileTrue(arm.holdAngle(0));

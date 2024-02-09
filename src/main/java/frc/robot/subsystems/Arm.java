@@ -45,5 +45,19 @@ public class Arm extends SubsystemBase implements Logged {
                 armFeedforward.calculate(angle, 0.0) + armPID.calculate(getAngle() - angle)));
   }
 
+  public Command intakePosition() {
+    return this.run(
+        () -> {
+          setVoltage(getAngle() < Math.PI / 2 ? 2.5 : 0.0);
+        });
+  }
+
+  public Command shootPosition() {
+    return this.run(
+        () -> {
+          setVoltage(getAngle() > Math.PI / 2 ? -2.5 : 0.0);
+        });
+  }
+
   public void periodic() {}
 }
