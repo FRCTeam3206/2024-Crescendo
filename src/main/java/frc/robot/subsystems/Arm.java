@@ -6,8 +6,10 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import monologue.Annotations.Log;
+import monologue.Logged;
 
-public class Arm extends SubsystemBase {
+public class Arm extends SubsystemBase implements Logged {
   private CANSparkMax armMotor = new CANSparkMax(ArmConstants.kArmCANId, MotorType.kBrushless);
 
   public Arm() {
@@ -19,8 +21,13 @@ public class Arm extends SubsystemBase {
     armMotor.setVoltage(voltage);
   }
 
-  public double getPosition() {
-    return armMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() * 2 * Math.PI;
+  @Log.NT
+  public double getAngle() {
+    double rawAngle = armMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition();
+    this.log("Raw Angle", rawAngle);
+    return (rawAngle - ArmConstants.kArmZeroOffset) * (2 * Math.PI) + (Math.PI / 2);
+    // return 2 * Math.PI * Math.abs(armMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() -
+    // 0.25);
   }
 
   public void periodic() {}

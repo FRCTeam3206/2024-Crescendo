@@ -135,6 +135,7 @@ public final class Constants {
 
   public static final class ArmConstants {
     public static final int kArmCANId = 5;
+    public static final double kArmZeroOffset = 0.265;
   }
 
   public static final class OIConstants {
