@@ -25,7 +25,7 @@ public class Shootake extends SubsystemBase implements Logged {
     bottomRoller.setSmartCurrentLimit(40);
   }
 
-  @Log.NT
+  @Log
   private double getAverageSpeed() {
     return -(topRoller.getEncoder().getVelocity() + bottomRoller.getEncoder().getVelocity()) / 2;
   }

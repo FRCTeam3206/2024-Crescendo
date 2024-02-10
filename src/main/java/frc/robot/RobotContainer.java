@@ -46,11 +46,10 @@ public class RobotContainer implements Logged {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final Shootake shootake = new Shootake();
   private final Arm arm = new Arm();
-  @Log.NT private final String currentBranch = BuildConstants.GIT_BRANCH;
+  @Log private final String currentBranch = BuildConstants.GIT_BRANCH;
 
   // The driver's controller
-  @Log.NT
-  CommandJoystick m_driverController = new CommandJoystick(OIConstants.kDriverControllerPort);
+  @Log CommandJoystick m_driverController = new CommandJoystick(OIConstants.kDriverControllerPort);
 
   CommandXboxController xbox = new CommandXboxController(1);
   SendableChooser<Command> autonChooser = new SendableChooser<Command>();

@@ -109,7 +109,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    *
    * @return The pose.
    */
-  @Log.NT
+  @Log
   public Pose2d getPose() {
     return (Robot.isReal()) ? m_odometry.getPoseMeters() : simOdometryPose;
   }
@@ -356,7 +356,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    *
    * @return the robot's heading in degrees, from -180 to 180
    */
-  @Log.NT
+  @Log
   public double getHeading() {
     return m_gyro.getRotation2d().getDegrees();
   }

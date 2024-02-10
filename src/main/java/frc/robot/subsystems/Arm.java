@@ -29,7 +29,7 @@ public class Arm extends SubsystemBase implements Logged {
     armMotor.setVoltage(voltage);
   }
 
-  @Log.NT
+  @Log
   public double getAngle() {
     double rawAngle = armMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition();
     this.log("Raw Angle", rawAngle);
