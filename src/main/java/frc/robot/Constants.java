@@ -127,8 +127,9 @@ public final class Constants {
     public static final int kBottomCANID = 7;
     public static final int kFingerPort = 0;
 
-    public static final double kIntakeSpeed = 0.5;
-
+    public static final double kIntakeSpeed = 0.75;
+    public static final double kSlowIntakeSpeed = 0.2;
+    public static final double kOutakeSpeed = -0.2;
     public static final double kShootakeFreeSpeed = 5400.0;
     public static final double kShootakeLoadSpeedThreshold = 5250.0;
   }

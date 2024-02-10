@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShootakeConstants;
 
 public class Shootake extends SubsystemBase {
   CANSparkMax topRoller = new CANSparkMax(kTopCANID, MotorType.kBrushless);
@@ -37,21 +37,35 @@ public class Shootake extends SubsystemBase {
   }
 
   public Command idleCommand() {
-    return new RunCommand(
+    return this.run(
         () -> {
           setSpeed(0.0);
           setRetained(true);
-        },
-        this);
+        });
   }
 
   public Command intakeCommand() {
-    return new RunCommand(
+    return this.run(
         () -> {
           setRetained(false);
           setSpeed(kIntakeSpeed);
-        },
-        this);
+        });
+  }
+
+  public Command slowIntakeCommand() {
+    return this.run(
+        () -> {
+          setRetained(false);
+          setSpeed(ShootakeConstants.kSlowIntakeSpeed);
+        });
+  }
+
+  public Command outakeCommand() {
+    return this.run(
+        () -> {
+          setRetained(false);
+          setSpeed(ShootakeConstants.kOutakeSpeed);
+        });
   }
 
   public Command shootCommand() {
