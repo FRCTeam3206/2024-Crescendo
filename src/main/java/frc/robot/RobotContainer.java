@@ -105,7 +105,7 @@ public class RobotContainer implements Logged {
     xbox.povUp().whileTrue(arm.intakePosition());
     xbox.povDown().whileTrue(arm.shootPosition());
     xbox.a().whileTrue(shootake.intakeCommand());
-    xbox.b().onTrue(shootake.shootCommand());
+    xbox.b().onTrue(shootake.shootCommand(() -> xbox.back().getAsBoolean()));
     xbox.y().whileTrue(arm.holdAngle(0));
     xbox.x().whileTrue(shootake.outakeCommand());
     xbox.start().whileTrue(shootake.slowIntakeCommand());

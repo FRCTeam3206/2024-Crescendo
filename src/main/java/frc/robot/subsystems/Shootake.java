@@ -11,17 +11,21 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShootakeConstants;
+import java.util.function.BooleanSupplier;
+import monologue.Annotations.Log;
+import monologue.Logged;
 
-public class Shootake extends SubsystemBase {
+public class Shootake extends SubsystemBase implements Logged {
   CANSparkMax topRoller = new CANSparkMax(kTopCANID, MotorType.kBrushless);
   CANSparkMax bottomRoller = new CANSparkMax(kBottomCANID, MotorType.kBrushless);
   Servo finger = new Servo(kFingerPort);
 
   public Shootake() {
-    topRoller.setSmartCurrentLimit(23);
-    bottomRoller.setSmartCurrentLimit(23);
+    topRoller.setSmartCurrentLimit(40);
+    bottomRoller.setSmartCurrentLimit(40);
   }
 
+  @Log.NT
   private double getAverageSpeed() {
     return -(topRoller.getEncoder().getVelocity() + bottomRoller.getEncoder().getVelocity()) / 2;
   }
@@ -68,7 +72,7 @@ public class Shootake extends SubsystemBase {
         });
   }
 
-  public Command shootCommand() {
+  public Command shootCommand(BooleanSupplier releaseOverride) {
     return new SequentialCommandGroup(
         new FunctionalCommand(
             () -> {},
@@ -77,7 +81,9 @@ public class Shootake extends SubsystemBase {
               setSpeed(-1.0);
             },
             (Boolean b) -> {},
-            () -> getAverageSpeed() > kShootakeFreeSpeed,
+            () ->
+                (getAverageSpeed() > kShootakeFreeSpeed || releaseOverride.getAsBoolean())
+                    || (getAverageSpeed() > kShootakeFreeSpeed && releaseOverride.getAsBoolean()),
             this),
         new FunctionalCommand(
             () -> {},
@@ -90,7 +96,5 @@ public class Shootake extends SubsystemBase {
             this));
   }
 
-  public void periodic() {
-    SmartDashboard.putNumber("Shootake speeds", getAverageSpeed());
-  }
+  public void periodic() {}
 }
