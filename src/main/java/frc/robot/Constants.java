@@ -145,6 +145,20 @@ public final class Constants {
 
     public static final int kArmCANId = 5;
     public static final double kArmZeroOffset = 0.265;
+
+        // These are fake gains; in actuality these must be determined individually for each robot
+        public static final double kPSpark = 2.0;
+        public static final double kSVolts = 1;
+        public static final double kGVolts = 1.6;
+        public static final double kVVoltSecondPerRad = 0.8;
+        public static final double kAVoltSecondSquaredPerRad = 0.08;
+    
+        public static final double kMaxVelocityRadPerSecond = .5;
+        public static final double kMaxAccelerationRadPerSecSquared = 1;
+    
+        // The offset of the arm from the horizontal in its neutral position,
+        // measured from the horizontal
+        public static final double kArmOffsetRads = 0;
   }
 
   public static final class OIConstants {
