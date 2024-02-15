@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.sensors.AprilTagVision;
 import frc.robot.Robot;
+import frc.robot.sensors.AprilTagVision;
 import frc.utils.SwerveUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -83,7 +83,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           },
           new Pose2d());
 
-  private final AprilTagVision poseCamera1 = new AprilTagVision("Camera1", VisionConstants.kDistToCamera1, m_poseEstimator);
+  private final AprilTagVision poseCamera1 =
+      new AprilTagVision("Camera1", VisionConstants.kDistToCamera1, m_poseEstimator);
 
   private Pose2d simOdometryPose = m_poseEstimator.getEstimatedPosition();
 

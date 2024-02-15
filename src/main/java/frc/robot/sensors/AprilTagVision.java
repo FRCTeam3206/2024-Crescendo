@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import frc.robot.Constants.VisionConstants;
-
 import java.io.IOException;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -28,9 +27,10 @@ public class AprilTagVision {
     camera = new PhotonCamera(cameraName);
     AprilTagFieldLayout fieldLayout;
     try {
-        fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-    } catch(IOException e) {
-        fieldLayout = VisionConstants.kAprilTagLayout;
+      fieldLayout =
+          AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+    } catch (IOException e) {
+      fieldLayout = VisionConstants.kAprilTagLayout;
     }
     photonEstimator =
         new PhotonPoseEstimator(
