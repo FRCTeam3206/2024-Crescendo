@@ -1,25 +1,23 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.IdleMode;
-
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ModuleConstants;
-import monologue.Logged;
-import monologue.Annotations.Log;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ModuleConstants;
+import monologue.Annotations.Log;
+import monologue.Logged;
 
 /** A robot arm subsystem that moves with a motion profile. */
-public class ArmSubsystem extends TrapezoidProfileSubsystem implements Logged{
+public class ArmSubsystem extends TrapezoidProfileSubsystem implements Logged {
 
   private CANSparkMax m_motor = new CANSparkMax(ArmConstants.kArmCANId, MotorType.kBrushless);
   private final SparkAbsoluteEncoder m_armEncoder;
@@ -38,7 +36,7 @@ public class ArmSubsystem extends TrapezoidProfileSubsystem implements Logged{
         new TrapezoidProfile.Constraints(
             ArmConstants.kMaxVelocityRadPerSecond, ArmConstants.kMaxAccelerationRadPerSecSquared),
         ArmConstants.kArmOffsetRads);
-    
+
     m_motor.setSmartCurrentLimit(45);
     m_motor.setIdleMode(IdleMode.kBrake);
 
@@ -63,7 +61,8 @@ public class ArmSubsystem extends TrapezoidProfileSubsystem implements Logged{
     double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
     // Add the feedforward to the PID output to get the motor output
 
-    m_armPIDController.setReference(setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
+    m_armPIDController.setReference(
+        setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
   }
 
   public Command setArmGoalCommand(double kArmOffsetRads) {
