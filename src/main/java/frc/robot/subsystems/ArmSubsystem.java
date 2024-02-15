@@ -39,17 +39,20 @@ public class ArmSubsystem extends TrapezoidProfileSubsystem implements Logged {
 
     m_motor.setSmartCurrentLimit(45);
     m_motor.setIdleMode(IdleMode.kBrake);
+    m_motor.setInverted(true);
 
     m_armEncoder = m_motor.getAbsoluteEncoder(Type.kDutyCycle);
     m_armEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
     m_armEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
-    m_armEncoder.setZeroOffset(ArmConstants.kArmOffsetRads);
+    m_armEncoder.setZeroOffset(ArmConstants.kArmZeroRads);
 
     m_armPIDController = m_motor.getPIDController();
     m_armPIDController.setFeedbackDevice(m_armEncoder);
     m_armPIDController.setP(ArmConstants.kPSpark);
     m_armPIDController.setI(0);
     m_armPIDController.setD(0);
+    m_armPIDController.setPositionPIDWrappingEnabled(true);
+    // m_armPIDController.setPositionPIDWrappingMaxInput();
   }
 
   @Override
@@ -57,9 +60,10 @@ public class ArmSubsystem extends TrapezoidProfileSubsystem implements Logged {
     // Calculate the feedforward from the sepoint
     this.log("setpoint.position", setpoint.position);
     this.log("setpoint.velocity", setpoint.velocity);
-
+  
     double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
     // Add the feedforward to the PID output to get the motor output
+    this.log("FeedForward", feedforward);
 
     m_armPIDController.setReference(
         setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
@@ -71,6 +75,7 @@ public class ArmSubsystem extends TrapezoidProfileSubsystem implements Logged {
 
   @Override
   public void periodic() {
+    super.periodic();
     armAngle = m_armEncoder.getPosition();
   }
 }
