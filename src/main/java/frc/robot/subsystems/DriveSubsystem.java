@@ -7,13 +7,13 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.sensors.AprilTagVision;
 import frc.robot.Robot;
 import frc.utils.SwerveUtils;
 import java.util.function.BooleanSupplier;
@@ -69,18 +71,21 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry =
-      new SwerveDriveOdometry(
+  SwerveDrivePoseEstimator m_poseEstimator =
+      new SwerveDrivePoseEstimator(
           DriveConstants.kDriveKinematics,
           m_gyro.getRotation2d(),
           new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-          });
+            m_rearRight.getPosition(),
+          },
+          new Pose2d());
 
-  private Pose2d simOdometryPose = m_odometry.getPoseMeters();
+  private final AprilTagVision poseCamera1 = new AprilTagVision("Camera1", VisionConstants.kDistToCamera1, m_poseEstimator);
+
+  private Pose2d simOdometryPose = m_poseEstimator.getEstimatedPosition();
 
   SwerveModuleState[] m_desiredStates =
       new SwerveModuleState[] {
@@ -111,7 +116,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    */
   @Log
   public Pose2d getPose() {
-    return (Robot.isReal()) ? m_odometry.getPoseMeters() : simOdometryPose;
+    return (Robot.isReal()) ? m_poseEstimator.getEstimatedPosition() : simOdometryPose;
   }
 
   /**
@@ -120,7 +125,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    * https://github.com/FRC2713/Robot2022-v2/blob/main/src/main/java/frc/robot/subsystems/SwerveIO/BabySwerver.java#L126-151
    */
   private void updateOdometry() {
-    m_odometry.update(
+    m_poseEstimator.update(
         m_gyro.getRotation2d(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
@@ -128,6 +133,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
         });
+
+    poseCamera1.addVisionMeasurementToEstimator();
 
     SwerveModuleState[] measuredStates =
         new SwerveModuleState[] {
@@ -158,7 +165,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(
+    m_poseEstimator.resetPosition(
         m_gyro.getRotation2d(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),

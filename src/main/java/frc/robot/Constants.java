@@ -5,10 +5,22 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkBase.IdleMode;
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -186,5 +198,73 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+
+  public static final class VisionConstants {
+    // TODO Figure out how much to trust state pose estimate versus vision pose estimate (higher
+    // number = trust less)
+    public static final Matrix<N3, N1> kStateStandardDeviations = VecBuilder.fill(0.5, 0.5, 0.5);
+    public static final Matrix<N3, N1> kVisionStandardDeviations = VecBuilder.fill(0.5, 0.5, 0.5);
+
+    // TODO Figure out how much to trust single versus multitag
+    public static final Matrix<N3, N1> kSingleTagStandardDeviations = VecBuilder.fill(4, 4, 8);
+    public static final Matrix<N3, N1> kMultiTagStandardDeviations = VecBuilder.fill(0.5, 0.5, 1);
+
+    // TODO Add information for camera 1
+    public static final String kCameraName1 = "";
+    public static final Transform3d kDistToCamera1 = new Transform3d();
+
+    // TODO Add information for camera 2
+    public static final String kCameraName2 = "";
+    public static final Transform3d kDistToCamera2 = new Transform3d();
+
+    public static AprilTagFieldLayout kAprilTagLayout;
+
+    {
+      try {
+        kAprilTagLayout =
+            AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      } catch (IOException e) {
+        kAprilTagLayout = new AprilTagFieldLayout(List.of(aprilTagsArray()), 16.541052, 8.211231);
+      }
+    }
+
+    private static final AprilTag[] aprilTagsArray() {
+      /**
+       * {@link
+       * https://firstfrc.blob.core.windows.net/frc2024/FieldAssets/2024LayoutMarkingDiagram.pdf}
+       * Angles in degrees, distances in inches
+       */
+      double[][] tagPositions = {
+        {593.68, 9.68, 53.38, 120},
+        {637.21, 34.79, 53.38, 120},
+        {652.73, 196.17, 57.13, 180},
+        {652.73, 218.42, 57.13, 180},
+        {578.77, 323.00, 53.38, 270},
+        {72.5, 323.00, 53.38, 270},
+        {-1.50, 218.42, 57.13, 0},
+        {-1.50, 196.17, 57.13, 0},
+        {14.02, 34.79, 53.38, 60},
+        {57.54, 9.68, 53.38, 60},
+        {468.69, 146.19, 52.00, 300},
+        {468.69, 177.10, 52.00, 60},
+        {441.74, 161.62, 52.00, 180},
+        {209.48, 161.62, 52.00, 0},
+        {182.73, 177.10, 52.00, 120},
+        {182.73, 146.19, 52.00, 240}
+      };
+      AprilTag[] aprilTagsToReturn = new AprilTag[16];
+      for (int i = 0; i < 16; i++) {
+        aprilTagsToReturn[i] =
+            new AprilTag(
+                i + 1,
+                new Pose3d(
+                    Units.inchesToMeters(tagPositions[i][0]),
+                    Units.inchesToMeters(tagPositions[i][1]),
+                    Units.inchesToMeters(tagPositions[i][2]),
+                    new Rotation3d(0, 0, Units.degreesToRadians(tagPositions[i][3]))));
+      }
+      return aprilTagsToReturn;
+    }
   }
 }
