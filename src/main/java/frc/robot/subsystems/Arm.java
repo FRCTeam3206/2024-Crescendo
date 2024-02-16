@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -48,15 +50,25 @@ public class Arm extends SubsystemBase implements Logged {
   public Command intakePosition() {
     return this.run(
         () -> {
-          setVoltage(getAngle() < Math.PI / 2 ? 2.5 : 0.0);
+          setVoltage(getAngle() < Math.PI *.65 ? 2.5 : 0.0);
         });
   }
 
   public Command shootPosition() {
     return this.run(
         () -> {
-          setVoltage(getAngle() > Math.PI / 2 ? -2.5 : 0.0);
+          setVoltage(getAngle() > Math.PI *.65 ? -2.5 : 0.0);
         });
+      }
+  public Command ampPosition(){
+    return this.run(()->{
+      armPID.setSetpoint(2.7);
+      double pid=armPID.calculate(getAngle());
+      double ff=Math.cos(getAngle())*ArmConstants.kG;
+      double voltage=pid+ff;
+      voltage=MathUtil.clamp(voltage,-2.5,2.5);
+      setVoltage(voltage);
+    });
   }
 
   public void periodic() {}

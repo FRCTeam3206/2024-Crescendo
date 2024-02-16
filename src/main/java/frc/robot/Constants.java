@@ -144,7 +144,7 @@ public final class Constants {
     public static final double kD = 0.0;
 
     public static final int kArmCANId = 5;
-    public static final double kArmZeroOffset = 0.265;
+    public static final double kArmZeroOffset = 0.275;
   }
 
   public static final class OIConstants {
