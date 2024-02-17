@@ -219,8 +219,13 @@ public final class Constants {
     public static final Matrix<N3, N1> kMultiTagStandardDeviations = VecBuilder.fill(0.5, 0.5, 1);
 
     // TODO Add information for camera 1
-    public static final String kCameraName1 = "";
-    public static final Transform3d kDistToCamera1 = new Transform3d();
+    public static final String kCameraName1 = "Camera1";
+    public static final Transform3d kDistToCamera1 =
+        new Transform3d(
+            Units.inchesToMeters(-5.0),
+            Units.inchesToMeters(-6.0),
+            Units.inchesToMeters(-17.0),
+            new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, Math.PI));
 
     // TODO Add information for camera 2
     public static final String kCameraName2 = "";
