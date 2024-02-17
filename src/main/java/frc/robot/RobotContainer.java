@@ -231,8 +231,4 @@ public class RobotContainer implements Logged {
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(m_robotDrive::stopCommand);
   }
-
-  public void resetGyro() {
-    m_robotDrive.zeroHeading();
-  }
 }

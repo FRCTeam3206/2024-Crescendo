@@ -56,9 +56,7 @@ public class Robot extends TimedRobot implements Logged {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {
-    m_robotContainer.resetGyro();
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
