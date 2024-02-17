@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -11,10 +10,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ArmPostition;
 import monologue.Annotations.Log;
 import monologue.Logged;
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ArmPostition;
+
 public class Arm extends SubsystemBase implements Logged {
   private CANSparkMax armMotor = new CANSparkMax(ArmConstants.kArmCANId, MotorType.kBrushless);
   private ArmFeedforward armFeedforward =
@@ -22,7 +21,8 @@ public class Arm extends SubsystemBase implements Logged {
   private PIDController armPID =
       new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
   private double angleGoal = Math.PI;
-  private ArmPostition position=ArmPostition.SHOOT;
+  private ArmPostition position = ArmPostition.SHOOT;
+
   public Arm() {
     armMotor.setSmartCurrentLimit(45);
   }
@@ -41,17 +41,17 @@ public class Arm extends SubsystemBase implements Logged {
     // 0.25);
   }
 
-
   public Command intakePosition() {
     return this.run(
         () -> {
           System.out.println("Intake");
-        double moveVoltage=getAngle() < Math.PI/2+ArmConstants.kArmZeroThreshold ? 2.5 : 0.0;
-        if(Math.abs(getAngle()-3.5)<.05){
-          setVoltage(0);
-        }else{
-          setVoltage(moveVoltage);
-        }
+          double moveVoltage =
+              getAngle() < Math.PI / 2 + ArmConstants.kArmZeroThreshold ? 2.5 : 0.0;
+          if (Math.abs(getAngle() - 3.5) < .05) {
+            setVoltage(0);
+          } else {
+            setVoltage(moveVoltage);
+          }
         });
   }
 
@@ -59,20 +59,23 @@ public class Arm extends SubsystemBase implements Logged {
     return this.run(
         () -> {
           System.out.println("Shoot");
-        double appliedVoltage=getAngle() > Math.PI/2-ArmConstants.kArmZeroThreshold ? -2.5 : 0.0;
-        setVoltage(appliedVoltage);
+          double appliedVoltage =
+              getAngle() > Math.PI / 2 - ArmConstants.kArmZeroThreshold ? -2.5 : 0.0;
+          setVoltage(appliedVoltage);
         });
-      }
-  public Command ampPosition(){
-    return this.run(()->{
-      System.out.println("Amp");
-        armPID.setSetpoint(2.0);
-        double pid=armPID.calculate(getAngle());
-        double ff=Math.cos(getAngle())*ArmConstants.kG;
-        double voltage=pid+ff;
-        voltage=MathUtil.clamp(voltage,-2.5,2.5);
-        setVoltage(voltage);
-    });
+  }
+
+  public Command ampPosition() {
+    return this.run(
+        () -> {
+          System.out.println("Amp");
+          armPID.setSetpoint(2.0);
+          double pid = armPID.calculate(getAngle());
+          double ff = Math.cos(getAngle()) * ArmConstants.kG;
+          double voltage = pid + ff;
+          voltage = MathUtil.clamp(voltage, -2.5, 2.5);
+          setVoltage(voltage);
+        });
   }
 
   public void periodic() {
@@ -97,11 +100,11 @@ public class Arm extends SubsystemBase implements Logged {
     //     System.out.println("Amp");
     //     armPID.setSetpoint(2.0);
     //     double pid=armPID.calculate(getAngle());
-        
+
     //     double voltage=pid+ff;
     //     voltage=MathUtil.clamp(voltage,-2.5,2.5);
     //     setVoltage(voltage);
-      
+
     // }
   }
 }

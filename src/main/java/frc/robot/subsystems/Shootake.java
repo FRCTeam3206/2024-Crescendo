@@ -71,15 +71,16 @@ public class Shootake extends SubsystemBase implements Logged {
           setSpeed(ShootakeConstants.kOutakeSpeed);
         });
   }
-  public Command ampCommand(){
+
+  public Command ampCommand() {
     return this.run(
-      ()->{
-        setRetained(false);
-        topRoller.set(0);
-        bottomRoller.set(ShootakeConstants.kOutakeSpeed);
-      }
-    );
+        () -> {
+          setRetained(false);
+          topRoller.set(0);
+          bottomRoller.set(ShootakeConstants.kOutakeSpeed);
+        });
   }
+
   public Command shootCommand(BooleanSupplier releaseOverride) {
     return new SequentialCommandGroup(
         new FunctionalCommand(

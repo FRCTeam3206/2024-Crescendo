@@ -146,11 +146,15 @@ public final class Constants {
     public static final int kArmCANId = 5;
     public static final double kArmZeroOffset = 0.275;
 
-    public static final double kArmZeroThreshold=Math.PI*.15;
+    public static final double kArmZeroThreshold = Math.PI * .15;
   }
-  public static enum ArmPostition{
-    SHOOT,AMP,INTAKE
+
+  public static enum ArmPostition {
+    SHOOT,
+    AMP,
+    INTAKE
   }
+
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
