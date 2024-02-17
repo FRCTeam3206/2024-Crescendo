@@ -100,6 +100,7 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    //m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349, 5.326,new Rotation2d(Math.PI))));
     // m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());

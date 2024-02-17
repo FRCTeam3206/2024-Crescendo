@@ -5,6 +5,12 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -17,11 +23,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Robot;
@@ -101,6 +109,34 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     SmartDashboard.putData("Field", m_field);
+
+    AutoBuilder.configureHolonomic(
+        this::getPose,
+        (Pose2d pose) -> {
+          resetOdometry(pose);
+        },
+        this::getRobotRelativeChassisSpeeds,
+        (ChassisSpeeds speeds) -> {
+          drive(
+              speeds.vxMetersPerSecond,
+              speeds.vyMetersPerSecond,
+              speeds.omegaRadiansPerSecond,
+              false,
+              true);
+        },
+        new HolonomicPathFollowerConfig(
+            PathPlannerConstants.translationPID,
+            PathPlannerConstants.rotationPID,
+            AutoConstants.kMaxModuleSpeedMetersPerSecond,
+            Math.sqrt(
+                    Math.pow(DriveConstants.kTrackWidth, 2)
+                        + Math.pow(DriveConstants.kWheelBase, 2))
+                / 2,
+            new ReplanningConfig()),
+        () -> {
+          return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+        },
+        this);
   }
 
   @Override
@@ -108,6 +144,12 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     // Update the odometry in the periodic block
     updateOdometry();
     m_field.setRobotPose(getPose());
+    double redDist=getPose().getTranslation().getDistance(new Pose2d(13.349, 5.326,new Rotation2d()).getTranslation());
+    double blueDist=getPose().getTranslation().getDistance(new Pose2d(3.110, 5.326,new Rotation2d()).getTranslation());
+    double dist=Math.min(redDist,blueDist);
+    SmartDashboard.putBoolean("Can Shoot", dist<.15);
+    SmartDashboard.putNumber("Blue Dist",blueDist);
+    SmartDashboard.putNumber("Red Dist",redDist);
   }
 
   /**
@@ -118,6 +160,16 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   @Log
   public Pose2d getPose() {
     return (Robot.isReal()) ? m_poseEstimator.getEstimatedPosition() : simOdometryPose;
+  }
+
+  public ChassisSpeeds getRobotRelativeChassisSpeeds() {
+    return DriveConstants.kDriveKinematics.toChassisSpeeds(
+        new SwerveModuleState[] {
+          m_frontLeft.getState(),
+          m_frontRight.getState(),
+          m_rearLeft.getState(),
+          m_rearRight.getState()
+        });
   }
 
   /**
@@ -395,5 +447,22 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
                 speeds.vxMetersPerSecond * timeDelta,
                 speeds.vyMetersPerSecond * timeDelta,
                 speeds.omegaRadiansPerSecond * timeDelta));
+  }
+
+  public Command pathCommandToPose(Pose2d goalPose) {
+    return AutoBuilder.pathfindToPose(
+        goalPose,
+        new PathConstraints(
+            AutoConstants.kMaxSpeedMetersPerSecond,
+            AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+            AutoConstants.kMaxAngularSpeedRadiansPerSecond,
+            AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared));
+  }
+
+public static final class PathPlannerConstants {
+    public static final PIDConstants translationPID =
+        new PIDConstants(1.0, 0.0, 0.0); // TODO Find value
+    public static final PIDConstants rotationPID =
+        new PIDConstants(1.0, 0.0, 0.0); // TODO Find value
   }
 }
