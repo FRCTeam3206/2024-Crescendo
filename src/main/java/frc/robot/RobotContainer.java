@@ -176,7 +176,12 @@ public class RobotContainer implements Logged {
             generateAutonomousCommand(note, List.of(), amp)
             // scoreToAmp()
             ));
-
+    autonChooser.addOption("1 Note", 
+      new SequentialCommandGroup(
+        new RunCommand(()->m_robotDrive.drive(.25, 0, 0, false, false), m_robotDrive).withTimeout(1),
+        shootake.shootCommand(()->false)
+      )
+    );
     SmartDashboard.putData(autonChooser);
   }
 
