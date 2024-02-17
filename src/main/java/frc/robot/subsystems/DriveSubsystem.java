@@ -176,7 +176,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           rawArcTanValue > 0
               ? yError > 0 ? rawArcTanValue : rawArcTanValue + Math.PI
               : yError > 0 ? rawArcTanValue + (2 * Math.PI) : rawArcTanValue + Math.PI;
-      // Make zero up instead of right (as gyro shown on Shuffleboard instead of as it would look on the unit circle)
+      // Make zero up instead of right (as gyro shown on Shuffleboard instead of as it would look on
+      // the unit circle)
       angleTowardGoal = (angleTowardGoal - (Math.PI / 2)) % (2 * Math.PI);
       // In degrees for displaying as gyro on Shuffleboard.
       angleTowardGoal *= (180 / Math.PI);
