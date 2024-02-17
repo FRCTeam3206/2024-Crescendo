@@ -21,8 +21,8 @@ public class Shootake extends SubsystemBase implements Logged {
   Servo finger = new Servo(kFingerPort);
 
   public Shootake() {
-    topRoller.setSmartCurrentLimit(40);
-    bottomRoller.setSmartCurrentLimit(40);
+    topRoller.setSmartCurrentLimit(23);
+    bottomRoller.setSmartCurrentLimit(23);
   }
 
   @Log
@@ -71,7 +71,15 @@ public class Shootake extends SubsystemBase implements Logged {
           setSpeed(ShootakeConstants.kOutakeSpeed);
         });
   }
-
+  public Command ampCommand(){
+    return this.run(
+      ()->{
+        setRetained(false);
+        topRoller.set(0);
+        bottomRoller.set(ShootakeConstants.kOutakeSpeed);
+      }
+    );
+  }
   public Command shootCommand(BooleanSupplier releaseOverride) {
     return new SequentialCommandGroup(
         new FunctionalCommand(
