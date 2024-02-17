@@ -136,15 +136,23 @@ public final class Constants {
 
   public static final class ArmConstants {
     public static final double kS = 0.0;
-    public static final double kG = 1.8;
+    public static final double kG = 1.55;
     public static final double kV = 0.0;
 
-    public static final double kP = 5.0;
+    public static final double kP = 1;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
     public static final int kArmCANId = 5;
-    public static final double kArmZeroOffset = 0.265;
+    public static final double kArmZeroOffset = 0.275;
+
+    public static final double kArmZeroThreshold = Math.PI * .15;
+  }
+
+  public static enum ArmPostition {
+    SHOOT,
+    AMP,
+    INTAKE
   }
 
   public static final class OIConstants {
