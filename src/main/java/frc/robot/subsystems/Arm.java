@@ -3,12 +3,14 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ArmPostition;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -19,6 +21,7 @@ public class Arm extends SubsystemBase implements Logged {
   private PIDController armPID =
       new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
   private double angleGoal = Math.PI;
+  private ArmPostition position = ArmPostition.SHOOT;
 
   public Arm() {
     armMotor.setSmartCurrentLimit(45);
@@ -38,24 +41,37 @@ public class Arm extends SubsystemBase implements Logged {
     // 0.25);
   }
 
-  public Command holdAngle(double angle) {
-    return this.run(
-        () ->
-            setVoltage(
-                armFeedforward.calculate(angle, 0.0) + armPID.calculate(getAngle() - angle)));
-  }
-
   public Command intakePosition() {
     return this.run(
         () -> {
-          setVoltage(getAngle() < Math.PI / 2 ? 2.5 : 0.0);
+          double moveVoltage =
+              getAngle() < Math.PI / 2 + ArmConstants.kArmZeroThreshold ? 2.5 : 0.0;
+          if (Math.abs(getAngle() - 3.5) < .05) {
+            setVoltage(0);
+          } else {
+            setVoltage(moveVoltage);
+          }
         });
   }
 
   public Command shootPosition() {
     return this.run(
         () -> {
-          setVoltage(getAngle() > Math.PI / 2 ? -2.5 : 0.0);
+          double appliedVoltage =
+              getAngle() > Math.PI / 2 - ArmConstants.kArmZeroThreshold ? -2.5 : 0.0;
+          setVoltage(appliedVoltage);
+        });
+  }
+
+  public Command ampPosition() {
+    return this.run(
+        () -> {
+          armPID.setSetpoint(2.0);
+          double pid = armPID.calculate(getAngle());
+          double ff = Math.cos(getAngle()) * ArmConstants.kG;
+          double voltage = pid + ff;
+          voltage = MathUtil.clamp(voltage, -2.5, 2.5);
+          setVoltage(voltage);
         });
   }
 

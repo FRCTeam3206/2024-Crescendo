@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -99,14 +100,18 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
+    // 5.326,new Rotation2d(Math.PI))));
     // m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
-    // xbox.povUp().whileTrue(arm.intakePosition());
-    // xbox.povDown().whileTrue(arm.shootPosition());
+    // xbox.povUp().onTrue(arm.intakePosition());
+    // xbox.povDown().onTrue(arm.shootPosition());
+    // xbox.povRight().onTrue(arm.ampPosition());
     // xbox.a().whileTrue(shootake.intakeCommand());
     // xbox.b().onTrue(shootake.shootCommand(() -> xbox.back().getAsBoolean()));
-    // xbox.y().whileTrue(arm.holdAngle(0));
+    // xbox.y().whileTrue(shootake.ampCommand());
     // xbox.x().whileTrue(shootake.outakeCommand());
     // xbox.start().whileTrue(shootake.slowIntakeCommand());
+
     xbox.a().onTrue(arm.setArmGoalCommand(0.5));
     xbox.b().onTrue(arm.setArmGoalCommand(0));
 
@@ -175,7 +180,12 @@ public class RobotContainer implements Logged {
             generateAutonomousCommand(note, List.of(), amp)
             // scoreToAmp()
             ));
-
+    autonChooser.addOption(
+        "1 Note",
+        new SequentialCommandGroup(
+            new RunCommand(() -> m_robotDrive.drive(.25, 0, 0, false, false), m_robotDrive)
+                .withTimeout(1),
+            shootake.shootCommand(() -> false)));
     SmartDashboard.putData(autonChooser);
   }
 
