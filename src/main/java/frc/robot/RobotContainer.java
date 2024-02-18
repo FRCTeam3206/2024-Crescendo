@@ -100,7 +100,8 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    //m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349, 5.326,new Rotation2d(Math.PI))));
+    // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
+    // 5.326,new Rotation2d(Math.PI))));
     // m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
@@ -176,12 +177,12 @@ public class RobotContainer implements Logged {
             generateAutonomousCommand(note, List.of(), amp)
             // scoreToAmp()
             ));
-    autonChooser.addOption("1 Note", 
-      new SequentialCommandGroup(
-        new RunCommand(()->m_robotDrive.drive(.25, 0, 0, false, false), m_robotDrive).withTimeout(1),
-        shootake.shootCommand(()->false)
-      )
-    );
+    autonChooser.addOption(
+        "1 Note",
+        new SequentialCommandGroup(
+            new RunCommand(() -> m_robotDrive.drive(.25, 0, 0, false, false), m_robotDrive)
+                .withTimeout(1),
+            shootake.shootCommand(() -> false)));
     SmartDashboard.putData(autonChooser);
   }
 

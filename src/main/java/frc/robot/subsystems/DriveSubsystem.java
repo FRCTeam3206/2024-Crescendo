@@ -10,7 +10,6 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -144,12 +143,18 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     // Update the odometry in the periodic block
     updateOdometry();
     m_field.setRobotPose(getPose());
-    double redDist=getPose().getTranslation().getDistance(new Pose2d(13.349, 5.326,new Rotation2d()).getTranslation());
-    double blueDist=getPose().getTranslation().getDistance(new Pose2d(3.110, 5.326,new Rotation2d()).getTranslation());
-    double dist=Math.min(redDist,blueDist);
-    SmartDashboard.putBoolean("Can Shoot", dist<.15);
-    SmartDashboard.putNumber("Blue Dist",blueDist);
-    SmartDashboard.putNumber("Red Dist",redDist);
+    double redDist =
+        getPose()
+            .getTranslation()
+            .getDistance(new Pose2d(13.349, 5.326, new Rotation2d()).getTranslation());
+    double blueDist =
+        getPose()
+            .getTranslation()
+            .getDistance(new Pose2d(3.110, 5.326, new Rotation2d()).getTranslation());
+    double dist = Math.min(redDist, blueDist);
+    SmartDashboard.putBoolean("Can Shoot", dist < .15);
+    SmartDashboard.putNumber("Blue Dist", blueDist);
+    SmartDashboard.putNumber("Red Dist", redDist);
   }
 
   /**
@@ -459,7 +464,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
             AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared));
   }
 
-public static final class PathPlannerConstants {
+  public static final class PathPlannerConstants {
     public static final PIDConstants translationPID =
         new PIDConstants(1.0, 0.0, 0.0); // TODO Find value
     public static final PIDConstants rotationPID =
