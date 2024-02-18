@@ -60,7 +60,7 @@ public class ArmSubsystem extends TrapezoidProfileSubsystem implements Logged {
     // Calculate the feedforward from the sepoint
     this.log("setpoint.position", setpoint.position);
     this.log("setpoint.velocity", setpoint.velocity);
-  
+
     double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
     // Add the feedforward to the PID output to get the motor output
     this.log("FeedForward", feedforward);

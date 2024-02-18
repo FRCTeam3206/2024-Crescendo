@@ -159,7 +159,7 @@ public final class Constants {
     public static final double kArmZeroOffset = 0.275;
 
     public static final double kArmZeroThreshold = Math.PI * .15;
-  
+
     // These are fake gains; in actuality these must be determined individually for each robot
     public static final double kPSpark = 0.5;
     public static final double kSVolts = 1;
