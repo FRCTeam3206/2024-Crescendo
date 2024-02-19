@@ -171,12 +171,12 @@ public final class Constants {
     public static final double kArmLength = Units.inchesToMeters(15.25);
     public static final double kArmMass = Units.lbsToKilograms(13.4);
 
-    public static final double kMaxVelocityRadPerSecond = 3;
-    public static final double kMaxAccelerationRadPerSecSquared = 1;
+    public static final double kMaxVelocityRadPerSecond = 6;
+    public static final double kMaxAccelerationRadPerSecSquared = 6;
 
     public static final double kArmZeroRads = 5.48;
-    public static final double kMinAngleRads = Units.degreesToRadians(-360);
-    public static final double kMaxAngleRads = Units.degreesToRadians(360);
+    public static final double kMinAngleRads = Units.degreesToRadians(-20);
+    public static final double kMaxAngleRads = Units.degreesToRadians(200);
 
     // Keys for values stored in Preferences
     public static final String kArmPositionKey = "ArmPosition";
