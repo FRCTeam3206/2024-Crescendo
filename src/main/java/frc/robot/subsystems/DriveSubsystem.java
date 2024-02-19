@@ -186,6 +186,19 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     // } catch (Exception e) {
     //   e.printStackTrace();
     // }
+    
+    // double redDist =
+    //     getPose()
+    //         .getTranslation()
+    //         .getDistance(new Pose2d(13.349, 5.326, new Rotation2d()).getTranslation());
+    // double blueDist =
+    //     getPose()
+    //         .getTranslation()
+    //         .getDistance(new Pose2d(3.110, 5.326, new Rotation2d()).getTranslation());
+    // double dist = Math.min(redDist, blueDist);
+    // SmartDashboard.putBoolean("Can Shoot", dist < .15);
+    // SmartDashboard.putNumber("Blue Dist", blueDist);
+    // SmartDashboard.putNumber("Red Dist", redDist);
   }
 
   /**
