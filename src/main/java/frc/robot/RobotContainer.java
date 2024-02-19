@@ -78,6 +78,8 @@ public class RobotContainer implements Logged {
             },
             true));
     shootake.setDefaultCommand(shootake.idleCommand());
+
+    arm.setDefaultCommand(arm.run(arm::stop));
     //   arm.setDefaultCommand(
     //       new RunCommand(
     //           () -> {
@@ -112,10 +114,17 @@ public class RobotContainer implements Logged {
     // xbox.x().whileTrue(shootake.outakeCommand());
     // xbox.start().whileTrue(shootake.slowIntakeCommand());
 
-    xbox.a().onTrue(arm.setArmGoalCommand(0.5));
-    xbox.b().onTrue(arm.setArmGoalCommand(0));
+    // xbox.a().onTrue(arm.setArmGoalCommand(0.5));
+    // xbox.b().onTrue(arm.setArmGoalCommand(0));
+    m_driverController
+        .button(1)
+        .whileTrue(arm.runOnce(arm::reset).andThen(arm.moveToGoalCommand(Math.PI)));
+    m_driverController
+        .button(2)
+        .whileTrue(arm.runOnce(arm::reset).andThen(arm.moveToGoalCommand(0)));
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
+    // SmartDashboard.putData("Load Arm Preferencces", arm.loadPreferencesCommand());
 
     SmartDashboard.putNumber("X to Reset", 0);
     SmartDashboard.putNumber("Y to Reset", 0);

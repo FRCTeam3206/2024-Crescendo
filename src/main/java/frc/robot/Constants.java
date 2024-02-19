@@ -161,16 +161,26 @@ public final class Constants {
     public static final double kArmZeroThreshold = Math.PI * .15;
 
     // These are fake gains; in actuality these must be determined individually for each robot
-    public static final double kPSpark = 0.5;
-    public static final double kSVolts = 1;
-    public static final double kGVolts = 1.6;
+    public static final double kPSpark = 20;
+    public static final double kSVolts = 0;
+    public static final double kGVolts = 1.3;
     public static final double kVVoltSecondPerRad = 0.8;
     public static final double kAVoltSecondSquaredPerRad = 0.08;
 
-    public static final double kMaxVelocityRadPerSecond = .5;
+    public static final double kArmReduction = 41;
+    public static final double kArmLength = Units.inchesToMeters(15.25);
+    public static final double kArmMass = Units.lbsToKilograms(13.4);
+
+    public static final double kMaxVelocityRadPerSecond = 3;
     public static final double kMaxAccelerationRadPerSecSquared = 1;
 
     public static final double kArmZeroRads = 5.48;
+    public static final double kMinAngleRads = Units.degreesToRadians(-360);
+    public static final double kMaxAngleRads = Units.degreesToRadians(360);
+
+    // Keys for values stored in Preferences
+    public static final String kArmPositionKey = "ArmPosition";
+    public static final String kArmPKey = "ArmP";
 
     // The offset of the arm from the horizontal in its neutral position,
     // measured from the horizontal
