@@ -33,6 +33,7 @@ public class Robot extends TimedRobot implements Logged {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    AllianceUtil.setRobot(()->m_robotContainer.m_robotDrive.getPose());
     boolean fileOnly = false;
     boolean lazyLogging = false;
     Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
@@ -59,13 +60,13 @@ public class Robot extends TimedRobot implements Logged {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    m_robotContainer.setAlliance();
+    AllianceUtil.setAlliance();
   }
 
   @Override
   public void disabledPeriodic() {
     // Updates even if not UNKNOWN so that alliance can be changed while disabled for testing.
-    m_robotContainer.setAlliance();
+    AllianceUtil.setAlliance();
 
     // if (!hasBeenEnabled && m_robotContainer.getAlliance() == RobotContainer.AllianceColor.RED) {
     //   m_robotContainer.setAdjustmentForGyro(180.0);
@@ -79,8 +80,8 @@ public class Robot extends TimedRobot implements Logged {
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    if (m_robotContainer.getAlliance() == RobotContainer.AllianceColor.UNKNOWN) {
-      m_robotContainer.setAlliance();
+    if (AllianceUtil.getAlliance() == RobotContainer.AllianceColor.UNKNOWN) {
+      AllianceUtil.setAlliance();
     }
 
     /*
@@ -112,8 +113,8 @@ public class Robot extends TimedRobot implements Logged {
       m_autonomousCommand.cancel();
     }
 
-    if (m_robotContainer.getAlliance() == RobotContainer.AllianceColor.UNKNOWN) {
-      m_robotContainer.setAlliance();
+    if (AllianceUtil.getAlliance() == RobotContainer.AllianceColor.UNKNOWN) {
+      AllianceUtil.setAlliance();
     }
   }
 

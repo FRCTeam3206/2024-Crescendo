@@ -21,6 +21,8 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.robot.RobotContainer.AllianceColor;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -246,7 +248,7 @@ public final class Constants {
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
     // public static final Pose2d kRedShootPose =
     //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());
-
+    
   }
 
   public static final class VisionConstants {
