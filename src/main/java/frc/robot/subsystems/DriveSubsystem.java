@@ -34,7 +34,6 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.Robot;
 import frc.robot.sensors.AprilTagVision;
 import frc.utils.SwerveUtils;
-import java.io.IOException;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import monologue.Annotations.Log;
@@ -144,48 +143,49 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     // Update the odometry in the periodic block
     updateOdometry();
     m_field.setRobotPose(getPose());
-    Pose2d redGoal = new Pose2d(13.349, 5.326, new Rotation2d());
-    Pose2d blueGoal = new Pose2d(3.110, 5.326, new Rotation2d());
-    double redDist = getPose().getTranslation().getDistance(redGoal.getTranslation());
-    double blueDist = getPose().getTranslation().getDistance(blueGoal.getTranslation());
-    double dist = Math.min(redDist, blueDist);
-    SmartDashboard.putBoolean("Can Shoot", dist < .15);
-    SmartDashboard.putNumber("Blue Dist", blueDist);
-    SmartDashboard.putNumber("Red Dist", redDist);
 
-    try {
-      double driverDirection = 0;
-      double angleTowardGoal;
-      double xError;
-      double yError;
-      // double driverRelativeOffset;
-      if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-        xError = blueGoal.getX() - getPose().getX();
-        yError = getPose().getY() - blueGoal.getY();
-        // Math.atan((blueGoal.getX()) / 1.0)
-        // driverRelativeOffset
-      } else if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-        xError = getPose().getX() - redGoal.getX();
-        yError = redGoal.getY() - getPose().getY();
-      } else {
-        throw new IOException("Alliance is neither red nor blue.");
-      }
+    // Pose2d redGoal = new Pose2d(13.349, 5.326, new Rotation2d());
+    // Pose2d blueGoal = new Pose2d(3.110, 5.326, new Rotation2d());
+    // double redDist = getPose().getTranslation().getDistance(redGoal.getTranslation());
+    // double blueDist = getPose().getTranslation().getDistance(blueGoal.getTranslation());
+    // double dist = Math.min(redDist, blueDist);
+    // SmartDashboard.putBoolean("Can Shoot", dist < .15);
+    // SmartDashboard.putNumber("Blue Dist", blueDist);
+    // SmartDashboard.putNumber("Red Dist", redDist);
 
-      double rawArcTanValue = Math.atan(xError / yError);
-      angleTowardGoal =
-          rawArcTanValue > 0
-              ? yError > 0 ? rawArcTanValue : rawArcTanValue + Math.PI
-              : yError > 0 ? rawArcTanValue + (2 * Math.PI) : rawArcTanValue + Math.PI;
-      // Make zero up instead of right (as gyro shown on Shuffleboard instead of as it would look on
-      // the unit circle)
-      angleTowardGoal = (angleTowardGoal - (Math.PI / 2)) % (2 * Math.PI);
-      // In degrees for displaying as gyro on Shuffleboard.
-      angleTowardGoal *= (180 / Math.PI);
-      driverDirection = angleTowardGoal;
-      SmartDashboard.putNumber("Direction To Shoot Pose", driverDirection);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    // try {
+    //   double driverDirection = 0;
+    //   double angleTowardGoal;
+    //   double xError;
+    //   double yError;
+    //   // double driverRelativeOffset;
+    //   if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+    //     xError = blueGoal.getX() - getPose().getX();
+    //     yError = getPose().getY() - blueGoal.getY();
+    //     // Math.atan((blueGoal.getX()) / 1.0)
+    //     // driverRelativeOffset
+    //   } else if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+    //     xError = getPose().getX() - redGoal.getX();
+    //     yError = redGoal.getY() - getPose().getY();
+    //   } else {
+    //     throw new IOException("Alliance is neither red nor blue.");
+    //   }
+
+    //   double rawArcTanValue = Math.atan(xError / yError);
+    //   angleTowardGoal =
+    //       rawArcTanValue > 0
+    //           ? yError > 0 ? rawArcTanValue : rawArcTanValue + Math.PI
+    //           : yError > 0 ? rawArcTanValue + (2 * Math.PI) : rawArcTanValue + Math.PI;
+    //   // Make zero up instead of right (as gyro shown on Shuffleboard instead of as it would look on
+    //   // the unit circle)
+    //   angleTowardGoal = (angleTowardGoal - (Math.PI / 2)) % (2 * Math.PI);
+    //   // In degrees for displaying as gyro on Shuffleboard.
+    //   angleTowardGoal *= (180 / Math.PI);
+    //   driverDirection = angleTowardGoal;
+    //   SmartDashboard.putNumber("Direction To Shoot Pose", driverDirection);
+    // } catch (Exception e) {
+    //   e.printStackTrace();
+    // }
   }
 
   /**
