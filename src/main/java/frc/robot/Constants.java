@@ -10,7 +10,9 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -209,6 +211,42 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+
+  // Make it not go if it's too far away.
+  // Also for rotation!
+  // Make it rotate.
+  public static final class AutoAlignConstants { // Also for driving to pose in general.
+    public static final double kFieldLength = Units.inchesToMeters(2.0 * (76.1 + 250.50));
+
+    private static final Pose2d mapBluePoseToRed(Pose2d bluePose) {
+      double rot = bluePose.getRotation().getRadians();
+      return new Pose2d(kFieldLength - bluePose.getX(), bluePose.getY(), new Rotation2d(rot > Math.PI ? (3 * Math.PI) - rot : Math.PI - rot));
+    }
+
+    public static final double kAtGoalTolerance = 0.10; // Meters
+    public static final double kAtRotationGoalTolerance = 0.05; // Radians
+    public static final double kPathFollowingP = 1.0;
+    public static final double kShootDistFromSpeaker = 3.11;
+    public static final double kMaxAngleSpeakerShootOffset = Math.PI / 4;
+    public static final double kMaxDistStillGo =
+        4.0; // The maximum distance from goal for which the robot should still drive.
+
+    public static final Pose2d kBlueSpeakerPose =
+        new Pose2d(Units.inchesToMeters(-1.50), Units.inchesToMeters(218.42), new Rotation2d());
+    public static final Pose2d kRedSpeakerPose = mapBluePoseToRed(kBlueSpeakerPose);
+
+    public static final Pose2d kBlueShootPose =
+        new Pose2d(
+            kBlueSpeakerPose.getX() + kShootDistFromSpeaker,
+            kBlueSpeakerPose.getY(),
+            kBlueSpeakerPose.getRotation());
+    public static final Pose2d kRedShootPose = mapBluePoseToRed(kBlueShootPose);
+
+    // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
+    // public static final Pose2d kRedShootPose =
+    //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());
+
   }
 
   public static final class VisionConstants {

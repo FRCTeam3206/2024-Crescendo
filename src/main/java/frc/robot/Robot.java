@@ -22,6 +22,8 @@ public class Robot extends TimedRobot implements Logged {
 
   private RobotContainer m_robotContainer;
 
+  // private boolean hasBeenEnabled = false;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -56,15 +58,30 @@ public class Robot extends TimedRobot implements Logged {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.setAlliance();
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    // Updates even if not UNKNOWN so that alliance can be changed while disabled for testing.
+    m_robotContainer.setAlliance();
+
+    // if (!hasBeenEnabled && m_robotContainer.getAlliance() == RobotContainer.AllianceColor.RED) {
+    //   m_robotContainer.setAdjustmentForGyro(180.0);
+    // }
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    // hasBeenEnabled = true;
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    if (m_robotContainer.getAlliance() == RobotContainer.AllianceColor.UNKNOWN) {
+      m_robotContainer.setAlliance();
+    }
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -85,12 +102,18 @@ public class Robot extends TimedRobot implements Logged {
 
   @Override
   public void teleopInit() {
+    // hasBeenEnabled = true;
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+    }
+
+    if (m_robotContainer.getAlliance() == RobotContainer.AllianceColor.UNKNOWN) {
+      m_robotContainer.setAlliance();
     }
   }
 
