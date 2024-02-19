@@ -33,7 +33,7 @@ public class Robot extends TimedRobot implements Logged {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    AllianceUtil.setRobot(()->m_robotContainer.m_robotDrive.getPose());
+    AllianceUtil.setRobot(() -> m_robotContainer.m_robotDrive.getPose());
     boolean fileOnly = false;
     boolean lazyLogging = false;
     Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);

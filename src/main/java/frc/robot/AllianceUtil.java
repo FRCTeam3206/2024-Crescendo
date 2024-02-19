@@ -1,20 +1,21 @@
 package frc.robot;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.RobotContainer.AllianceColor;
-import monologue.Annotations.Log;
-import monologue.Logged;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-public class AllianceUtil{
-    private static AllianceColor alliance = AllianceColor.UNKNOWN;
-    private static Supplier<Pose2d> robotPose=()->new Pose2d();
-    public static void setRobot(Supplier<Pose2d> robotPose){
-      AllianceUtil.robotPose=robotPose;
-    }
-    public static void setAlliance() {
+import frc.robot.RobotContainer.AllianceColor;
+import java.util.function.Supplier;
+import monologue.Annotations.Log;
+
+public class AllianceUtil {
+  private static AllianceColor alliance = AllianceColor.UNKNOWN;
+  private static Supplier<Pose2d> robotPose = () -> new Pose2d();
+
+  public static void setRobot(Supplier<Pose2d> robotPose) {
+    AllianceUtil.robotPose = robotPose;
+  }
+
+  public static void setAlliance() {
     if (DriverStation.getAlliance().isEmpty()) {
       alliance = AllianceColor.UNKNOWN;
     } else if (DriverStation.getAlliance().get() == Alliance.Blue) {
@@ -30,6 +31,7 @@ public class AllianceUtil{
   public static AllianceColor getAlliance() {
     return alliance;
   }
+
   public static Pose2d getPoseForAlliance(Pose2d bluePose, Pose2d redPose) {
     if (alliance == AllianceColor.BLUE) {
       return bluePose;

@@ -21,8 +21,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.robot.RobotContainer.AllianceColor;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -223,7 +221,10 @@ public final class Constants {
 
     private static final Pose2d mapBluePoseToRed(Pose2d bluePose) {
       double rot = bluePose.getRotation().getRadians();
-      return new Pose2d(kFieldLength - bluePose.getX(), bluePose.getY(), new Rotation2d(rot > Math.PI ? (3 * Math.PI) - rot : Math.PI - rot));
+      return new Pose2d(
+          kFieldLength - bluePose.getX(),
+          bluePose.getY(),
+          new Rotation2d(rot > Math.PI ? (3 * Math.PI) - rot : Math.PI - rot));
     }
 
     public static final double kAtGoalTolerance = 0.10; // Meters
@@ -248,7 +249,7 @@ public final class Constants {
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
     // public static final Pose2d kRedShootPose =
     //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());
-    
+
   }
 
   public static final class VisionConstants {

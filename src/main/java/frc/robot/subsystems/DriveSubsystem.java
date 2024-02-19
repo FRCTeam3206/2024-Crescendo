@@ -27,13 +27,12 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.AllianceUtil;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.AllianceUtil;
 import frc.robot.Robot;
 import frc.robot.sensors.AprilTagVision;
 import frc.utils.SwerveUtils;
@@ -179,7 +178,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     //       rawArcTanValue > 0
     //           ? yError > 0 ? rawArcTanValue : rawArcTanValue + Math.PI
     //           : yError > 0 ? rawArcTanValue + (2 * Math.PI) : rawArcTanValue + Math.PI;
-    //   // Make zero up instead of right (as gyro shown on Shuffleboard instead of as it would look on
+    //   // Make zero up instead of right (as gyro shown on Shuffleboard instead of as it would look
+    // on
     //   // the unit circle)
     //   angleTowardGoal = (angleTowardGoal - (Math.PI / 2)) % (2 * Math.PI);
     //   // In degrees for displaying as gyro on Shuffleboard.
@@ -189,7 +189,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     // } catch (Exception e) {
     //   e.printStackTrace();
     // }
-    
+
     // double redDist =
     //     getPose()
     //         .getTranslation()
@@ -481,6 +481,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
+
   public double distBetweenPoses(Pose2d pose1, Pose2d pose2) {
     return Math.sqrt(
         Math.pow(pose1.getX() - pose2.getX(), 2) + Math.pow(pose1.getY() - pose2.getY(), 2));
@@ -587,36 +588,49 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command driveToSpeakerShootPoseCommand() {
-    return this.run(()->{
-      driveToGoal(
-              AllianceUtil.getPoseForAlliance(
-                  AutoAlignConstants.kBlueShootPose, AutoAlignConstants.kRedShootPose));
-    }).until(() ->
-            isAtGoal(
-                AllianceUtil.getPoseForAlliance(
-                    AutoAlignConstants.kBlueShootPose, AutoAlignConstants.kRedShootPose))).andThen(stopCommand());
+    return this.run(
+            () -> {
+              driveToGoal(
+                  AllianceUtil.getPoseForAlliance(
+                      AutoAlignConstants.kBlueShootPose, AutoAlignConstants.kRedShootPose));
+            })
+        .until(
+            () ->
+                isAtGoal(
+                    AllianceUtil.getPoseForAlliance(
+                        AutoAlignConstants.kBlueShootPose, AutoAlignConstants.kRedShootPose)))
+        .andThen(stopCommand());
   }
 
   public Command driveToShootInSpeakerCommand() {
-    return this.run(()->{driveToDistFromPoint(
-      AllianceUtil.getPoseForAlliance(
-          AutoAlignConstants.kBlueSpeakerPose, AutoAlignConstants.kRedSpeakerPose),
-      AutoAlignConstants.kShootDistFromSpeaker,
-      Math.PI, // So the back (with the shooter) is facing the speaker.
-      AutoAlignConstants.kMaxDistStillGo);
-  this.log("To Shoot is Running", true);}).until(()->isAtDistFromPoint(
-    AllianceUtil.getPoseForAlliance(
-        AutoAlignConstants.kBlueSpeakerPose, AutoAlignConstants.kRedSpeakerPose),
-    AutoAlignConstants.kShootDistFromSpeaker)
-&& getAngleFromGoal(
-        new Rotation2d(
-            getAngleToPoint(
-                    AllianceUtil.getPoseForAlliance(
-                        AutoAlignConstants.kBlueSpeakerPose,
-                        AutoAlignConstants.kRedSpeakerPose))
-                + Math.PI))
-    < AutoAlignConstants.kAtRotationGoalTolerance).andThen(stopCommand());
+    return this.run(
+            () -> {
+              driveToDistFromPoint(
+                  AllianceUtil.getPoseForAlliance(
+                      AutoAlignConstants.kBlueSpeakerPose, AutoAlignConstants.kRedSpeakerPose),
+                  AutoAlignConstants.kShootDistFromSpeaker,
+                  Math.PI, // So the back (with the shooter) is facing the speaker.
+                  AutoAlignConstants.kMaxDistStillGo);
+              this.log("To Shoot is Running", true);
+            })
+        .until(
+            () ->
+                isAtDistFromPoint(
+                        AllianceUtil.getPoseForAlliance(
+                            AutoAlignConstants.kBlueSpeakerPose,
+                            AutoAlignConstants.kRedSpeakerPose),
+                        AutoAlignConstants.kShootDistFromSpeaker)
+                    && getAngleFromGoal(
+                            new Rotation2d(
+                                getAngleToPoint(
+                                        AllianceUtil.getPoseForAlliance(
+                                            AutoAlignConstants.kBlueSpeakerPose,
+                                            AutoAlignConstants.kRedSpeakerPose))
+                                    + Math.PI))
+                        < AutoAlignConstants.kAtRotationGoalTolerance)
+        .andThen(stopCommand());
   }
+
   /** Update the gyro when simulating the robot. */
   @Override
   public void simulationPeriodic() {
