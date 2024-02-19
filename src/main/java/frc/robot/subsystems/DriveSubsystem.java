@@ -28,13 +28,13 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.AllianceUtil;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Robot;
 import frc.robot.sensors.AprilTagVision;
+import frc.utils.AllianceUtil;
 import frc.utils.SwerveUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -110,6 +110,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     SmartDashboard.putData("Field", m_field);
+
+    AllianceUtil.setRobot(this::getPose);
 
     AutoBuilder.configureHolonomic(
         this::getPose,
@@ -482,10 +484,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
-  public double distBetweenPoses(Pose2d pose1, Pose2d pose2) {
-    return Math.sqrt(
-        Math.pow(pose1.getX() - pose2.getX(), 2) + Math.pow(pose1.getY() - pose2.getY(), 2));
-  }
+  // public double distBetweenPoses(Pose2d pose1, Pose2d pose2) {
+  //   return Math.sqrt(
+  //       Math.pow(pose1.getX() - pose2.getX(), 2) + Math.pow(pose1.getY() - pose2.getY(), 2));
+  // }
 
   public double getAngleFromGoal(Rotation2d angleGoal) {
     double angle = getPose().getRotation().minus(angleGoal).getRadians();
@@ -497,14 +499,15 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public boolean isAtGoal(Pose2d goalPose) {
-    return distBetweenPoses(getPose(), goalPose) < AutoAlignConstants.kAtGoalTolerance
+    return getPose().getTranslation().getDistance(goalPose.getTranslation())
+            < AutoAlignConstants.kAtGoalTolerance
         && Math.abs(getAngleFromGoal(goalPose.getRotation()))
             < AutoAlignConstants.kAtRotationGoalTolerance;
   }
 
   public boolean isAtDistFromPoint(Pose2d refPoint, double goalDist) {
     Pose2d currentPose = getPose();
-    return Math.abs(distBetweenPoses(currentPose, refPoint) - goalDist)
+    return Math.abs(currentPose.getTranslation().getDistance(refPoint.getTranslation()) - goalDist)
         < AutoAlignConstants.kAtGoalTolerance;
   }
 
@@ -611,7 +614,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
                   AutoAlignConstants.kShootDistFromSpeaker,
                   Math.PI, // So the back (with the shooter) is facing the speaker.
                   AutoAlignConstants.kMaxDistStillGo);
-              this.log("To Shoot is Running", true);
             })
         .until(
             () ->
