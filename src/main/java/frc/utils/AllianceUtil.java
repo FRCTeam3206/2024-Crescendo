@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotContainer.AllianceColor;
 import java.util.function.Supplier;
-import monologue.Annotations.Log;
 
 public class AllianceUtil {
   private static AllianceColor alliance = AllianceColor.UNKNOWN;
@@ -27,7 +26,6 @@ public class AllianceUtil {
     }
   }
 
-  @Log
   public static AllianceColor getAlliance() {
     return alliance;
   }

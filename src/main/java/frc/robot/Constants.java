@@ -213,9 +213,6 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
-  // Make it not go if it's too far away.
-  // Also for rotation!
-  // Make it rotate.
   public static final class AutoAlignConstants { // Also for driving to pose in general.
     public static final double kFieldLength = Units.inchesToMeters(2.0 * (76.1 + 250.50));
 
@@ -227,13 +224,15 @@ public final class Constants {
           new Rotation2d(rot > Math.PI ? (3 * Math.PI) - rot : Math.PI - rot));
     }
 
-    public static final double kAtGoalTolerance = 0.10; // Meters
-    public static final double kAtRotationGoalTolerance = 0.05; // Radians
-    public static final double kPathFollowingP = 1.0;
-    public static final double kShootDistFromSpeaker = 3.11;
-    public static final double kMaxAngleSpeakerShootOffset = Math.PI / 4;
+    public static final double kAtGoalTolerance = 0.10; // Decide/tune/test
+    public static final double kAtRotationGoalTolerance = 0.05; // Decide/tune/test
+    public static final double kPathFollowingP = 1.0; // Tune?
+    public static final double kShootDistFromSpeaker = 3.11; // Tune value
+    public static final double kShootDistAmp = 0.5; // Find value
+    public static final double kMaxAngleSpeakerShootOffset = Math.PI / 4; // Not used yet
     public static final double kMaxDistStillGo =
-        4.0; // The maximum distance from goal for which the robot should still drive.
+        4.0; // Decide/tune/test
+        // The maximum distance from goal for which the robot should still drive.
 
     public static final Pose2d kBlueSpeakerPose =
         new Pose2d(Units.inchesToMeters(-1.50), Units.inchesToMeters(218.42), new Rotation2d());
@@ -245,6 +244,11 @@ public final class Constants {
             kBlueSpeakerPose.getY(),
             kBlueSpeakerPose.getRotation());
     public static final Pose2d kRedShootPose = mapBluePoseToRed(kBlueShootPose);
+
+    public static final Pose2d kBlueAmpPose = new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), new Rotation2d());
+    public static final Pose2d kRedAmpPose = mapBluePoseToRed(kBlueAmpPose);
+    public static final Pose2d kBlueAmpShootPose = new Pose2d(kBlueAmpPose.getX(), kBlueAmpPose.getY() - kShootDistAmp, new Rotation2d(Math.PI / 2));
+    public static final Pose2d kRedAmpShootPose = mapBluePoseToRed(kBlueAmpShootPose);
 
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
     // public static final Pose2d kRedShootPose =

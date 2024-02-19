@@ -108,6 +108,7 @@ public class RobotContainer implements Logged {
   private void configureButtonBindings() {
     m_driverController.button(1).whileTrue(m_robotDrive.driveToSpeakerShootPoseCommand());
     m_driverController.button(2).whileTrue(m_robotDrive.driveToShootInSpeakerCommand());
+    m_driverController.button(4).whileTrue(m_robotDrive.driveToAmpPoseCommand());
     // m_driverController.button(2).whileTrue(driveToSpeakerShootPoseCommand());
     // m_driverController.button(2).and(new Trigger(() -> alliance != AllianceColor.UNKNOWN)).and(()
     // -> distBetweenPoses(m_robotDrive.getPose(), )))

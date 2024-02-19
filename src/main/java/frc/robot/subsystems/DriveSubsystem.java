@@ -590,19 +590,27 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     drive(xVelocity, yVelocity, tVelocity, true, true);
   }
 
-  public Command driveToSpeakerShootPoseCommand() {
+  public Command driveToPoseCommand(Pose2d bluePose, Pose2d redPose) {
     return this.run(
             () -> {
               driveToGoal(
                   AllianceUtil.getPoseForAlliance(
-                      AutoAlignConstants.kBlueShootPose, AutoAlignConstants.kRedShootPose));
+                      bluePose, redPose));
             })
         .until(
             () ->
                 isAtGoal(
                     AllianceUtil.getPoseForAlliance(
-                        AutoAlignConstants.kBlueShootPose, AutoAlignConstants.kRedShootPose)))
+                        bluePose, redPose)))
         .andThen(stopCommand());
+  }
+
+  public Command driveToSpeakerShootPoseCommand() {
+    return driveToPoseCommand(AutoAlignConstants.kBlueShootPose, AutoAlignConstants.kRedShootPose);
+  }
+
+  public Command driveToAmpPoseCommand() {
+    return driveToPoseCommand(AutoAlignConstants.kBlueAmpShootPose, AutoAlignConstants.kRedAmpShootPose);
   }
 
   public Command driveToShootInSpeakerCommand() {
