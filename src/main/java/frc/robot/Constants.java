@@ -230,9 +230,8 @@ public final class Constants {
     public static final double kShootDistFromSpeaker = 3.11; // Tune value
     public static final double kShootDistAmp = 0.5; // Find value
     public static final double kMaxAngleSpeakerShootOffset = Math.PI / 4; // Not used yet
-    public static final double kMaxDistStillGo =
-        4.0; // Decide/tune/test
-        // The maximum distance from goal for which the robot should still drive.
+    public static final double kMaxDistStillGo = 4.0; // Decide/tune/test
+    // The maximum distance from goal for which the robot should still drive.
 
     public static final Pose2d kBlueSpeakerPose =
         new Pose2d(Units.inchesToMeters(-1.50), Units.inchesToMeters(218.42), new Rotation2d());
@@ -245,9 +244,12 @@ public final class Constants {
             kBlueSpeakerPose.getRotation());
     public static final Pose2d kRedShootPose = mapBluePoseToRed(kBlueShootPose);
 
-    public static final Pose2d kBlueAmpPose = new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), new Rotation2d());
+    public static final Pose2d kBlueAmpPose =
+        new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), new Rotation2d());
     public static final Pose2d kRedAmpPose = mapBluePoseToRed(kBlueAmpPose);
-    public static final Pose2d kBlueAmpShootPose = new Pose2d(kBlueAmpPose.getX(), kBlueAmpPose.getY() - kShootDistAmp, new Rotation2d(Math.PI / 2));
+    public static final Pose2d kBlueAmpShootPose =
+        new Pose2d(
+            kBlueAmpPose.getX(), kBlueAmpPose.getY() - kShootDistAmp, new Rotation2d(Math.PI / 2));
     public static final Pose2d kRedAmpShootPose = mapBluePoseToRed(kBlueAmpShootPose);
 
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
