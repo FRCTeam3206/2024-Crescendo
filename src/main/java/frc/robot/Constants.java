@@ -214,44 +214,55 @@ public final class Constants {
   }
 
   public static final class AutoAlignConstants { // Also for driving to pose in general.
-    public static final double kFieldLength = Units.inchesToMeters(2.0 * (76.1 + 250.50));
-
-    private static final Pose2d mapBluePoseToRed(Pose2d bluePose) {
-      double rot = bluePose.getRotation().getRadians();
-      return new Pose2d(
-          kFieldLength - bluePose.getX(),
-          bluePose.getY(),
-          new Rotation2d(rot > Math.PI ? (3 * Math.PI) - rot : Math.PI - rot));
-    }
-
     public static final double kAtGoalTolerance = 0.10; // Decide/tune/test
-    public static final double kAtRotationGoalTolerance = 0.05; // Decide/tune/test
+    public static final double kAtRotationGoalTolerance = 0.02; // Decide/tune/test
     public static final double kPathFollowingP = 1.0; // Tune?
+    public static final double kPathFollowingAngularP = 2.0 / Math.PI;
     public static final double kShootDistFromSpeaker = 3.11; // Tune value
     public static final double kShootDistAmp = 0.5; // Find value
-    public static final double kMaxAngleSpeakerShootOffset = Math.PI / 4; // Not used yet
-    public static final double kMaxDistStillGo = 4.0; // Decide/tune/test
+    public static final double kPickUpNoteDist = Units.inchesToMeters(8.0);
+    public static final double kMaxAngleSpeakerShootOffset = Math.PI / 8.0; // Not used yet
+    // public static final double kMaxDistStillGo = 4.0; // Decide/tune/test
     // The maximum distance from goal for which the robot should still drive.
 
     public static final Pose2d kBlueSpeakerPose =
         new Pose2d(Units.inchesToMeters(-1.50), Units.inchesToMeters(218.42), new Rotation2d());
-    public static final Pose2d kRedSpeakerPose = mapBluePoseToRed(kBlueSpeakerPose);
 
-    public static final Pose2d kBlueShootPose =
+    public static final Pose2d kBlueSpeakerShootPose =
         new Pose2d(
             kBlueSpeakerPose.getX() + kShootDistFromSpeaker,
             kBlueSpeakerPose.getY(),
             kBlueSpeakerPose.getRotation());
-    public static final Pose2d kRedShootPose = mapBluePoseToRed(kBlueShootPose);
+
+    public static final Pose2d kBlueMaxSpeakerShootPose =
+        new Pose2d(
+            kBlueSpeakerPose.getX() + kShootDistFromSpeaker * Math.cos(kMaxAngleSpeakerShootOffset),
+            kBlueSpeakerPose.getY() + kShootDistFromSpeaker * Math.sin(kMaxAngleSpeakerShootOffset),
+            new Rotation2d(kMaxAngleSpeakerShootOffset));
+
+    public static final Pose2d kBlueMinSpeakerShootPose =
+        new Pose2d(
+            kBlueMaxSpeakerShootPose.getX(),
+            kBlueSpeakerPose.getY()
+                + kShootDistFromSpeaker * Math.sin(2 * Math.PI - kMaxAngleSpeakerShootOffset),
+            new Rotation2d(2 * Math.PI - kMaxAngleSpeakerShootOffset));
 
     public static final Pose2d kBlueAmpPose =
         new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), new Rotation2d());
-    public static final Pose2d kRedAmpPose = mapBluePoseToRed(kBlueAmpPose);
     public static final Pose2d kBlueAmpShootPose =
         new Pose2d(
             kBlueAmpPose.getX(), kBlueAmpPose.getY() - kShootDistAmp, new Rotation2d(Math.PI / 2));
-    public static final Pose2d kRedAmpShootPose = mapBluePoseToRed(kBlueAmpShootPose);
 
+    public static final Pose2d kBlueBottomNotePose =
+        new Pose2d(Units.inchesToMeters(114.0), Units.inchesToMeters(161.638409), new Rotation2d());
+    public static final Pose2d kBlueCenterNotePose =
+        new Pose2d(
+            Units.inchesToMeters(114.0), Units.inchesToMeters(161.638409 + 57.0), new Rotation2d());
+    public static final Pose2d kBlueTopNotePose =
+        new Pose2d(
+            Units.inchesToMeters(114.0),
+            Units.inchesToMeters(161.638409 + 114.0),
+            new Rotation2d());
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
     // public static final Pose2d kRedShootPose =
     //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());

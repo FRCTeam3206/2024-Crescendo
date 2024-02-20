@@ -90,9 +90,7 @@ public class Shootake extends SubsystemBase implements Logged {
               setSpeed(-1.0);
             },
             (Boolean b) -> {},
-            () ->
-                (getAverageSpeed() > kShootakeFreeSpeed || releaseOverride.getAsBoolean())
-                    || (getAverageSpeed() > kShootakeFreeSpeed && releaseOverride.getAsBoolean()),
+            () -> getAverageSpeed() > kShootakeFreeSpeed || releaseOverride.getAsBoolean(),
             this),
         new FunctionalCommand(
             () -> {},
