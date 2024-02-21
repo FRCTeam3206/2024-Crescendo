@@ -43,6 +43,8 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
+import frc.robot.Constants.AllianceNoteLocation;
+import frc.robot.Constants.RelativeTo;
 
 public class DriveSubsystem extends SubsystemBase implements Logged {
   // Create MAXSwerveModules
@@ -107,28 +109,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
         m_rearLeft.getState(),
         m_rearRight.getState()
       };
-
-  public static enum RelativeTo {
-    ROBOT_RELATIVE,
-    DRIVER_RELATIVE,
-    FIELD_RELATIVE;
-  }
-
-  public static enum AllianceNoteLocation {
-    BOTTOM(AutoAlignConstants.kBlueBottomNotePose),
-    CENTER(AutoAlignConstants.kBlueCenterNotePose),
-    TOP(AutoAlignConstants.kBlueTopNotePose);
-
-    private Pose2d bluePose;
-
-    private AllianceNoteLocation(Pose2d bluePose) {
-      this.bluePose = bluePose;
-    }
-
-    public Pose2d getPose() {
-      return AllianceUtil.getPoseForAlliance(bluePose);
-    }
-  }
 
   private Field2d m_field = new Field2d();
 

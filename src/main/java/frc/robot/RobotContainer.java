@@ -28,7 +28,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.DriveSubsystem.RelativeTo;
+import frc.robot.Constants.RelativeTo;
 import frc.robot.subsystems.Shootake;
 import java.util.List;
 import monologue.Annotations.Log;

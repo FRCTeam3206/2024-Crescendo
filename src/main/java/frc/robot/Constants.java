@@ -21,6 +21,8 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.utils.AllianceUtil;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -167,6 +169,28 @@ public final class Constants {
     SHOOT,
     AMP,
     INTAKE
+  }
+
+  public static enum RelativeTo {
+    ROBOT_RELATIVE,
+    DRIVER_RELATIVE,
+    FIELD_RELATIVE;
+  }
+
+  public static enum AllianceNoteLocation {
+    BOTTOM(AutoAlignConstants.kBlueBottomNotePose),
+    CENTER(AutoAlignConstants.kBlueCenterNotePose),
+    TOP(AutoAlignConstants.kBlueTopNotePose);
+
+    private Pose2d bluePose;
+
+    private AllianceNoteLocation(Pose2d bluePose) {
+      this.bluePose = bluePose;
+    }
+
+    public Pose2d getPose() {
+      return AllianceUtil.getPoseForAlliance(bluePose);
+    }
   }
 
   public static final class OIConstants {
