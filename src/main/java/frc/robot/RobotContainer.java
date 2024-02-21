@@ -30,6 +30,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Shootake;
 import java.util.List;
 import monologue.Annotations.Log;
@@ -46,6 +47,7 @@ public class RobotContainer implements Logged {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final Shootake shootake = new Shootake();
   private final Arm arm = new Arm();
+  private final Climber climber = new Climber();
   @Log private final String currentBranch = BuildConstants.GIT_BRANCH;
 
   // The driver's controller
@@ -84,6 +86,7 @@ public class RobotContainer implements Logged {
               arm.setVoltage(MathUtil.applyDeadband(xbox.getLeftY() * 2, 0.00));
             },
             arm));
+    climber.setDefaultCommand(new RunCommand(() -> {climber.setSpeed(xbox.getRightY());}));
   }
 
   // new RunCommand(
