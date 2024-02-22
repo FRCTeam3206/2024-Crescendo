@@ -138,12 +138,14 @@ public final class Constants {
     public static final int kTopCANID = 6;
     public static final int kBottomCANID = 7;
     public static final int kFingerPort = 0;
+    public static final int kNoteSensorChannel = 0;
 
     public static final double kIntakeSpeed = 0.75;
     public static final double kSlowIntakeSpeed = 0.2;
     public static final double kOutakeSpeed = -0.2;
-    public static final double kShootakeFreeSpeed = 5400.0;
-    public static final double kShootakeLoadSpeedThreshold = 5250.0;
+    public static final double kAmpSpeed = -.3;
+    public static final double kShootakeFreeSpeed = 5100.0;
+    public static final double kShootakeLoadSpeedThreshold = 4750.0;
   }
 
   public static final class ArmConstants {
@@ -156,9 +158,16 @@ public final class Constants {
     public static final double kD = 0.0;
 
     public static final int kArmCANId = 5;
-    public static final double kArmZeroOffset = 0.275;
+    public static final double kArmZeroOffset = 0.441;
 
     public static final double kArmZeroThreshold = Math.PI * .15;
+
+    public static final double kArmAmpAngle = 2.1;
+  }
+
+  public static final class ClimberConstants {
+    public static final int kLeftClimberCANId = 8;
+    public static final int kRightClimberCANId = 9;
   }
 
   public static enum ArmPostition {
