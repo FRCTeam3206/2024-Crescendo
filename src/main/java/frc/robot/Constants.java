@@ -235,7 +235,7 @@ public final class Constants {
     public static final Transform3d kDistToCamera1 =
         new Transform3d(
           -0.155575,
-          -0.127287,
+          0.127287,
           -0.441758,
             new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, Math.PI));
 
@@ -244,7 +244,7 @@ public final class Constants {
     public static final Transform3d kDistToCamera2 =
       new Transform3d(
           -0.155575,
-          0.177495,
+          -0.177495,
           -0.441758,
             new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, 0.0)
     );
