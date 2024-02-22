@@ -4,7 +4,6 @@ import static frc.robot.Constants.ShootakeConstants.*;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,7 +39,7 @@ public class Shootake extends SubsystemBase implements Logged {
 
   public void setRetained(boolean retained) {
     SmartDashboard.putNumber("Servo Retainer", retained ? 1 : 0);
-    finger.set(retained ? 0:.6);
+    finger.set(retained ? 0 : .6);
   }
 
   public boolean hasNote() {
@@ -90,19 +89,24 @@ public class Shootake extends SubsystemBase implements Logged {
 
   public Command speakerShootCommand() {
     return new SequentialCommandGroup(
-      this.run(() -> {
-          setRetained(true);
-          setSpeed(-1.0);
-        }).until(() -> getAverageSpeed() > kShootakeFreeSpeed),
-      this.run(() -> {
-          setRetained(false);
-          setSpeed(-1.0);
-        }).until(() -> !hasNote()),
-      this.run(() -> {
-          setRetained(false);
-          setSpeed(-1.0);
-        }).withTimeout(1)
-    );
+        this.run(
+                () -> {
+                  setRetained(true);
+                  setSpeed(-1.0);
+                })
+            .until(() -> getAverageSpeed() > kShootakeFreeSpeed),
+        this.run(
+                () -> {
+                  setRetained(false);
+                  setSpeed(-1.0);
+                })
+            .until(() -> !hasNote()),
+        this.run(
+                () -> {
+                  setRetained(false);
+                  setSpeed(-1.0);
+                })
+            .withTimeout(1));
   }
 
   /**
