@@ -138,11 +138,12 @@ public final class Constants {
     public static final int kTopCANID = 6;
     public static final int kBottomCANID = 7;
     public static final int kFingerPort = 0;
+    public static final int kNoteSensorChannel = 0;
 
     public static final double kIntakeSpeed = 0.75;
     public static final double kSlowIntakeSpeed = 0.2;
     public static final double kOutakeSpeed = -0.2;
-    public static final double kShootakeFreeSpeed = 4800.0;
+    public static final double kShootakeFreeSpeed = 5100.0;
     public static final double kShootakeLoadSpeedThreshold = 4750.0;
   }
 

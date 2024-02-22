@@ -29,8 +29,8 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Shootake;
 import java.util.List;
 import monologue.Annotations.Log;
@@ -86,7 +86,12 @@ public class RobotContainer implements Logged {
               arm.setVoltage(MathUtil.applyDeadband(xbox.getLeftY() * 2, 0.00));
             },
             arm));
-    climber.setDefaultCommand(new RunCommand(() -> {climber.setSpeed(xbox.getRightY());}));
+    climber.setDefaultCommand(
+        new RunCommand(
+            () -> {
+              climber.setSpeed(xbox.getRightY());
+            },
+            climber));
   }
 
   // new RunCommand(
@@ -110,7 +115,7 @@ public class RobotContainer implements Logged {
     xbox.povDown().onTrue(arm.shootPosition());
     xbox.povRight().onTrue(arm.ampPosition());
     xbox.a().whileTrue(shootake.intakeCommand());
-    xbox.b().onTrue(shootake.shootCommand(() -> xbox.back().getAsBoolean()));
+    xbox.b().onTrue(shootake.speakerShootCommand());
     xbox.y().whileTrue(shootake.ampCommand());
     xbox.x().whileTrue(shootake.outakeCommand());
     xbox.start().whileTrue(shootake.slowIntakeCommand());
