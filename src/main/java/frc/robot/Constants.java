@@ -10,7 +10,9 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,6 +21,8 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.utils.AllianceUtil;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -176,6 +180,28 @@ public final class Constants {
     INTAKE
   }
 
+  public static enum RelativeTo {
+    ROBOT_RELATIVE,
+    DRIVER_RELATIVE,
+    FIELD_RELATIVE;
+  }
+
+  public static enum AllianceNoteLocation {
+    BOTTOM(AutoAlignConstants.kBlueBottomNotePose),
+    CENTER(AutoAlignConstants.kBlueCenterNotePose),
+    TOP(AutoAlignConstants.kBlueTopNotePose);
+
+    private Pose2d bluePose;
+
+    private AllianceNoteLocation(Pose2d bluePose) {
+      this.bluePose = bluePose;
+    }
+
+    public Pose2d getPose() {
+      return AllianceUtil.getPoseForAlliance(bluePose);
+    }
+  }
+
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
@@ -218,6 +244,62 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+
+  public static final class AutoAlignConstants { // Also for driving to pose in general.
+    public static final double kAtGoalTolerance = 0.10; // Decide/tune/test
+    public static final double kAtRotationGoalTolerance = 0.02; // Decide/tune/test
+    public static final double kPathFollowingP = 1.0; // Tune?
+    public static final double kPathFollowingAngularP = 2.0 / Math.PI;
+    public static final double kShootDistFromSpeaker = 3.11; // Tune value
+    public static final double kShootDistAmp = 0.5; // Find value
+    public static final double kPickUpNoteDist = Units.inchesToMeters(8.0);
+    public static final double kMaxAngleSpeakerShootOffset = Math.PI / 8.0; // Not used yet
+    // public static final double kMaxDistStillGo = 4.0; // Decide/tune/test
+    // The maximum distance from goal for which the robot should still drive.
+
+    public static final Pose2d kBlueSpeakerPose =
+        new Pose2d(Units.inchesToMeters(-1.50), Units.inchesToMeters(218.42), new Rotation2d());
+
+    public static final Pose2d kBlueSpeakerShootPose =
+        new Pose2d(
+            kBlueSpeakerPose.getX() + kShootDistFromSpeaker,
+            kBlueSpeakerPose.getY(),
+            kBlueSpeakerPose.getRotation());
+
+    public static final Pose2d kBlueMaxSpeakerShootPose =
+        new Pose2d(
+            kBlueSpeakerPose.getX() + kShootDistFromSpeaker * Math.cos(kMaxAngleSpeakerShootOffset),
+            kBlueSpeakerPose.getY() + kShootDistFromSpeaker * Math.sin(kMaxAngleSpeakerShootOffset),
+            new Rotation2d(kMaxAngleSpeakerShootOffset));
+
+    public static final Pose2d kBlueMinSpeakerShootPose =
+        new Pose2d(
+            kBlueMaxSpeakerShootPose.getX(),
+            kBlueSpeakerPose.getY()
+                + kShootDistFromSpeaker * Math.sin(2 * Math.PI - kMaxAngleSpeakerShootOffset),
+            new Rotation2d(2 * Math.PI - kMaxAngleSpeakerShootOffset));
+
+    public static final Pose2d kBlueAmpPose =
+        new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), new Rotation2d());
+    public static final Pose2d kBlueAmpShootPose =
+        new Pose2d(
+            kBlueAmpPose.getX(), kBlueAmpPose.getY() - kShootDistAmp, new Rotation2d(Math.PI / 2));
+
+    public static final Pose2d kBlueBottomNotePose =
+        new Pose2d(Units.inchesToMeters(114.0), Units.inchesToMeters(161.638409), new Rotation2d());
+    public static final Pose2d kBlueCenterNotePose =
+        new Pose2d(
+            Units.inchesToMeters(114.0), Units.inchesToMeters(161.638409 + 57.0), new Rotation2d());
+    public static final Pose2d kBlueTopNotePose =
+        new Pose2d(
+            Units.inchesToMeters(114.0),
+            Units.inchesToMeters(161.638409 + 114.0),
+            new Rotation2d());
+    // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
+    // public static final Pose2d kRedShootPose =
+    //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());
+
   }
 
   public static final class VisionConstants {
