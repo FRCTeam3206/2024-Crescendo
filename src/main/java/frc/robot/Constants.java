@@ -234,14 +234,20 @@ public final class Constants {
     public static final String kCameraName1 = "Camera1";
     public static final Transform3d kDistToCamera1 =
         new Transform3d(
-            Units.inchesToMeters(-5.0),
-            Units.inchesToMeters(-6.0),
-            Units.inchesToMeters(-17.0),
+          -0.155575,
+          -0.127287,
+          -0.441758,
             new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, Math.PI));
 
     // TODO Add information for camera 2
-    public static final String kCameraName2 = "";
-    public static final Transform3d kDistToCamera2 = new Transform3d();
+    public static final String kCameraName2 = "Camera2";
+    public static final Transform3d kDistToCamera2 =
+      new Transform3d(
+          -0.155575,
+          0.177495,
+          -0.441758,
+            new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, 0.0)
+    );
 
     public static AprilTagFieldLayout kAprilTagLayout;
 
