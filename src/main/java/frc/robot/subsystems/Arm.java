@@ -66,7 +66,7 @@ public class Arm extends SubsystemBase implements Logged {
   public Command ampPosition() {
     return this.run(
         () -> {
-          armPID.setSetpoint(2.0);
+          armPID.setSetpoint(ArmConstants.kArmAmpAngle);
           double pid = armPID.calculate(getAngle());
           double ff = Math.cos(getAngle()) * ArmConstants.kG;
           double voltage = pid + ff;

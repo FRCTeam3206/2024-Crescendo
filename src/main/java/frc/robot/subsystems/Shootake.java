@@ -83,8 +83,8 @@ public class Shootake extends SubsystemBase implements Logged {
     return this.run(
         () -> {
           setRetained(false);
-          topRoller.set(0);
-          bottomRoller.set(ShootakeConstants.kOutakeSpeed);
+          topRoller.set(-.1);
+          bottomRoller.set(ShootakeConstants.kAmpSpeed);
         });
   }
 

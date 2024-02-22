@@ -12,7 +12,10 @@ public class Climber extends SubsystemBase implements Logged {
   CANSparkMax rightClimber =
       new CANSparkMax(ClimberConstants.kRightClimberCANId, MotorType.kBrushless);
 
-  public Climber() {}
+  public Climber() {
+    leftClimber.setSmartCurrentLimit(30);
+    rightClimber.setSmartCurrentLimit(30);
+  }
 
   public void setSpeed(double speed) {
     leftClimber.set(speed);

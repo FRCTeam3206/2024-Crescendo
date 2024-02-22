@@ -143,6 +143,7 @@ public final class Constants {
     public static final double kIntakeSpeed = 0.75;
     public static final double kSlowIntakeSpeed = 0.2;
     public static final double kOutakeSpeed = -0.2;
+    public static final double kAmpSpeed = -.3;
     public static final double kShootakeFreeSpeed = 5100.0;
     public static final double kShootakeLoadSpeedThreshold = 4750.0;
   }
@@ -160,6 +161,8 @@ public final class Constants {
     public static final double kArmZeroOffset = 0.441;
 
     public static final double kArmZeroThreshold = Math.PI * .15;
+
+    public static final double kArmAmpAngle = 2.1;
   }
 
   public static final class ClimberConstants {
