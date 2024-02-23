@@ -509,6 +509,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     Pose2d currentPose = getPose();
     double deltaX = goalPose.getX() - currentPose.getX();
     double deltaY = goalPose.getY() - currentPose.getY();
+    this.log("Move Dx", deltaX);
+    this.log("Move Dy", deltaY);
     double deltaPose = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
     // if (deltaPose > AutoAlignConstants.kMaxDistStillGo) {
     //   drive(0, 0, 0, false, false);
@@ -521,8 +523,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
       xVelocity /= maxSpeed;
       yVelocity /= maxSpeed;
     }
-    double angularVelocity =
-        getAngleToGoal(goalPose.getRotation()) * AutoAlignConstants.kPathFollowingAngularP;
+    double deltaAngle = getAngleToGoal(goalPose.getRotation());
+    this.log("Move dTheta", deltaAngle);
+    double angularVelocity = 
+        deltaAngle * AutoAlignConstants.kPathFollowingAngularP;
     angularVelocity = MathUtil.clamp(angularVelocity, -1.0, 1.0);
     drive(xVelocity, yVelocity, angularVelocity, RelativeTo.FIELD_RELATIVE, true);
   }
@@ -550,6 +554,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
       deltaX *= -(goalDist - deltaPoseRef) / goalDist;
       deltaY *= -(goalDist - deltaPoseRef) / goalDist;
     }
+    this.log("Delta x (dist)", deltaX);
+    this.log("Delta y (dist)", deltaY);
     double xVelocity = AutoAlignConstants.kPathFollowingP * deltaX;
     double yVelocity = AutoAlignConstants.kPathFollowingP * deltaY;
     double maxSpeed = AutoAlignConstants.kPathFollowingP * Math.abs(deltaPoseRef - goalDist);
@@ -557,9 +563,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
       xVelocity /= maxSpeed;
       yVelocity /= maxSpeed;
     }
-
+    double deltaAngle = getAngleToPoint(refPoint);
+    this.log("Delta angle (dist)", deltaAngle);
     double angleGoal =
-        (getAngleToPoint(refPoint) + directionOffset)
+        (deltaAngle + directionOffset)
             % (2
                 * Math.PI); // (Math.atan2(deltaYRef, deltaXRef) + directionOffset) % (2 * Math.PI);
 
