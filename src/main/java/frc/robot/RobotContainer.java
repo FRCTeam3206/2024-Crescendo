@@ -90,7 +90,7 @@ public class RobotContainer implements Logged {
     climber.setDefaultCommand(
         new RunCommand(
             () -> {
-              climber.setSpeed(xbox.getRightY());
+              climber.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), 0.5));
             },
             climber));
   }
@@ -109,10 +109,10 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    m_driverController.button(9).whileTrue(m_robotDrive.pickUpNotePoseCommand(Constants.AllianceNoteLocation.CENTER));
-    m_driverController.button(5).whileTrue(m_robotDrive.driveToSpeakerShootPoseCommand());
-    m_driverController.button(6).whileTrue(m_robotDrive.driveToShootInSpeakerCommand());
-    m_driverController.button(7).whileTrue(m_robotDrive.autoDriveToSpeakerShoot());
+    // m_driverController.button(9).whileTrue(m_robotDrive.pickUpNotePoseCommand(Constants.AllianceNoteLocation.CENTER));
+    // m_driverController.button(5).whileTrue(m_robotDrive.driveToSpeakerShootPoseCommand());
+    // m_driverController.button(6).whileTrue(m_robotDrive.driveToShootInSpeakerCommand());
+    m_driverController.button(2).whileTrue(m_robotDrive.autoDriveToSpeakerShoot());
     m_driverController.button(8).whileTrue(m_robotDrive.driveToAmpPoseCommand());
     // m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
 
