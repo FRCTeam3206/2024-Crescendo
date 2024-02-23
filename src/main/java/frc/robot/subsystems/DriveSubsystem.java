@@ -30,9 +30,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AllianceNoteLocation;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.RelativeTo;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Robot;
 import frc.robot.sensors.AprilTagVision;
@@ -43,8 +45,6 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
-import frc.robot.Constants.AllianceNoteLocation;
-import frc.robot.Constants.RelativeTo;
 
 public class DriveSubsystem extends SubsystemBase implements Logged {
   // Create MAXSwerveModules
@@ -98,9 +98,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           new Pose2d());
 
   private final AprilTagVision poseCamera1 =
-      new AprilTagVision(VisionConstants.kCameraName1, VisionConstants.kDistToCamera1, m_poseEstimator);
+      new AprilTagVision(
+          VisionConstants.kCameraName1, VisionConstants.kDistToCamera1, m_poseEstimator);
   private final AprilTagVision poseCamera2 =
-      new AprilTagVision(VisionConstants.kCameraName2, VisionConstants.kDistToCamera2, m_poseEstimator);
+      new AprilTagVision(
+          VisionConstants.kCameraName2, VisionConstants.kDistToCamera2, m_poseEstimator);
 
   private Pose2d simOdometryPose = m_poseEstimator.getEstimatedPosition();
 
@@ -525,8 +527,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     }
     double deltaAngle = getAngleToGoal(goalPose.getRotation());
     this.log("Move dTheta", deltaAngle);
-    double angularVelocity = 
-        deltaAngle * AutoAlignConstants.kPathFollowingAngularP;
+    double angularVelocity = deltaAngle * AutoAlignConstants.kPathFollowingAngularP;
     angularVelocity = MathUtil.clamp(angularVelocity, -1.0, 1.0);
     drive(xVelocity, yVelocity, angularVelocity, RelativeTo.FIELD_RELATIVE, true);
   }

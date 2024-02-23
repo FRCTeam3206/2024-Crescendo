@@ -22,7 +22,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.utils.AllianceUtil;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -251,10 +250,11 @@ public final class Constants {
     public static final double kAtRotationGoalTolerance = 0.02; // Decide/tune/test
     public static final double kPathFollowingP = 0.6875; // Tune?
     public static final double kPathFollowingAngularP = 2.0 / Math.PI;
-    public static final double kShootDistFromSpeaker = 2.59; //3.11; // Tune value
+    public static final double kShootDistFromSpeaker = 2.59; // 3.11; // Tune value
     public static final double kShootDistAmp = 0.75; // Find value
     public static final double kPickUpNoteDist = Units.inchesToMeters(8.0);
-    public static final double kMaxAngleSpeakerShootOffset = .773; //Math.PI / 8.0; // Not used yet //.672
+    public static final double kMaxAngleSpeakerShootOffset =
+        .773; // Math.PI / 8.0; // Not used yet //.672
     // public static final double kMaxDistStillGo = 4.0; // Decide/tune/test
     // The maximum distance from goal for which the robot should still drive.
 
@@ -316,20 +316,16 @@ public final class Constants {
     public static final String kCameraName1 = "Camera1";
     public static final Transform3d kDistToCamera1 =
         new Transform3d(
-          -0.155575,
-          -0.127287,
-          -0.441758,
+            -0.155575,
+            -0.127287,
+            -0.441758,
             new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, Math.PI));
 
     // TODO Add information for camera 2
     public static final String kCameraName2 = "Camera2";
     public static final Transform3d kDistToCamera2 =
-      new Transform3d(
-          -0.155575,
-          0.177495,
-          -0.441758,
-            new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, 0.0)
-    );
+        new Transform3d(
+            -0.155575, 0.177495, -0.441758, new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, 0.0));
 
     public static AprilTagFieldLayout kAprilTagLayout;
 
