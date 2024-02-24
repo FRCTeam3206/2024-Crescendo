@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
 public class Lights extends SubsystemBase {
 
   private AddressableLED m_led;
@@ -36,7 +35,6 @@ public class Lights extends SubsystemBase {
     // Set the data
     m_led.setData(m_ledBuffer);
     m_led.start();
-
   }
 
   public void periodic() {
@@ -77,10 +75,7 @@ public class Lights extends SubsystemBase {
     showColor = 0;
   }
 
-  /**
-   * sets all LED's to the rgb color specified from the three aproprately named
-   * variables
-   */
+  /** sets all LED's to the rgb color specified from the three aproprately named variables */
   public void setLightColor(int ColorRed, int ColorGreen, int ColorBlue) {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
       m_ledBuffer.setRGB(i, ColorRed, ColorGreen, ColorBlue);
@@ -99,8 +94,8 @@ public class Lights extends SubsystemBase {
 
   /**
    * makes a fun rainbow pattern
-   * 
-   * Copied from the addressable LED library WPILib documentation
+   *
+   * <p>Copied from the addressable LED library WPILib documentation
    */
   private void rainbow(int m_rainbowFirstPixelHue) {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
@@ -110,12 +105,9 @@ public class Lights extends SubsystemBase {
       // Set the value
       m_ledBuffer.setHSV(i, hue, 255, 128);
     }
-
   }
 
-  /**
-   * Alternates colors for each led, then switches them every time it's called
-   */
+  /** Alternates colors for each led, then switches them every time it's called */
   private void ColorSwitch(int r1, int g1, int b1, int r2, int g2, int b2) {
 
     if (count3 == false) {
@@ -139,7 +131,5 @@ public class Lights extends SubsystemBase {
       }
       count3 = false;
     }
-
   }
-
 }
