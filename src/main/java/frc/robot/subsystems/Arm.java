@@ -41,6 +41,24 @@ public class Arm extends SubsystemBase implements Logged {
     // 0.25);
   }
 
+  public boolean atSpeakerAngle() {
+    return MathUtil.applyDeadband(
+            getAngle() - ArmConstants.kShootAngle, ArmConstants.kAtAngleTolerance)
+        == 0.0;
+  }
+
+  public boolean atAmpAngle() {
+    return MathUtil.applyDeadband(
+            getAngle() - ArmConstants.kArmAmpAngle, ArmConstants.kAtAngleTolerance)
+        == 0.0;
+  }
+
+  public boolean atIntakeAngle() {
+    return MathUtil.applyDeadband(
+            getAngle() - ArmConstants.kShootAngle, ArmConstants.kAtAngleTolerance)
+        == 0.0;
+  }
+
   public Command intakePosition() {
     return this.run(
         () -> {
@@ -73,6 +91,18 @@ public class Arm extends SubsystemBase implements Logged {
           voltage = MathUtil.clamp(voltage, -2.5, 2.5);
           setVoltage(voltage);
         });
+  }
+
+  public Command intakeCommandStop() {
+    return intakePosition().until(() -> atIntakeAngle());
+  }
+
+  public Command ampCommandStop() {
+    return ampPosition().until(() -> atAmpAngle());
+  }
+
+  public Command speakerCommandStop() {
+    return shootPosition().until(() -> atSpeakerAngle());
   }
 
   public void periodic() {}
