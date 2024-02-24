@@ -166,6 +166,10 @@ public final class Constants {
     public static final double kArmZeroThreshold = Math.PI * .15;
 
     public static final double kArmAmpAngle = 2.1;
+    public static final double kShootAngle = 0.069;
+    public static final double kIntakeAngle = 3.434;
+
+    public static final double kAtAngleTolerance = 0.05;
   }
 
   public static final class ClimberConstants {
