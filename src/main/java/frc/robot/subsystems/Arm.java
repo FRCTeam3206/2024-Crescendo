@@ -97,7 +97,7 @@ public class Arm extends SubsystemBase implements Logged {
   public Command subwooferPosition() {
     return this.run(
         () -> {
-          armPID.setSetpoint(ArmConstants.kArmAmpAngle);
+          armPID.setSetpoint(1.380);//TODO Constant
           double pid = armPID.calculate(getAngle());
           double ff = Math.cos(getAngle()) * ArmConstants.kG;
           double voltage = pid + ff;
