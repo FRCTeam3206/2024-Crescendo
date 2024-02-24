@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
+import frc.robot.subsystems.lights;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -108,6 +108,8 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    Trigger fallenandcantgetup = new Trigger(() -> {True});
+    fallenandcantgetup.whileTrue(new RunCommand(() -> {lights.setLightColor(155, 0, 0);}, lights));
     // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
     // m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
