@@ -246,13 +246,13 @@ public final class Constants {
   }
 
   public static final class AutoAlignConstants { // Also for driving to pose in general.
-    public static final double kAtGoalTolerance = 0.01; // Decide/tune/test
-    public static final double kAtRotationGoalTolerance = 0.02; // Decide/tune/test
+    public static final double kAtGoalTolerance = 0.02; // Decide/tune/test
+    public static final double kAtRotationGoalTolerance = 0.04; // Decide/tune/test
     public static final double kPathFollowingP = 0.6875; // Tune?
     public static final double kPathFollowingAngularP = 2.0 / Math.PI;
-    public static final double kShootDistFromSpeaker = 2.59; // 3.11; // Tune value
+    public static final double kShootDistFromSpeaker = 2.74; // 3.11; // Tune value
     public static final double kShootDistAmp = 0.75; // Find value
-    public static final double kPickUpNoteDist = Units.inchesToMeters(8.0);
+    public static final double kPickUpNoteDist = 0.9;
     public static final double kMaxAngleSpeakerShootOffset =
         .773; // Math.PI / 8.0; // Not used yet //.672
     // public static final double kMaxDistStillGo = 4.0; // Decide/tune/test
