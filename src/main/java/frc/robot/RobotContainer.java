@@ -100,7 +100,6 @@ public class RobotContainer implements Logged {
     lights.setDefaultCommand(
         new RunCommand(
             () -> {
-              System.out.println("Lights");
               if (shootake.hasNote()) {
                 lights.setLightColor(255, 150, 0);
               } else {
@@ -196,6 +195,16 @@ public class RobotContainer implements Logged {
         "2 Note (Top)",
         new SequentialCommandGroup(
             speakerShoot(), pickUpNoteCommand(AllianceNoteLocation.TOP), speakerShoot()));
+
+    autonChooser.addOption(
+        "3 Note (NO Bottom)",
+        new SequentialCommandGroup(
+          speakerShoot(),
+          pickUpNoteCommand(AllianceNoteLocation.CENTER),
+          speakerShoot(),
+          pickUpNoteCommand(AllianceNoteLocation.TOP),
+          speakerShoot()
+        ));
 
     // autonChooser.addOption(
     //     "S Path",

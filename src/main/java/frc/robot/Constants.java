@@ -254,7 +254,7 @@ public final class Constants {
     public static final double kAtRotationGoalTolerance = 0.04; // Decide/tune/test
     public static final double kPathFollowingP = 0.6875; // Tune?
     public static final double kPathFollowingAngularP = 2.0 / Math.PI;
-    public static final double kShootDistFromSpeaker = 2.74; // 3.11; // Tune value
+    public static final double kShootDistFromSpeaker = 3.00; // 3.11; // Tune value
     public static final double kShootDistAmp = 0.75; // Find value
     public static final double kPickUpNoteDist = 0.9;
     public static final double kMaxAngleSpeakerShootOffset =
@@ -320,13 +320,13 @@ public final class Constants {
     public static final String kCameraName1 = "Camera1"; // -0.127287;0.177495
     public static final Transform3d kDistToCamera1 =
         new Transform3d(
-            -0.155575, -0.152, -0.441758, new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, Math.PI));
+            0.155575, -0.152, -0.441758, new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, Math.PI));
 
     // TODO Add information for camera 2
     public static final String kCameraName2 = "Camera2";
     public static final Transform3d kDistToCamera2 =
         new Transform3d(
-            -0.155575, 0.152, -0.441758, new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, 0.0));
+            0.155575, 0.152, -0.441758, new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, 0.0));
 
     public static AprilTagFieldLayout kAprilTagLayout;
 
