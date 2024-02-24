@@ -349,6 +349,16 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     // m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  public void driveMetersPerSecond(
+      double xSpeed, double ySpeed, double rot, RelativeTo relativeTo, boolean rateLimit) {
+    drive(
+        xSpeed / DriveConstants.kMaxSpeedMetersPerSecond,
+        ySpeed / DriveConstants.kMaxSpeedMetersPerSecond,
+        rot,
+        relativeTo,
+        rateLimit);
+  }
+
   /**
    * Creates a command that will drive the robot with dynamic inputs for x, y, and angular speeds.
    *
@@ -592,6 +602,20 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    */
   public void driveToDistFromPoint(Pose2d refPoint, double goalDist, double directionOffset) {
     driveToDistFromPoint(refPoint.getTranslation(), goalDist, directionOffset);
+  }
+
+  /**
+ * @param waypoint The point it's trying to get to.
+ * @param maxSpeed The max speed (meters per second) while reaching this waypoint.
+ */
+  public void driveToWaypoint(Translation2d waypoint, double maxSpeed) {
+    Pose2d currentPose = getPose();
+    double deltaX = waypoint.getX() - currentPose.getX();
+    double deltaY = waypoint.getY() - currentPose.getY();
+    double deltaPose = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    double xVelocity = maxSpeed * (deltaX / deltaPose);
+    double yVelocity = maxSpeed * (deltaY / deltaPose);
+    driveMetersPerSecond(xVelocity, yVelocity, 0.0, RelativeTo.FIELD_RELATIVE, true);
   }
 
   public Command driveToPoseCommand(Pose2d bluePose) {
