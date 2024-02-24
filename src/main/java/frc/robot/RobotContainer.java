@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -146,14 +147,27 @@ public class RobotContainer implements Logged {
   // ConditionalCommand(getAutonomousCommand(), getAutonomousCommand(), () -> )));
   // }
 
-  public void autons() {
-    autonChooser.setDefaultOption(
-        "Nothing", m_robotDrive.stopCommand());
+  public Command pickUpNoteCommand() {
+    return new SequentialCommandGroup(
+        arm.intakeCommandStop(),
+        new ParallelCommandGroup(
+                m_robotDrive.driveCommand(
+                    () -> 0.25, () -> 0.0, () -> 0.0, () -> RelativeTo.ROBOT_RELATIVE, true),
+                arm.intakePosition(),
+                shootake.intakeCommand())
+            .until(() -> shootake.hasNote())
+            .withTimeout(2.0),
+        m_robotDrive.stopCommand(),
+        arm.speakerCommandStop().withTimeout(2.0));
+  }
 
-    autonChooser.addOption("Auto-Align 1 Note", new SequentialCommandGroup(
-        m_robotDrive.autoDriveToSpeakerShoot(),
-        shootake.speakerShootCommand()
-    ));
+  public void autons() {
+    autonChooser.setDefaultOption("Nothing", m_robotDrive.stopCommand());
+
+    autonChooser.addOption(
+        "Auto-Align 1 Note",
+        new SequentialCommandGroup(
+            m_robotDrive.autoDriveToSpeakerShoot(), shootake.speakerShootCommand()));
 
     // autonChooser.addOption(
     //     "S Path",
