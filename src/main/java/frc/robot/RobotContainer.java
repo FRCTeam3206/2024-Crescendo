@@ -147,8 +147,8 @@ public class RobotContainer implements Logged {
   // }
 
   public void autons() {
-    // autonChooser.setDefaultOption(
-    //     "Nothing", m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, () -> true, true));
+    autonChooser.setDefaultOption(
+        "Nothing", m_robotDrive.stopCommand());
 
     // autonChooser.addOption(
     //     "S Path",
