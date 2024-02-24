@@ -44,6 +44,7 @@ import monologue.Logged;
  */
 public class RobotContainer implements Logged {
   // The robot's subsystems
+  Lights lights = new Lights();
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final Shootake shootake = new Shootake();
   private final Arm arm = new Arm();
