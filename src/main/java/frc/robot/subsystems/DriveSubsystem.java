@@ -570,8 +570,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
         (deltaAngle + directionOffset)
             % (2
                 * Math.PI); // (Math.atan2(deltaYRef, deltaXRef) + directionOffset) % (2 * Math.PI);
-
-    double angularVelocity = getAngleToGoal(angleGoal) * AutoAlignConstants.kPathFollowingAngularP;
+    double deltaTheta = getAngleToGoal(angleGoal);
+    this.log("Delta theta (dist)", deltaTheta);
+    double angularVelocity = deltaTheta * AutoAlignConstants.kPathFollowingAngularP;
     angularVelocity = MathUtil.clamp(angularVelocity, -1.0, 1.0);
     drive(xVelocity, yVelocity, angularVelocity, RelativeTo.FIELD_RELATIVE, true);
   }
