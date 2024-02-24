@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.AllianceNoteLocation;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -161,13 +162,30 @@ public class RobotContainer implements Logged {
         arm.speakerCommandStop().withTimeout(2.0));
   }
 
+  public Command pickUpNoteCommand(AllianceNoteLocation noteLocation) {
+    return new SequentialCommandGroup(
+        m_robotDrive.pickUpNotePoseCommand(noteLocation), pickUpNoteCommand());
+  }
+
+  public Command speakerShoot() {
+    return new SequentialCommandGroup(
+        m_robotDrive.autoDriveToSpeakerShoot(), shootake.speakerShootCommand());
+  }
+
   public void autons() {
     autonChooser.setDefaultOption("Nothing", m_robotDrive.stopCommand());
 
+    autonChooser.addOption("Auto-Align 1 Note", speakerShoot());
+
     autonChooser.addOption(
-        "Auto-Align 1 Note",
+        "2 Note (Middle)",
         new SequentialCommandGroup(
-            m_robotDrive.autoDriveToSpeakerShoot(), shootake.speakerShootCommand()));
+            speakerShoot(), pickUpNoteCommand(AllianceNoteLocation.CENTER), speakerShoot()));
+
+    autonChooser.addOption(
+        "2 Note (Top)",
+        new SequentialCommandGroup(
+            speakerShoot(), pickUpNoteCommand(AllianceNoteLocation.TOP), speakerShoot()));
 
     // autonChooser.addOption(
     //     "S Path",
