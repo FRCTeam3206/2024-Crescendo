@@ -53,8 +53,6 @@ public class Arm extends SubsystemBase implements Logged {
         == 0.0;
   }
 
-
-
   public boolean atIntakeAngle() {
     return MathUtil.applyDeadband(
             getAngle() - ArmConstants.kShootAngle, ArmConstants.kAtAngleTolerance)
@@ -94,6 +92,7 @@ public class Arm extends SubsystemBase implements Logged {
           setVoltage(voltage);
         });
   }
+
   public Command subwooferPosition() {
     return this.run(
         () -> {

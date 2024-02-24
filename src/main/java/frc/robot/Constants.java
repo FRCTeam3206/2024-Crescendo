@@ -192,7 +192,7 @@ public final class Constants {
 
   public static enum AllianceNoteLocation {
     BOTTOM(AutoAlignConstants.kBlueBottomNotePose),
-    CENTER(AutoAlignConstants.kBlueCenterNotePose),
+    MIDDLE(AutoAlignConstants.kBlueMiddleNotePose),
     TOP(AutoAlignConstants.kBlueTopNotePose);
 
     private Pose2d bluePose;
@@ -203,6 +203,29 @@ public final class Constants {
 
     public Pose2d getPose() {
       return AllianceUtil.getPoseForAlliance(bluePose);
+    }
+  }
+
+  public static enum CenterNoteLocation {
+    TOP(AutoAlignConstants.kCenterNoteT),
+    TOP_MIDDLE(AutoAlignConstants.kCenterNoteTM),
+    MIDDLE(AutoAlignConstants.kCenterNoteM),
+    BOTTOM_MIDDLE(AutoAlignConstants.kCenterNoteBM),
+    BOTTOM(AutoAlignConstants.kCenterNoteB);
+
+    private Translation2d blueTranslation;
+
+    private CenterNoteLocation(Translation2d blueTranslation) {
+      this.blueTranslation = blueTranslation;
+    }
+
+    public Translation2d getTranslation() {
+      return blueTranslation;
+    }
+
+    public Translation2d getPickUpTranslation() {
+      return new Translation2d(
+          blueTranslation.getX(), blueTranslation.getY() - AutoAlignConstants.kPickUpNoteDist);
     }
   }
 
@@ -251,6 +274,9 @@ public final class Constants {
   }
 
   public static final class AutoAlignConstants { // Also for driving to pose in general.
+    public static final double kFieldLength = Units.inchesToMeters(2.0 * (76.1 + 250.50));
+    public static final double kFieldHeight = Units.inchesToMeters(323.00);
+
     public static final double kAtGoalTolerance = 0.02; // Decide/tune/test
     public static final double kAtRotationGoalTolerance = 0.04; // Decide/tune/test
     public static final double kPathFollowingP = 0.6875; // Tune?
@@ -293,7 +319,7 @@ public final class Constants {
 
     public static final Pose2d kBlueBottomNotePose =
         new Pose2d(Units.inchesToMeters(114.0), Units.inchesToMeters(161.638409), new Rotation2d());
-    public static final Pose2d kBlueCenterNotePose =
+    public static final Pose2d kBlueMiddleNotePose =
         new Pose2d(
             Units.inchesToMeters(114.0), Units.inchesToMeters(161.638409 + 57.0), new Rotation2d());
     public static final Pose2d kBlueTopNotePose =
@@ -301,6 +327,27 @@ public final class Constants {
             Units.inchesToMeters(114.0),
             Units.inchesToMeters(161.638409 + 114.0),
             new Rotation2d());
+
+    private static final double kCenterNoteX = kFieldLength / 2.0;
+
+    /**
+     * @param numFromTop Top is 0
+     */
+    private static final double getCenterNoteY(int numFromTop) {
+      return kFieldHeight - Units.inchesToMeters(29.64 + 66.0 * numFromTop);
+    }
+
+    public static final Translation2d kCenterNoteT =
+        new Translation2d(kCenterNoteX, getCenterNoteY(0));
+    public static final Translation2d kCenterNoteTM =
+        new Translation2d(kCenterNoteX, getCenterNoteY(1));
+    public static final Translation2d kCenterNoteM =
+        new Translation2d(kCenterNoteX, getCenterNoteY(2));
+    public static final Translation2d kCenterNoteBM =
+        new Translation2d(kCenterNoteX, getCenterNoteY(3));
+    public static final Translation2d kCenterNoteB =
+        new Translation2d(kCenterNoteX, getCenterNoteY(4));
+
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
     // public static final Pose2d kRedShootPose =
     //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());

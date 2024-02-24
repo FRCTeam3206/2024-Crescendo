@@ -38,7 +38,7 @@ public class Lights extends SubsystemBase {
   }
 
   public void periodic() {
-    //Chooses and uses a mode for the lights based on showColor
+    // Chooses and uses a mode for the lights based on showColor
     if (showColor == 0) {
       rainbow(m_rainbowFirstPixelHue);
       m_led.setData(m_ledBuffer);

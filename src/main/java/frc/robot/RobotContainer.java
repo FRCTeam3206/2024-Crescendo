@@ -190,7 +190,7 @@ public class RobotContainer implements Logged {
     autonChooser.addOption(
         "2 Note (Middle)",
         new SequentialCommandGroup(
-            speakerShoot(), pickUpNoteCommand(AllianceNoteLocation.CENTER), speakerShoot()));
+            speakerShoot(), pickUpNoteCommand(AllianceNoteLocation.MIDDLE), speakerShoot()));
 
     autonChooser.addOption(
         "2 Note (Top)",
@@ -200,12 +200,11 @@ public class RobotContainer implements Logged {
     autonChooser.addOption(
         "3 Note (NO Bottom)",
         new SequentialCommandGroup(
-          speakerShoot(),
-          pickUpNoteCommand(AllianceNoteLocation.CENTER),
-          speakerShoot(),
-          pickUpNoteCommand(AllianceNoteLocation.TOP),
-          speakerShoot()
-        ));
+            speakerShoot(),
+            pickUpNoteCommand(AllianceNoteLocation.MIDDLE),
+            speakerShoot(),
+            pickUpNoteCommand(AllianceNoteLocation.TOP),
+            speakerShoot()));
 
     // autonChooser.addOption(
     //     "S Path",
