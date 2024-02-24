@@ -97,6 +97,17 @@ public class RobotContainer implements Logged {
               climber.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), 0.5));
             },
             climber));
+    lights.setDefaultCommand(
+        new RunCommand(
+            () -> {
+              System.out.println("Lights");
+              if (shootake.hasNote()) {
+                lights.setLightColor(255, 150, 0);
+              } else {
+                lights.setLightColor(0, 0, 255);
+              }
+            },
+            lights));
   }
 
   // new RunCommand(

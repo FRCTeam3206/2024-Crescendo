@@ -24,7 +24,7 @@ public class Lights extends SubsystemBase {
   public Lights() {
     // PWM port 0
     // Must be a PWM header, not MXP or DIO
-    m_led = new AddressableLED(0);
+    m_led = new AddressableLED(1);
 
     // Reuse buffer
     // Default to a length of 60, start empty output
@@ -39,36 +39,36 @@ public class Lights extends SubsystemBase {
 
   public void periodic() {
     // Chooses and uses a mode for the lights based on showColor
-    if (showColor == 0) {
-      rainbow(m_rainbowFirstPixelHue);
-      m_led.setData(m_ledBuffer);
-      m_rainbowFirstPixelHue += 3;
-      // Check bounds
-      m_rainbowFirstPixelHue %= 180;
-    } else if (showColor == 1) {
-    } else if (showColor == 2) {
-      if (count >= 25) {
-        ColorSwitch(0, 0, 200, 150, 150, 150);
-        m_led.setData(m_ledBuffer);
-        count = 0;
-      }
-      count++;
-    } else if (showColor == 3) {
-      if (count2 < 50) {
-        rainbow(m_rainbowFirstPixelHue);
-        m_led.setData(m_ledBuffer);
-      } else if (count2 < 100) {
-        if (count == 13) {
-          ColorSwitch(0, 0, 200, 150, 150, 150);
-          m_led.setData(m_ledBuffer);
-          count = 0;
-        }
-        count++;
-      } else if (count2 > 100) {
-        count2 = 0;
-      }
-      count2++;
-    }
+    // if (showColor == 0) {
+    //   rainbow(m_rainbowFirstPixelHue);
+    //   m_led.setData(m_ledBuffer);
+    //   m_rainbowFirstPixelHue += 3;
+    //   // Check bounds
+    //   m_rainbowFirstPixelHue %= 180;
+    // } else if (showColor == 1) {
+    // } else if (showColor == 2) {
+    //   if (count >= 25) {
+    //     ColorSwitch(0, 0, 200, 150, 150, 150);
+    //     m_led.setData(m_ledBuffer);
+    //     count = 0;
+    //   }
+    //   count++;
+    // } else if (showColor == 3) {
+    //   if (count2 < 50) {
+    //     rainbow(m_rainbowFirstPixelHue);
+    //     m_led.setData(m_ledBuffer);
+    //   } else if (count2 < 100) {
+    //     if (count == 13) {
+    //       ColorSwitch(0, 0, 200, 150, 150, 150);
+    //       m_led.setData(m_ledBuffer);
+    //       count = 0;
+    //     }
+    //     count++;
+    //   } else if (count2 > 100) {
+    //     count2 = 0;
+    //   }
+    //   count2++;
+    // }
   }
 
   public void setRainbow() {
