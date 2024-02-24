@@ -17,6 +17,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -493,9 +494,13 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    * @return The angle from the current position to the reference position (if a circle is drawn to
    *     show this, the current pose would be the center). In the range of -pi to pi.
    */
-  public double getAngleToPoint(Pose2d refPose) {
+  public double getAngleToPoint(Translation2d refPose) {
     Pose2d currentPose = getPose();
     return Math.atan2(refPose.getY() - currentPose.getY(), refPose.getX() - currentPose.getX());
+  }
+
+  public double getAngleToPoint(Pose2d refPose) {
+    return getAngleToPoint(refPose.getTranslation());
   }
 
   /**
@@ -540,7 +545,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    * @param directionOffset The offset for the direction to face towards the reference point (0
    *     would mean facing the point) in radians.
    */
-  public void driveToDistFromPoint(Pose2d refPoint, double goalDist, double directionOffset) {
+  public void driveToDistFromPoint(Translation2d refPoint, double goalDist, double directionOffset) {
     Pose2d currentPose = getPose();
     double deltaXRef = refPoint.getX() - currentPose.getX();
     double deltaYRef = refPoint.getY() - currentPose.getY();
@@ -575,6 +580,18 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     double angularVelocity = deltaTheta * AutoAlignConstants.kPathFollowingAngularP;
     angularVelocity = MathUtil.clamp(angularVelocity, -1.0, 1.0);
     drive(xVelocity, yVelocity, angularVelocity, RelativeTo.FIELD_RELATIVE, true);
+  }
+
+  /**
+   * Drives to a certain distance from a reference point.
+   *
+   * @param refPoint The point to be referenced to drive to a distance from.
+   * @param goalDist The goal distance from the reference point.
+   * @param directionOffset The offset for the direction to face towards the reference point (0
+   *     would mean facing the point) in radians.
+   */
+  public void driveToDistFromPoint(Pose2d refPoint, double goalDist, double directionOffset) {
+    driveToDistFromPoint(refPoint.getTranslation(), goalDist, directionOffset);
   }
 
   public Command driveToPoseCommand(Pose2d bluePose) {
