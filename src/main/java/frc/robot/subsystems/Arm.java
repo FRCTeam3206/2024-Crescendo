@@ -42,15 +42,21 @@ public class Arm extends SubsystemBase implements Logged {
   }
 
   public boolean atSpeakerAngle() {
-    return MathUtil.applyDeadband(getAngle() - ArmConstants.kShootAngle, ArmConstants.kAtAngleTolerance) == 0.0;
+    return MathUtil.applyDeadband(
+            getAngle() - ArmConstants.kShootAngle, ArmConstants.kAtAngleTolerance)
+        == 0.0;
   }
 
   public boolean atAmpAngle() {
-    return MathUtil.applyDeadband(getAngle() - ArmConstants.kArmAmpAngle, ArmConstants.kAtAngleTolerance) == 0.0;
+    return MathUtil.applyDeadband(
+            getAngle() - ArmConstants.kArmAmpAngle, ArmConstants.kAtAngleTolerance)
+        == 0.0;
   }
 
   public boolean atIntakeAngle() {
-    return MathUtil.applyDeadband(getAngle() - ArmConstants.kShootAngle, ArmConstants.kAtAngleTolerance) == 0.0;
+    return MathUtil.applyDeadband(
+            getAngle() - ArmConstants.kShootAngle, ArmConstants.kAtAngleTolerance)
+        == 0.0;
   }
 
   public Command intakePosition() {
