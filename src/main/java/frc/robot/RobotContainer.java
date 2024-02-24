@@ -150,6 +150,11 @@ public class RobotContainer implements Logged {
     autonChooser.setDefaultOption(
         "Nothing", m_robotDrive.stopCommand());
 
+    autonChooser.addOption("Auto-Align 1 Note", new SequentialCommandGroup(
+        m_robotDrive.autoDriveToSpeakerShoot(),
+        shootake.speakerShootCommand()
+    ));
+
     // autonChooser.addOption(
     //     "S Path",
     //     generateAutonomousCommand(
