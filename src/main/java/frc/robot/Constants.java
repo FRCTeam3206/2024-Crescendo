@@ -348,6 +348,14 @@ public final class Constants {
     public static final Translation2d kCenterNoteB =
         new Translation2d(kCenterNoteX, getCenterNoteY(4));
 
+    // Waypoints for going to center notes, in order of lowest to highest (from sim)
+    // For blue alliance; must be mirrored
+    public static final Translation2d kBottomWaypoint = new Translation2d(6.63, 1.08);
+    public static final Translation2d kLowWaypoint = new Translation2d(2.50, 1.96);
+    public static final Translation2d kMiddleWaypoint = new Translation2d(2.03, 4.44);
+    public static final Translation2d kHighWaypoint = new Translation2d(3.50, 6.34);
+    public static final Translation2d kTopWaypoint = new Translation2d(6.63, 6.909);
+
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
     // public static final Pose2d kRedShootPose =
     //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());
