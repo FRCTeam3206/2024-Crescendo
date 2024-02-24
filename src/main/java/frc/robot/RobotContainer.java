@@ -101,7 +101,7 @@ public class RobotContainer implements Logged {
         new RunCommand(
             () -> {
               if (shootake.hasNote()) {
-                lights.setLightColor(255, 150, 0);
+                lights.setLightColor(255, 80, 0);
               } else {
                 lights.setLightColor(0, 0, 255);
               }
@@ -163,7 +163,7 @@ public class RobotContainer implements Logged {
         arm.intakeCommandStop(),
         new ParallelCommandGroup(
                 m_robotDrive.driveCommand(
-                    () -> 0.25, () -> 0.0, () -> 0.0, () -> RelativeTo.ROBOT_RELATIVE, true),
+                    () -> 0.15, () -> 0.0, () -> 0.0, () -> RelativeTo.ROBOT_RELATIVE, true),
                 arm.intakePosition(),
                 shootake.intakeCommand())
             .until(() -> shootake.hasNote())
