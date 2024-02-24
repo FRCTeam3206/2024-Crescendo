@@ -555,7 +555,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    * @param directionOffset The offset for the direction to face towards the reference point (0
    *     would mean facing the point) in radians.
    */
-  public void driveToDistFromPoint(Translation2d refPoint, double goalDist, double directionOffset) {
+  public void driveToDistFromPoint(
+      Translation2d refPoint, double goalDist, double directionOffset) {
     Pose2d currentPose = getPose();
     double deltaXRef = refPoint.getX() - currentPose.getX();
     double deltaYRef = refPoint.getY() - currentPose.getY();
@@ -605,9 +606,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   /**
- * @param waypoint The point it's trying to get to.
- * @param maxSpeed The max speed (meters per second) while reaching this waypoint.
- */
+   * @param waypoint The point it's trying to get to.
+   * @param maxSpeed The max speed (meters per second) while reaching this waypoint.
+   */
   public void driveToWaypoint(Translation2d waypoint, double maxSpeed) {
     Pose2d currentPose = getPose();
     double deltaX = waypoint.getX() - currentPose.getX();
