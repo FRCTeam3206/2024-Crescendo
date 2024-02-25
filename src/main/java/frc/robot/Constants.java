@@ -207,26 +207,55 @@ public final class Constants {
   }
 
   public static enum CenterNoteLocation {
-    TOP(AutoAlignConstants.kCenterNoteT),
-    TOP_MIDDLE(AutoAlignConstants.kCenterNoteTM),
-    MIDDLE(AutoAlignConstants.kCenterNoteM),
-    BOTTOM_MIDDLE(AutoAlignConstants.kCenterNoteBM),
-    BOTTOM(AutoAlignConstants.kCenterNoteB);
+    TOP(AutoAlignConstants.kCenterNoteT, true),
+    TOP_MIDDLE(AutoAlignConstants.kCenterNoteTM, false),
+    MIDDLE(AutoAlignConstants.kCenterNoteM, false),
+    BOTTOM_MIDDLE(AutoAlignConstants.kCenterNoteBM, false),
+    BOTTOM(AutoAlignConstants.kCenterNoteB, true);
 
-    private Translation2d blueTranslation;
+    private Translation2d translation;
+    private Pose2d blueUpperPickUpPose;
+    private Pose2d blueLowerPickUpPose;
 
-    private CenterNoteLocation(Translation2d blueTranslation) {
-      this.blueTranslation = blueTranslation;
+    private CenterNoteLocation(Translation2d translation, boolean onlyOnePickUpPose) {
+      this.translation = translation;
+      if (onlyOnePickUpPose) {
+        blueUpperPickUpPose = new Pose2d(
+          translation.getX() - AutoAlignConstants.kPickUpNoteDist,
+          translation.getY(),
+          new Rotation2d(0.0));
+        blueLowerPickUpPose = new Pose2d(
+          translation.getX() - AutoAlignConstants.kPickUpNoteDist,
+          translation.getY(),
+          new Rotation2d(0.0));
+      } else {
+        blueUpperPickUpPose = new Pose2d(
+          translation.getX() - AutoAlignConstants.kPickUpNoteDist * Math.cos(AutoAlignConstants.kCenterNotePickUpAngleOffset),
+          translation.getY() + AutoAlignConstants.kPickUpNoteDist * Math.sin(AutoAlignConstants.kCenterNotePickUpAngleOffset),
+          new Rotation2d(2 * Math.PI - AutoAlignConstants.kCenterNotePickUpAngleOffset));
+        blueLowerPickUpPose = new Pose2d(
+          translation.getX() - AutoAlignConstants.kPickUpNoteDist * Math.cos(AutoAlignConstants.kCenterNotePickUpAngleOffset),
+          translation.getY() - AutoAlignConstants.kPickUpNoteDist * Math.sin(AutoAlignConstants.kCenterNotePickUpAngleOffset),
+          new Rotation2d(AutoAlignConstants.kCenterNotePickUpAngleOffset));
+      }
     }
 
     public Translation2d getTranslation() {
-      return blueTranslation;
+      return translation;
     }
 
-    public Translation2d getPickUpTranslation() {
-      return new Translation2d(
-          blueTranslation.getX(), blueTranslation.getY() - AutoAlignConstants.kPickUpNoteDist);
+    public Pose2d getBlueUpperPickUpPose() {
+      return blueUpperPickUpPose;
     }
+
+    public Pose2d getBlueLowerPickUpPose() {
+      return blueLowerPickUpPose;
+    }
+
+    // public Translation2d getPickUpTranslation() {
+    //   return new Translation2d(
+    //       translation.getX(), translation.getY() - AutoAlignConstants.kPickUpNoteDist);
+    // }
   }
 
   public static final class OIConstants {
@@ -287,6 +316,7 @@ public final class Constants {
     public static final double kMaxWaypointFollowingSpeed = 3.0; // Meters per second
     public static final double kMaxAngleSpeakerShootOffset = .773;
     public static final double kAtWaypointDist = 0.15;
+    public static final double kCenterNotePickUpAngleOffset = Math.PI / 4;
     // Math.PI / 8.0; // Not used yet //.672
     // public static final double kMaxDistStillGo = 4.0; // Decide/tune/test
     // The maximum distance from goal for which the robot should still drive.
@@ -352,13 +382,13 @@ public final class Constants {
 
     // Waypoints for going to center notes, in order of lowest to highest (from sim)
     // For blue alliance; must be mirrored
-    public static final Translation2d kBottomWaypoint = new Translation2d(6.7, 1.08);
-    public static final Translation2d kLowWaypoint = new Translation2d(2.50, 1.96);
+    public static final Translation2d kBottomWaypoint = new Translation2d(5.8, 1.08); // x 6.7
+    public static final Translation2d kLowWaypoint = new Translation2d(2.50, 2.5); // y 1.96
     public static final Translation2d kMiddleWaypoint = new Translation2d(2.03, 4.44);
     public static final Translation2d kHighWaypoint = new Translation2d(3.50, 6.34);
-    public static final Translation2d kTopWaypoint = new Translation2d(6.7, 6.909);
+    public static final Translation2d kTopWaypoint = new Translation2d(5.8, 6.909); // x 6.7
 
-    public static final double kNearCenterMinX = kTopWaypoint.getX() - kAtGoalTolerance;
+    public static final double kNearCenterMinX = 5.7 - kAtGoalTolerance;
 
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
     // public static final Pose2d kRedShootPose =
