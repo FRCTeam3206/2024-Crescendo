@@ -619,7 +619,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
                         < AutoAlignConstants.kAtRotationGoalTolerance;
                 speakerAligned=aligned;
                 return aligned;})
-        .andThen(stopCommand()).andThen(this.runOnce(()->speakerAligned=false));
+        .andThen(stopCommand()).andThen(this.runOnce(()->speakerAligned=false)).handleInterrupt(()->speakerAligned=false);
   }
 
   private Command twoConditionCommand(
