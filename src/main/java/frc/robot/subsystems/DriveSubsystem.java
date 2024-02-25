@@ -606,13 +606,45 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   /**
+   * @param waypoint
+   * @param maxSpeed In percent
+   * @param endSpeed In percent
+   */
+  public void driveToWaypoint(Translation2d waypoint, double maxSpeed, double endSpeed) {
+    Pose2d currentPose = getPose();
+    double deltaX = waypoint.getX() - currentPose.getX();
+    double deltaY = waypoint.getY() - currentPose.getY();
+    this.log("Last waypoint dx", deltaX);
+    this.log("Last waypoint dy", deltaY);
+    double deltaPose = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    // if (deltaPose > AutoAlignConstants.kMaxDistStillGo) {
+    //   drive(0, 0, 0, false, false);
+    //   return;
+    // }
+    double xVelocity = AutoAlignConstants.kPathFollowingP * deltaX;
+    double yVelocity = AutoAlignConstants.kPathFollowingP * deltaY;
+    double speed = AutoAlignConstants.kPathFollowingP * deltaPose;
+    // double speed = Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2));
+    if (speed > maxSpeed) {
+      xVelocity = maxSpeed * (xVelocity / deltaPose);
+      yVelocity = maxSpeed * (yVelocity / deltaPose);
+    } else {
+      xVelocity = maxSpeed * (xVelocity * (1.0 - (endSpeed / maxSpeed)) + (endSpeed / maxSpeed));
+      yVelocity = maxSpeed * (yVelocity * (1.0 - (endSpeed / maxSpeed)) + (endSpeed / maxSpeed));
+    }
+    drive(xVelocity, yVelocity, 0.0, RelativeTo.FIELD_RELATIVE, true);
+  }
+
+  /**
    * @param waypoint The point it's trying to get to.
    * @param maxSpeed The max speed (meters per second) while reaching this waypoint.
    */
   public void driveToWaypoint(Translation2d waypoint, double maxSpeed) {
     Pose2d currentPose = getPose();
     double deltaX = waypoint.getX() - currentPose.getX();
+    this.log("Waypoint dx", deltaX);
     double deltaY = waypoint.getY() - currentPose.getY();
+    this.log("Waypoint dy", deltaY);
     double deltaPose = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
     double xVelocity = maxSpeed * (deltaX / deltaPose);
     double yVelocity = maxSpeed * (deltaY / deltaPose);
