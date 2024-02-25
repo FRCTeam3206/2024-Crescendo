@@ -59,4 +59,19 @@ public class AllianceUtil {
   public static Translation2d getTranslationForAlliance(Translation2d blueTranslation) {
     return mapBluePoseToRed(new Pose2d(blueTranslation, new Rotation2d())).getTranslation();
   }
+
+  public static boolean getDistToAllianceWallLessThan(double x) {
+    double currentX = robotPose.get().getX();
+    if (alliance == AllianceColor.BLUE) {
+      return currentX < x;
+    } else if (alliance == AllianceColor.RED) {
+      return AutoAlignConstants.kFieldLength - currentX < x;
+    } else {
+      if (currentX < AutoAlignConstants.kFieldLength / 2.0) {
+        return currentX < x;
+      } else {
+        return AutoAlignConstants.kFieldLength - currentX < x;
+      }
+    }
+  }
 }
