@@ -101,7 +101,10 @@ public class RobotContainer implements Logged {
         new RunCommand(
             () -> {
               if (shootake.hasNote()) {
-                lights.setLightColor(255, 80, 0);
+                if(m_robotDrive.isSpeakerAligned()){
+                  lights.setLightColor(0,255,0);
+                }
+                  lights.setLightColor(255, 80, 0);
               } else {
                 lights.setLightColor(0, 0, 255);
               }
