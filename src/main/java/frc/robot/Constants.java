@@ -327,6 +327,7 @@ public final class Constants {
         new Transform3d(
             -0.155575, 0.177495, -0.441758, new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, 0.0));
 
+    public static final String kObjectCameraName = "ObjectCamera";
     public static AprilTagFieldLayout kAprilTagLayout;
 
     {
@@ -376,4 +377,5 @@ public final class Constants {
       return aprilTagsToReturn;
     }
   }
+
 }

@@ -23,10 +23,12 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.RelativeTo;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
@@ -34,6 +36,8 @@ import frc.robot.subsystems.Shootake;
 import java.util.List;
 import monologue.Annotations.Log;
 import monologue.Logged;
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -47,6 +51,7 @@ public class RobotContainer implements Logged {
   private final Shootake shootake = new Shootake();
   private final Arm arm = new Arm();
   private final Climber climber = new Climber();
+  private final PhotonCamera objectCamera = new PhotonCamera(VisionConstants.kObjectCameraName);
   @Log private final String currentBranch = BuildConstants.GIT_BRANCH;
 
   // The driver's controller
@@ -205,6 +210,29 @@ public class RobotContainer implements Logged {
                 .withTimeout(1),
             shootake.shootCommand(() -> false)));
     SmartDashboard.putData(autonChooser);
+  }
+
+  public Command pickupNote() {
+    return new SequentialCommandGroup(
+        m_robotDrive.stopCommand().until(() -> objectCamera.getLatestResult().hasTargets()),
+        m_robotDrive
+            .run(
+                () -> {
+                  PhotonPipelineResult result = objectCamera.getLatestResult();
+                  if (result.hasTargets()) {
+                    double angle = result.getBestTarget().getYaw();
+                    double tSpeed = AutoAlignConstants.kPathFollowingAngularP * angle;
+                    m_robotDrive.drive(0, 0, tSpeed, RelativeTo.ROBOT_RELATIVE, false);
+                  }
+                })
+            .until(
+                () ->
+                    !objectCamera.getLatestResult().hasTargets()
+                        || Math.abs(objectCamera.getLatestResult().getBestTarget().getYaw())
+                            < AutoAlignConstants.kAtRotationGoalTolerance),
+        m_robotDrive
+            .driveCommand(() -> .15, () -> 0, () -> 0, () -> RelativeTo.ROBOT_RELATIVE, false)
+            .until(() -> shootake.hasNote()));
   }
 
   public Command getAutonomousCommand() {
