@@ -10,7 +10,7 @@ import frc.utils.AllianceUtil;
 import monologue.Logged;
 
 /** Constructs a command that goes to a center note. */
-public class ToCenterNotePathCommand extends Command implements Logged{
+public class ToCenterNotePathCommand extends Command implements Logged {
   DriveSubsystem robotDrive;
   // private CenterNoteLocation goalNote;
   private boolean takeHighPath;
@@ -35,9 +35,11 @@ public class ToCenterNotePathCommand extends Command implements Logged{
     if (!AllianceUtil.getDistToAllianceWallLessThan(AutoAlignConstants.kNearCenterMinX)) {
       robotDrive.driveToGoal(AllianceUtil.getPoseForAlliance(bluePickUpPose));
       // if (takeHighPath) {
-      //   robotDrive.driveToGoal(AllianceUtil.getPoseForAlliance(goalNote.getBlueUpperPickUpPose()));
+      //
+      // robotDrive.driveToGoal(AllianceUtil.getPoseForAlliance(goalNote.getBlueUpperPickUpPose()));
       // } else {
-      //   robotDrive.driveToGoal(AllianceUtil.getPoseForAlliance(goalNote.getBlueLowerPickUpPose()));
+      //
+      // robotDrive.driveToGoal(AllianceUtil.getPoseForAlliance(goalNote.getBlueLowerPickUpPose()));
       // }
       // robotDrive.driveToDistFromPoint(
       //     goalNote.getTranslation(), AutoAlignConstants.kPickUpNoteDist, 0);
@@ -48,7 +50,8 @@ public class ToCenterNotePathCommand extends Command implements Logged{
       if (takeHighPath) {
         this.log("Path", "High");
         if (currentY < AutoAlignConstants.kLowWaypoint.getY() - tolerance
-            && !AllianceUtil.getDistToAllianceWallLessThan(AutoAlignConstants.kLowWaypoint.getX())) {
+            && !AllianceUtil.getDistToAllianceWallLessThan(
+                AutoAlignConstants.kLowWaypoint.getX())) {
           waypoint = AllianceUtil.getTranslationForAlliance(AutoAlignConstants.kLowWaypoint);
           robotDrive.driveToWaypoint(waypoint, AutoAlignConstants.kMaxWaypointFollowingSpeed);
           this.log("Waypoint", "Low");
@@ -68,7 +71,8 @@ public class ToCenterNotePathCommand extends Command implements Logged{
       } else {
         this.log("Path", "Low");
         if (currentY > AutoAlignConstants.kHighWaypoint.getY() - tolerance
-            && !AllianceUtil.getDistToAllianceWallLessThan(AutoAlignConstants.kHighWaypoint.getX())) {
+            && !AllianceUtil.getDistToAllianceWallLessThan(
+                AutoAlignConstants.kHighWaypoint.getX())) {
           waypoint = AllianceUtil.getTranslationForAlliance(AutoAlignConstants.kHighWaypoint);
           robotDrive.driveToWaypoint(waypoint, AutoAlignConstants.kMaxWaypointFollowingSpeed);
           this.log("Waypoint", "High");
@@ -91,7 +95,8 @@ public class ToCenterNotePathCommand extends Command implements Logged{
 
   public boolean isFinished() {
     return robotDrive.getPose().getTranslation().getDistance(bluePickUpPose.getTranslation())
-        < AutoAlignConstants.kAtGoalTolerance && 
-        robotDrive.getAngleToGoal(bluePickUpPose.getRotation()) < AutoAlignConstants.kAtRotationGoalTolerance; 
+            < AutoAlignConstants.kAtGoalTolerance
+        && robotDrive.getAngleToGoal(bluePickUpPose.getRotation())
+            < AutoAlignConstants.kAtRotationGoalTolerance;
   }
 }

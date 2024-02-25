@@ -220,23 +220,35 @@ public final class Constants {
     private CenterNoteLocation(Translation2d translation, boolean onlyOnePickUpPose) {
       this.translation = translation;
       if (onlyOnePickUpPose) {
-        blueUpperPickUpPose = new Pose2d(
-          translation.getX() - AutoAlignConstants.kPickUpNoteDist,
-          translation.getY(),
-          new Rotation2d(0.0));
-        blueLowerPickUpPose = new Pose2d(
-          translation.getX() - AutoAlignConstants.kPickUpNoteDist,
-          translation.getY(),
-          new Rotation2d(0.0));
+        blueUpperPickUpPose =
+            new Pose2d(
+                translation.getX() - AutoAlignConstants.kPickUpNoteDist,
+                translation.getY(),
+                new Rotation2d(0.0));
+        blueLowerPickUpPose =
+            new Pose2d(
+                translation.getX() - AutoAlignConstants.kPickUpNoteDist,
+                translation.getY(),
+                new Rotation2d(0.0));
       } else {
-        blueUpperPickUpPose = new Pose2d(
-          translation.getX() - AutoAlignConstants.kPickUpNoteDist * Math.cos(AutoAlignConstants.kCenterNotePickUpAngleOffset),
-          translation.getY() + AutoAlignConstants.kPickUpNoteDist * Math.sin(AutoAlignConstants.kCenterNotePickUpAngleOffset),
-          new Rotation2d(2 * Math.PI - AutoAlignConstants.kCenterNotePickUpAngleOffset));
-        blueLowerPickUpPose = new Pose2d(
-          translation.getX() - AutoAlignConstants.kPickUpNoteDist * Math.cos(AutoAlignConstants.kCenterNotePickUpAngleOffset),
-          translation.getY() - AutoAlignConstants.kPickUpNoteDist * Math.sin(AutoAlignConstants.kCenterNotePickUpAngleOffset),
-          new Rotation2d(AutoAlignConstants.kCenterNotePickUpAngleOffset));
+        blueUpperPickUpPose =
+            new Pose2d(
+                translation.getX()
+                    - AutoAlignConstants.kPickUpNoteDist
+                        * Math.cos(AutoAlignConstants.kCenterNotePickUpAngleOffset),
+                translation.getY()
+                    + AutoAlignConstants.kPickUpNoteDist
+                        * Math.sin(AutoAlignConstants.kCenterNotePickUpAngleOffset),
+                new Rotation2d(2 * Math.PI - AutoAlignConstants.kCenterNotePickUpAngleOffset));
+        blueLowerPickUpPose =
+            new Pose2d(
+                translation.getX()
+                    - AutoAlignConstants.kPickUpNoteDist
+                        * Math.cos(AutoAlignConstants.kCenterNotePickUpAngleOffset),
+                translation.getY()
+                    - AutoAlignConstants.kPickUpNoteDist
+                        * Math.sin(AutoAlignConstants.kCenterNotePickUpAngleOffset),
+                new Rotation2d(AutoAlignConstants.kCenterNotePickUpAngleOffset));
       }
     }
 
