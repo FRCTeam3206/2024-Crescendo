@@ -56,6 +56,7 @@ public class Robot extends TimedRobot implements Logged {
     CommandScheduler.getInstance().run();
     Monologue.setFileOnly(DriverStation.isFMSAttached());
     Monologue.updateAll();
+    this.log("X < 2.5", AllianceUtil.getDistToAllianceWallLessThan(2.5));
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
