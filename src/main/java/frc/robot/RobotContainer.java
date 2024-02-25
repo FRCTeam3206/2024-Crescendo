@@ -26,9 +26,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AllianceNoteLocation;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.CenterNoteLocation;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.RelativeTo;
+import frc.robot.commands.ToCenterNotePathCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
@@ -123,6 +125,7 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    m_driverController.button(1).whileTrue(new ToCenterNotePathCommand(m_robotDrive, CenterNoteLocation.TOP, false));
     // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
     // m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
