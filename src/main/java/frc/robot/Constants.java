@@ -284,8 +284,10 @@ public final class Constants {
     public static final double kShootDistFromSpeaker = 3.00; // 3.11; // Tune value
     public static final double kShootDistAmp = 0.75; // Find value
     public static final double kPickUpNoteDist = 0.9;
-    public static final double kMaxAngleSpeakerShootOffset =
-        .773; // Math.PI / 8.0; // Not used yet //.672
+    public static final double kMaxWaypointFollowingSpeed = 3.0; // Meters per second
+    public static final double kMaxAngleSpeakerShootOffset = .773;
+    public static final double kAtWaypointDist = 0.15;
+    // Math.PI / 8.0; // Not used yet //.672
     // public static final double kMaxDistStillGo = 4.0; // Decide/tune/test
     // The maximum distance from goal for which the robot should still drive.
 
@@ -350,11 +352,13 @@ public final class Constants {
 
     // Waypoints for going to center notes, in order of lowest to highest (from sim)
     // For blue alliance; must be mirrored
-    public static final Translation2d kBottomWaypoint = new Translation2d(6.63, 1.08);
+    public static final Translation2d kBottomWaypoint = new Translation2d(6.7, 1.08);
     public static final Translation2d kLowWaypoint = new Translation2d(2.50, 1.96);
     public static final Translation2d kMiddleWaypoint = new Translation2d(2.03, 4.44);
     public static final Translation2d kHighWaypoint = new Translation2d(3.50, 6.34);
-    public static final Translation2d kTopWaypoint = new Translation2d(6.63, 6.909);
+    public static final Translation2d kTopWaypoint = new Translation2d(6.7, 6.909);
+
+    public static final double kNearCenterMinX = kTopWaypoint.getX() - kAtGoalTolerance;
 
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
     // public static final Pose2d kRedShootPose =
