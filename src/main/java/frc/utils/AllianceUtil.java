@@ -57,7 +57,7 @@ public class AllianceUtil {
   }
 
   public static Translation2d getTranslationForAlliance(Translation2d blueTranslation) {
-    return mapBluePoseToRed(new Pose2d(blueTranslation, new Rotation2d())).getTranslation();
+    return getPoseForAlliance(new Pose2d(blueTranslation, new Rotation2d())).getTranslation();
   }
 
   public static boolean getDistToAllianceWallLessThan(double x) {
