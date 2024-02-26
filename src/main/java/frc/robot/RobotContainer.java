@@ -48,7 +48,7 @@ public class RobotContainer implements Logged {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   Lights lights = new Lights();
-  private final Shootake shootake = new Shootake();
+  final Shootake shootake = new Shootake();
   private final Arm arm = new Arm();
   private final Climber climber = new Climber();
   @Log private final String currentBranch = BuildConstants.GIT_BRANCH;
@@ -183,7 +183,14 @@ public class RobotContainer implements Logged {
   public void autons() {
     autonChooser.setDefaultOption("Nothing", m_robotDrive.stopCommand());
 
-    autonChooser.addOption("Auto-Align 1 Note", speakerShoot());
+    autonChooser.addOption("Auto-Align 1 Note", new SequentialCommandGroup(
+      new ParallelCommandGroup(
+      m_robotDrive.driveCommand(()->.25,()->0,()->0,()->RelativeTo.DRIVER_RELATIVE,false),
+      new RunCommand(()->shootake.setRetained(true),shootake)
+      ).withTimeout(1.5),
+      m_robotDrive.stopCommand(),
+      speakerShoot()
+    ));
 
     autonChooser.addOption(
         "2 Note (Middle)",

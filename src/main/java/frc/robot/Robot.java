@@ -66,9 +66,9 @@ public class Robot extends TimedRobot implements Logged {
 
   @Override
   public void disabledPeriodic() {
+    
     // Updates even if not UNKNOWN so that alliance can be changed while disabled for testing.
     AllianceUtil.setAlliance();
-
     // if (!hasBeenEnabled && m_robotContainer.getAlliance() == RobotContainer.AllianceColor.RED) {
     //   m_robotContainer.setAdjustmentForGyro(180.0);
     // }
