@@ -161,7 +161,7 @@ public final class Constants {
     public static final double kD = 0.0;
 
     public static final int kArmCANId = 5;
-    public static final double kArmZeroOffset = 0.441;
+    public static final double kArmZeroOffset = 0.266;
 
     public static final double kArmZeroThreshold = Math.PI * .15;
 
@@ -176,6 +176,7 @@ public final class Constants {
   public static final class ClimberConstants {
     public static final int kLeftClimberCANId = 8;
     public static final int kRightClimberCANId = 9;
+    public static final double climbMax=3.7;
   }
 
   public static enum ArmPostition {

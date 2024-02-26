@@ -94,7 +94,7 @@ public class RobotContainer implements Logged {
     climber.setDefaultCommand(
         new RunCommand(
             () -> {
-              climber.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), 0.5));
+              climber.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), 0.1));
             },
             climber));
     lights.setDefaultCommand(
@@ -141,7 +141,7 @@ public class RobotContainer implements Logged {
     xbox.start().whileTrue(shootake.slowIntakeCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
-
+    SmartDashboard.putData("Reset Climber",climber.zero());
     SmartDashboard.putNumber("X to Reset", 0);
     SmartDashboard.putNumber("Y to Reset", 0);
     SmartDashboard.putData(
