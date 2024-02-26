@@ -85,12 +85,6 @@ public class RobotContainer implements Logged {
             () -> RelativeTo.DRIVER_RELATIVE,
             true));
     shootake.setDefaultCommand(shootake.idleCommand());
-    arm.setDefaultCommand(
-        new RunCommand(
-            () -> {
-              arm.setVoltage(MathUtil.applyDeadband(xbox.getLeftY() * 2, 0.00));
-            },
-            arm));
     climber.setDefaultCommand(
         new RunCommand(
             () -> {

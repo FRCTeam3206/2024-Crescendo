@@ -149,6 +149,9 @@ public final class Constants {
     public static final double kAmpSpeed = -.3;
     public static final double kShootakeFreeSpeed = 5000.0;
     public static final double kShootakeLoadSpeedThreshold = 4750.0;
+
+    public static final double kRetainedValue = .6;
+    public static final double kNotRetainedValue = 0;
   }
 
   public static final class ArmConstants {
@@ -168,7 +171,7 @@ public final class Constants {
     public static final double kArmAmpAngle = 2.1;
     public static final double kShootAngle = 0.069;
     public static final double kIntakeAngle = 3.434;
-    public static final double kSubwooferAngle = 1.480;
+    public static final double kSubwooferAngle = 1.51;
 
     public static final double kAtAngleTolerance = 0.05;
   }

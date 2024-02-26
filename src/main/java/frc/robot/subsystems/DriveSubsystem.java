@@ -546,6 +546,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     double deltaYRef = refPoint.getY() - currentPose.getY();
     double deltaPoseRef = Math.sqrt(Math.pow(deltaXRef, 2) + Math.pow(deltaYRef, 2));
     // this.log("Dist From Point", deltaPoseRef);
+    this.log("Dist to Point",deltaPoseRef - goalDist);
     double deltaX = deltaXRef;
     double deltaY = deltaYRef;
     if (deltaPoseRef > goalDist) {
