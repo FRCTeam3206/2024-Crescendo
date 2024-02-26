@@ -594,9 +594,17 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   public Command driveToAmpPoseCommand() {
     return driveToPoseCommand(AutoAlignConstants.kBlueAmpShootPose);
   }
-  private boolean speakerAligned=false;
   public boolean isSpeakerAligned(){
-    return speakerAligned;
+    return isAtDistFromPoint(
+                        AllianceUtil.getPoseForAlliance(AutoAlignConstants.kBlueSpeakerPose),
+                        AutoAlignConstants.kShootDistFromSpeaker)
+                    && getAngleToGoal(
+                            new Rotation2d(
+                                getAngleToPoint(
+                                        AllianceUtil.getPoseForAlliance(
+                                            AutoAlignConstants.kBlueSpeakerPose))
+                                    + Math.PI))
+                        < AutoAlignConstants.kAtRotationGoalTolerance;
   }
   public Command driveToShootInSpeakerCommand() {
     return this.run(
@@ -618,9 +626,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
                                             AutoAlignConstants.kBlueSpeakerPose))
                                     + Math.PI))
                         < AutoAlignConstants.kAtRotationGoalTolerance;
-                speakerAligned=aligned;
                 return aligned;})
-        .andThen(stopCommand()).andThen(this.runOnce(()->speakerAligned=false)).handleInterrupt(()->speakerAligned=false);
+        .andThen(stopCommand());
   }
 
   private Command twoConditionCommand(

@@ -259,11 +259,11 @@ public final class Constants {
     public static final double kAtRotationGoalTolerance = 0.04; // Decide/tune/test
     public static final double kPathFollowingP = 0.6875; // Tune?
     public static final double kPathFollowingAngularP = 2.0 / Math.PI;
-    public static final double kShootDistFromSpeaker = 2.93; // 3.11; // Tune value
+    public static final double kShootDistFromSpeaker = 2.39; // 3.11; // Tune value
     public static final double kShootDistAmp = 0.75; // Find value
     public static final double kPickUpNoteDist = 0.9;
     public static final double kMaxAngleSpeakerShootOffset =
-        .773; // Math.PI / 8.0; // Not used yet //.672
+        .643; // Math.PI / 8.0; // Not used yet //.672
     // public static final double kMaxDistStillGo = 4.0; // Decide/tune/test
     // The maximum distance from goal for which the robot should still drive.
 

@@ -97,8 +97,9 @@ public class RobotContainer implements Logged {
               if (shootake.hasNote()) {
                 if(m_robotDrive.isSpeakerAligned()){
                   lights.setLightColor(0,255,0);
-                }
+                }else{
                   lights.setLightColor(255, 80, 0);
+                }
               } else {
                 lights.setLightColor(0, 0, 255);
               }
@@ -122,7 +123,7 @@ public class RobotContainer implements Logged {
   private void configureButtonBindings() {
     // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
-    // m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
+    m_driverController.button(2).whileTrue(m_robotDrive.autoDriveToSpeakerShoot());
 
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
