@@ -227,7 +227,7 @@ public class RobotContainer implements Logged {
       arm.subwooferPosition().withTimeout(2),
       shootake.speakerShootCommand(),
       m_robotDrive.driveCommand(
-                        () -> .25, () -> 0, () -> 0, () -> RelativeTo.DRIVER_RELATIVE, false),
+                        () -> .25, () -> 0, () -> 0, () -> RelativeTo.DRIVER_RELATIVE, false).withTimeout(1.5),
                     new RunCommand(() -> shootake.setRetained(true), shootake),
       m_robotDrive.stopCommand()
       ));
