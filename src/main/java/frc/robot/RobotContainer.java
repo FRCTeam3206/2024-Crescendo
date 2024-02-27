@@ -34,12 +34,17 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.RelativeTo;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Shootake;
 import java.util.List;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -63,7 +68,7 @@ public class RobotContainer implements Logged {
 
   CommandXboxController xbox = new CommandXboxController(1);
   SendableChooser<Command> autonChooser = new SendableChooser<Command>();
-
+  PhotonCamera objectCamera=new PhotonCamera(VisionConstants.kObjectCameraName);
   public static enum AllianceColor {
     RED,
     BLUE,
@@ -133,6 +138,7 @@ public class RobotContainer implements Logged {
         .button(5)
         .whileTrue(
             m_robotDrive.scoreToAmpCommand());
+    m_driverController.button(3).whileTrue(pickupNote());
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
     xbox.povRight().onTrue(arm.ampPosition());
@@ -163,7 +169,6 @@ public class RobotContainer implements Logged {
   //   return new ParallelRaceGroup(m_robotDrive.pickUpNotePoseCommand(noteLocation), new
   // ConditionalCommand(getAutonomousCommand(), getAutonomousCommand(), () -> )));
   // }
-
   public Command pickUpNoteCommand() {
     return new SequentialCommandGroup(
         m_robotDrive.stopCommand(),
@@ -306,7 +311,23 @@ public Command pickUpNoteCommand(Pose2d pickupPose) {
     }
     return new ConditionalCommand(m_robotDrive.stopCommand(),autonChooser.getSelected(), ()->m_robotDrive.getPose().getX()<.1&&m_robotDrive.getPose().getY()<.1);
   }
-
+  public Command pickupNote() {
+    return new ConditionalCommand(new SequentialCommandGroup(
+        m_robotDrive
+            .run(
+                () -> {
+                  
+                  PhotonPipelineResult result = objectCamera.getLatestResult();
+                    double angle = result.getBestTarget().getYaw();
+                    SmartDashboard.putNumber("Note Angle",angle);
+                    double tSpeed = AutoAlignConstants.kPathFollowingAngularP * angle*Math.PI/180;
+                    m_robotDrive.drive(0, 0, -tSpeed, RelativeTo.ROBOT_RELATIVE, false);
+                })
+            .until(
+                () ->!objectCamera.getLatestResult().hasTargets()||Math.abs(objectCamera.getLatestResult().getBestTarget().getYaw()*Math.PI/180)
+                            < AutoAlignConstants.kAtRotationGoalTolerance),
+        pickUpNoteCommand(), m_robotDrive.stopCommand(), () -> objectCamera.getLatestResult().hasTargets());
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
