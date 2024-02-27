@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -291,7 +292,7 @@ public class RobotContainer implements Logged {
     if (autonChooser.getSelected() == null) {
       return m_robotDrive.stopCommand();
     }
-    return autonChooser.getSelected();
+    return new ConditionalCommand(autonChooser.getSelected(), m_robotDrive.stopCommand(), ()->m_robotDrive.getPose().getX()<.1&&m_robotDrive.getPose().getY()<.1);
   }
 
   /**
