@@ -124,7 +124,7 @@ public class RobotContainer implements Logged {
     // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
     m_driverController.button(2).whileTrue(m_robotDrive.autoDriveToSpeakerShoot());
-    m_driverController.button(5).onTrue(new RunCommand(() -> {m_robotDrive.driveToGoal(AllianceNoteLocation.CENTER.getPickUpPose());}));
+    m_driverController.button(3).whileTrue(new RunCommand(() -> {m_robotDrive.driveToGoal(AllianceNoteLocation.CENTER.getPickUpPose());},m_robotDrive));
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
     xbox.povRight().onTrue(arm.ampPosition());
@@ -174,7 +174,7 @@ public class RobotContainer implements Logged {
 
   public Command pickUpNoteCommand(AllianceNoteLocation noteLocation) {
     return new SequentialCommandGroup(
-        m_robotDrive.pickUpNotePoseCommand(noteLocation), pickUpNoteCommand());
+        m_robotDrive.driveToGoalCommand(noteLocation.getPickUpPose()), pickUpNoteCommand());
   }
 
   public Command speakerShoot() {

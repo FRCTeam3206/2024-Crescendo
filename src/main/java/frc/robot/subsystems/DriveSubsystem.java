@@ -507,7 +507,13 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   public double getAngleFromPointPositive(Pose2d refPose) {
     return getAngleToPoint(refPose) + Math.PI;
   }
-
+  public Command driveToGoalCommand(Pose2d goalPose){
+    return this.run(()->driveToGoal(goalPose)).until(()->
+      Math.abs(goalPose.getX()-getPose().getX())<AutoAlignConstants.kAtGoalTolerance&&
+      Math.abs(goalPose.getY()-getPose().getY())<AutoAlignConstants.kAtGoalTolerance&&
+      Math.abs(goalPose.getRotation().getRadians()-getPose().getRotation().getRadians())<AutoAlignConstants.kAtRotationGoalTolerance
+    );
+  }
   public void driveToGoal(Pose2d goalPose) {
     Pose2d currentPose = getPose();
     double deltaX = goalPose.getX() - currentPose.getX();
