@@ -39,7 +39,7 @@ public class Shootake extends SubsystemBase implements Logged {
 
   public void setRetained(boolean retained) {
     SmartDashboard.putNumber("Servo Retainer", retained ? 1 : 0);
-    finger.set(retained ? 0 : .6);
+    finger.set(retained ? ShootakeConstants.kRetainedValue : ShootakeConstants.kNotRetainedValue);
   }
 
   public boolean hasNote() {
@@ -52,6 +52,14 @@ public class Shootake extends SubsystemBase implements Logged {
           setSpeed(0.0);
           setRetained(true);
         });
+  }
+  public Command retainCommand(){
+      return this.run(
+        ()->{setRetained(true);}
+      ).withTimeout(.25);
+  }
+  public Command stopCommand() {
+    return this.runOnce(() -> this.setSpeed(0));
   }
 
   public Command intakeCommand() {
@@ -106,7 +114,7 @@ public class Shootake extends SubsystemBase implements Logged {
                   setRetained(false);
                   setSpeed(-1.0);
                 })
-            .withTimeout(1));
+            .withTimeout(.5));
   }
 
   /**

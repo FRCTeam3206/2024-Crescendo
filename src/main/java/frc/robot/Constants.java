@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -143,17 +144,20 @@ public final class Constants {
     public static final int kFingerPort = 0;
     public static final int kNoteSensorChannel = 0;
 
-    public static final double kIntakeSpeed = 0.85;
+    public static final double kIntakeSpeed = 1;
     public static final double kSlowIntakeSpeed = 0.2;
     public static final double kOutakeSpeed = -0.2;
     public static final double kAmpSpeed = -.3;
-    public static final double kShootakeFreeSpeed = 5000.0;
+    public static final double kShootakeFreeSpeed = 4800.0;
     public static final double kShootakeLoadSpeedThreshold = 4750.0;
+
+    public static final double kRetainedValue = .6;
+    public static final double kNotRetainedValue = 0;
   }
 
   public static final class ArmConstants {
     public static final double kS = 0.0;
-    public static final double kG = 1.55;
+    public static final double kG = 1.2;
     public static final double kV = 0.0;
 
     public static final double kP = 1;
@@ -161,18 +165,97 @@ public final class Constants {
     public static final double kD = 0.0;
 
     public static final int kArmCANId = 5;
-    public static final double kArmZeroOffset = 0.441;
+    public static final double kArmZeroOffset = 0.266;
 
-    public static final double kArmZeroThreshold = Math.PI * .15;
+    public static final double kArmZeroThreshold = .15;
 
-    public static final double kArmAmpAngle = 2.1;
+    public static final double kArmAmpAngle = 2.0;
+    public static final double kShootAngle = 0.069;
+    public static final double kIntakeAngle = 3.535;
+    public static final double kSubwooferAngle = 1.51;
+
+    public static final double kAtAngleTolerance = 0.05;
+    public static final double kActiveAngleTolerance=.15;
   }
 
   public static final class ClimberConstants {
     public static final int kLeftClimberCANId = 8;
     public static final int kRightClimberCANId = 9;
+    public static final double climbMax = 3.7;
   }
+    public static final class AutoAlignConstants { // Also for driving to pose in general.
+    public static final double kAtGoalTolerance = 0.02; // Decide/tune/test
+    public static final double kAtNotePickupGoalTolerance = .04;
+    public static final double kAtRotationGoalTolerance = 0.04; // Decide/tune/test
+    public static final double kPathFollowingP = 0.74; // Tune?
+    public static final double kPathFollowingAngularP = 2.0 / Math.PI;
+    public static final double kShootDistFromSpeaker = 2.39; // 3.11; // Tune value //41 3/8" from subwoofer
+    public static final double kShootDistAmp = 0.65; // Find value
+    public static final double kPickUpNoteDist = 1.1;
+    public static final double kMaxAngleSpeakerShootOffset =
+        .643; // Math.PI / 8.0; // Not used yet //.672
+    // public static final double kMaxDistStillGo = 4.0; // Decide/tune/test
+    // The maximum distance from goal for which the robot should still drive.
 
+    public static final Pose2d kBlueSpeakerPose =
+        new Pose2d(Units.inchesToMeters(-1.50), Units.inchesToMeters(218.42), new Rotation2d());
+
+    public static final Pose2d kBlueSpeakerShootPose =
+        new Pose2d(
+            kBlueSpeakerPose.getX() + kShootDistFromSpeaker,
+            kBlueSpeakerPose.getY(),
+            kBlueSpeakerPose.getRotation());
+
+    public static final Pose2d kBlueMaxSpeakerShootPose =
+        new Pose2d(
+            kBlueSpeakerPose.getX() + kShootDistFromSpeaker * Math.cos(kMaxAngleSpeakerShootOffset),
+            kBlueSpeakerPose.getY() + kShootDistFromSpeaker * Math.sin(kMaxAngleSpeakerShootOffset),
+            new Rotation2d(kMaxAngleSpeakerShootOffset));
+
+    public static final Pose2d kBlueMinSpeakerShootPose =
+        new Pose2d(
+            kBlueMaxSpeakerShootPose.getX(),
+            kBlueSpeakerPose.getY()
+                + kShootDistFromSpeaker * Math.sin(2 * Math.PI - kMaxAngleSpeakerShootOffset),
+            new Rotation2d(2 * Math.PI - kMaxAngleSpeakerShootOffset));
+
+    public static final Pose2d kBlueAmpPose =
+        new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), new Rotation2d());
+    public static final Pose2d kBlueAmpShootPose =
+        new Pose2d(
+            kBlueAmpPose.getX(), kBlueAmpPose.getY() - kShootDistAmp, new Rotation2d(Math.PI / 2));
+
+    public static final Pose2d kBlueBottomNotePose =
+        new Pose2d(Units.inchesToMeters(114.0), Units.inchesToMeters(161.638409), new Rotation2d());
+    public static final Pose2d kBlueCenterNotePose =
+        new Pose2d(
+            Units.inchesToMeters(114.0), Units.inchesToMeters(161.638409 + 57.0), new Rotation2d());
+    public static final Pose2d kBlueTopNotePose =
+        new Pose2d(
+            Units.inchesToMeters(114.0),
+            Units.inchesToMeters(161.638409 + 114.0),
+            new Rotation2d());
+
+    public static final Pose2d kTopNotePickUpPose =
+        new Pose2d(
+            kBlueTopNotePose.getX(),
+            kBlueTopNotePose.getY()-kPickUpNoteDist,
+            new Rotation2d(Math.PI/2));
+    public static final Pose2d kCenterNotePickUpPose =
+        new Pose2d(
+            kBlueCenterNotePose.getX() - kPickUpNoteDist,
+            kBlueCenterNotePose.getY(),
+            new Rotation2d());
+    public static final Pose2d kBottomNotePickUpPose =
+        new Pose2d(
+            kBlueBottomNotePose.getX() - kPickUpNoteDist,
+            kBlueBottomNotePose.getY(),
+            new Rotation2d());
+    // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
+    // public static final Pose2d kRedShootPose =
+    //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());
+
+  }
   public static enum ArmPostition {
     SHOOT,
     AMP,
@@ -186,18 +269,24 @@ public final class Constants {
   }
 
   public static enum AllianceNoteLocation {
-    BOTTOM(AutoAlignConstants.kBlueBottomNotePose),
-    CENTER(AutoAlignConstants.kBlueCenterNotePose),
-    TOP(AutoAlignConstants.kBlueTopNotePose);
+    BOTTOM(AutoAlignConstants.kBlueBottomNotePose, AutoAlignConstants.kBottomNotePickUpPose),
+    CENTER(AutoAlignConstants.kBlueCenterNotePose, AutoAlignConstants.kCenterNotePickUpPose),
+    TOP(AutoAlignConstants.kBlueTopNotePose, AutoAlignConstants.kTopNotePickUpPose);
 
     private Pose2d bluePose;
+    private Pose2d pickUpPose;
 
-    private AllianceNoteLocation(Pose2d bluePose) {
+    private AllianceNoteLocation(Pose2d bluePose, Pose2d pickUpPose) {
       this.bluePose = bluePose;
+      this.pickUpPose=pickUpPose;
     }
 
     public Pose2d getPose() {
       return AllianceUtil.getPoseForAlliance(bluePose);
+    }
+
+    public Pose2d getPickUpPose() {
+      return AllianceUtil.getPoseForAlliance(pickUpPose);
     }
   }
 
@@ -245,62 +334,7 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
-  public static final class AutoAlignConstants { // Also for driving to pose in general.
-    public static final double kAtGoalTolerance = 0.01; // Decide/tune/test
-    public static final double kAtRotationGoalTolerance = 0.02; // Decide/tune/test
-    public static final double kPathFollowingP = 0.6875; // Tune?
-    public static final double kPathFollowingAngularP = 2.0 / Math.PI;
-    public static final double kShootDistFromSpeaker = 2.59; // 3.11; // Tune value
-    public static final double kShootDistAmp = 0.75; // Find value
-    public static final double kPickUpNoteDist = Units.inchesToMeters(8.0);
-    public static final double kMaxAngleSpeakerShootOffset =
-        .773; // Math.PI / 8.0; // Not used yet //.672
-    // public static final double kMaxDistStillGo = 4.0; // Decide/tune/test
-    // The maximum distance from goal for which the robot should still drive.
 
-    public static final Pose2d kBlueSpeakerPose =
-        new Pose2d(Units.inchesToMeters(-1.50), Units.inchesToMeters(218.42), new Rotation2d());
-
-    public static final Pose2d kBlueSpeakerShootPose =
-        new Pose2d(
-            kBlueSpeakerPose.getX() + kShootDistFromSpeaker,
-            kBlueSpeakerPose.getY(),
-            kBlueSpeakerPose.getRotation());
-
-    public static final Pose2d kBlueMaxSpeakerShootPose =
-        new Pose2d(
-            kBlueSpeakerPose.getX() + kShootDistFromSpeaker * Math.cos(kMaxAngleSpeakerShootOffset),
-            kBlueSpeakerPose.getY() + kShootDistFromSpeaker * Math.sin(kMaxAngleSpeakerShootOffset),
-            new Rotation2d(kMaxAngleSpeakerShootOffset));
-
-    public static final Pose2d kBlueMinSpeakerShootPose =
-        new Pose2d(
-            kBlueMaxSpeakerShootPose.getX(),
-            kBlueSpeakerPose.getY()
-                + kShootDistFromSpeaker * Math.sin(2 * Math.PI - kMaxAngleSpeakerShootOffset),
-            new Rotation2d(2 * Math.PI - kMaxAngleSpeakerShootOffset));
-
-    public static final Pose2d kBlueAmpPose =
-        new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), new Rotation2d());
-    public static final Pose2d kBlueAmpShootPose =
-        new Pose2d(
-            kBlueAmpPose.getX(), kBlueAmpPose.getY() - kShootDistAmp, new Rotation2d(Math.PI / 2));
-
-    public static final Pose2d kBlueBottomNotePose =
-        new Pose2d(Units.inchesToMeters(114.0), Units.inchesToMeters(161.638409), new Rotation2d());
-    public static final Pose2d kBlueCenterNotePose =
-        new Pose2d(
-            Units.inchesToMeters(114.0), Units.inchesToMeters(161.638409 + 57.0), new Rotation2d());
-    public static final Pose2d kBlueTopNotePose =
-        new Pose2d(
-            Units.inchesToMeters(114.0),
-            Units.inchesToMeters(161.638409 + 114.0),
-            new Rotation2d());
-    // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
-    // public static final Pose2d kRedShootPose =
-    //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());
-
-  }
 
   public static final class VisionConstants {
     // TODO Figure out how much to trust state pose estimate versus vision pose estimate (higher
@@ -313,19 +347,16 @@ public final class Constants {
     public static final Matrix<N3, N1> kMultiTagStandardDeviations = VecBuilder.fill(0.5, 0.5, 1);
 
     // TODO Add information for camera 1
-    public static final String kCameraName1 = "Camera1";
+    public static final String kCameraName1 = "Camera1"; // -0.127287;0.177495
     public static final Transform3d kDistToCamera1 =
         new Transform3d(
-            -0.155575,
-            -0.127287,
-            -0.441758,
-            new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, Math.PI));
+            0.155575, -0.152, 0.441758, new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, Math.PI));
 
     // TODO Add information for camera 2
     public static final String kCameraName2 = "Camera2";
     public static final Transform3d kDistToCamera2 =
         new Transform3d(
-            -0.155575, 0.177495, -0.441758, new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, 0.0));
+            0.155575, 0.152, 0.441758, new Rotation3d(0.0, (Math.PI / 180.0) * -22.0, 0.0));
 
     public static final String kObjectCameraName = "ObjectCamera";
     public static AprilTagFieldLayout kAprilTagLayout;
