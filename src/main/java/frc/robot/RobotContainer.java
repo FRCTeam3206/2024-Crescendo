@@ -326,7 +326,7 @@ public Command pickUpNoteCommand(Pose2d pickupPose) {
             .until(
                 () ->!objectCamera.getLatestResult().hasTargets()||Math.abs(objectCamera.getLatestResult().getBestTarget().getYaw()*Math.PI/180)
                             < AutoAlignConstants.kAtRotationGoalTolerance),
-        pickUpNoteCommand(), m_robotDrive.stopCommand(), () -> objectCamera.getLatestResult().hasTargets());
+        pickUpNoteCommand()), m_robotDrive.stopCommand(), () -> objectCamera.getLatestResult().hasTargets());
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
