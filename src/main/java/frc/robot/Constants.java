@@ -271,7 +271,7 @@ public final class Constants {
     public static final double kPathFollowingP = 0.74; // Tune?
     public static final double kPathFollowingAngularP = 2.0 / Math.PI;
     public static final double kShootDistFromSpeaker = 2.39; // 3.11; // Tune value
-    public static final double kShootDistAmp = 0.75; // Find value
+    public static final double kShootDistAmp = 0.65; // Find value
     public static final double kPickUpNoteDist = 0.9;
     public static final double kMaxAngleSpeakerShootOffset =
         .643; // Math.PI / 8.0; // Not used yet //.672
