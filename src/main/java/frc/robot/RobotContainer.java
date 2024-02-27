@@ -125,17 +125,9 @@ public class RobotContainer implements Logged {
     // 5.326,new Rotation2d(Math.PI))));
     m_driverController.button(2).whileTrue(m_robotDrive.autoDriveToSpeakerShoot());
     m_driverController
-        .button(3)
-        .whileTrue(
-            new RunCommand(
-                () -> {
-                  m_robotDrive.driveToGoal(AllianceNoteLocation.CENTER.getPickUpPose());
-                },
-                m_robotDrive));
-    m_driverController
         .button(5)
         .whileTrue(
-            m_robotDrive.driveToPoseCommand(AllianceNoteLocation.CENTER.getPickUpPose()));
+            m_robotDrive.driveToAmpPoseCommand());
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
     xbox.povRight().onTrue(arm.ampPosition());
