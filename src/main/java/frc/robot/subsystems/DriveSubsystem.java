@@ -590,10 +590,12 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     return driveToPoseCommand(AutoAlignConstants.kBlueSpeakerShootPose);
   }
 
-  public Command driveToAmpPoseCommand() {
+  public Command driveToAmpSetupPoseCommand() {
     return driveToPoseCommand(AutoAlignConstants.kBlueAmpShootPose);
   }
-
+  public Command scoreToAmpCommand(){
+    return driveToAmpSetupPoseCommand().andThen(driveCommand(()->0,()->.15,()->0,()->RelativeTo.FIELD_RELATIVE,false).withTimeout(.5));
+  }
   public boolean isSpeakerAligned() {
     return isAtDistFromPoint(
             AllianceUtil.getPoseForAlliance(AutoAlignConstants.kBlueSpeakerPose),

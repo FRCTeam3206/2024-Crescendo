@@ -127,7 +127,7 @@ public class RobotContainer implements Logged {
     m_driverController
         .button(5)
         .whileTrue(
-            m_robotDrive.driveToAmpPoseCommand());
+            m_robotDrive.scoreToAmpCommand());
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
     xbox.povRight().onTrue(arm.ampPosition());
@@ -170,8 +170,7 @@ public class RobotContainer implements Logged {
                 shootake.intakeCommand())
             .until(() -> shootake.hasNote())
             .withTimeout(2.0),
-        m_robotDrive.stopCommand(),
-        arm.speakerCommandStop());
+        m_robotDrive.stopCommand());
   }
 
   public Command pickUpNoteCommand(AllianceNoteLocation noteLocation) {
@@ -180,15 +179,42 @@ public class RobotContainer implements Logged {
   }
 
   public Command speakerShoot() {
-    return new SequentialCommandGroup(
+    return new SequentialCommandGroup(arm.speakerCommandStop(),
         m_robotDrive.autoDriveToSpeakerShoot(), shootake.speakerShootCommand());
   }
-
+  public Command ampShoot(){
+    return new SequentialCommandGroup(arm.ampCommandStop(),
+        m_robotDrive.scoreToAmpCommand(), shootake.ampCommand().withTimeout(1));
+  }
+  public Command bottomToSpeaker(){
+    return new SequentialCommandGroup(
+      pickUpNoteCommand(AllianceNoteLocation.BOTTOM),
+      speakerShoot()
+    );
+  }
+  public Command midToSpeaker(){
+    return new SequentialCommandGroup(
+      pickUpNoteCommand(AllianceNoteLocation.CENTER),
+      speakerShoot()
+    );
+  }
+  public Command topToSpeaker(){
+    return new SequentialCommandGroup(
+      pickUpNoteCommand(AllianceNoteLocation.TOP),
+      speakerShoot()
+    );
+  }
+  public Command topToAmp(){
+    return new SequentialCommandGroup(
+      pickUpNoteCommand(AllianceNoteLocation.TOP),
+      ampShoot()
+    );
+  }
   public void autons() {
     autonChooser.setDefaultOption("Nothing", m_robotDrive.stopCommand());
 
     autonChooser.addOption(
-        "Auto-Align 1 Note",
+        "1 Note",
         new SequentialCommandGroup(
             new ParallelCommandGroup(
                     m_robotDrive.driveCommand(
@@ -199,30 +225,58 @@ public class RobotContainer implements Logged {
             speakerShoot()));
 
     autonChooser.addOption(
-        "2 Note (Middle)",
+        "2 Note (Middle Shoot)",
         new SequentialCommandGroup(
-            speakerShoot().withTimeout(0),
+            speakerShoot(),
             shootake.stopCommand(),
-            pickUpNoteCommand(AllianceNoteLocation.CENTER),
-            new RunCommand(
-                () -> {
-                  SmartDashboard.putString("Until", "Until");
-                }),
-            speakerShoot()));
-
+            midToSpeaker()));
     autonChooser.addOption(
-        "2 Note (Top)",
-        new SequentialCommandGroup(
-            speakerShoot(), pickUpNoteCommand(AllianceNoteLocation.TOP), speakerShoot()));
-
-    autonChooser.addOption(
-        "3 Note (NO Bottom)",
+        "2 Note (Amp-Side Shoot)",
         new SequentialCommandGroup(
             speakerShoot(),
-            pickUpNoteCommand(AllianceNoteLocation.CENTER),
+            shootake.stopCommand(),
+            topToSpeaker()));
+    autonChooser.addOption(
+        "2 Note (Stage-Side Shoot)",
+        new SequentialCommandGroup(
             speakerShoot(),
-            pickUpNoteCommand(AllianceNoteLocation.TOP),
-            speakerShoot()));
+            shootake.stopCommand(),
+            bottomToSpeaker()));
+    autonChooser.addOption(
+        "2 Note (Amp Score)",
+        new SequentialCommandGroup(
+            speakerShoot(),
+            shootake.stopCommand(),
+            topToAmp()));
+    autonChooser.addOption(
+        "3 Note (Amp Side All Speaker)",
+        new SequentialCommandGroup(
+            speakerShoot(),
+            shootake.stopCommand(),
+            midToSpeaker(),
+            topToSpeaker()));
+    autonChooser.addOption(
+        "3 Note (Stage Side)",
+        new SequentialCommandGroup(
+            speakerShoot(),
+            shootake.stopCommand(),
+            midToSpeaker(),
+            bottomToSpeaker()));
+    autonChooser.addOption(
+        "3 Note (Amp Side One Amp)",
+        new SequentialCommandGroup(
+            speakerShoot(),
+            shootake.stopCommand(),
+            midToSpeaker(),
+            topToAmp()));
+    autonChooser.addOption(
+        "4 Note",
+        new SequentialCommandGroup(
+            speakerShoot(),
+            shootake.stopCommand(),
+            bottomToSpeaker(),
+            midToSpeaker(),
+            topToAmp()));
     SmartDashboard.putData(autonChooser);
   }
 
