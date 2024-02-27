@@ -78,7 +78,7 @@ public class Robot extends TimedRobot implements Logged {
   @Override
   public void autonomousInit() {
     // hasBeenEnabled = true;
-
+    m_robotContainer.m_robotDrive.resetGryoToVision();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (AllianceUtil.getAlliance() == RobotContainer.AllianceColor.UNKNOWN) {
@@ -104,6 +104,7 @@ public class Robot extends TimedRobot implements Logged {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.m_robotDrive.resetGryoToVision();
     // hasBeenEnabled = true;
 
     // This makes sure that the autonomous stops running when

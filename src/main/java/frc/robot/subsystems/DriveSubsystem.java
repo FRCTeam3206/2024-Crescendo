@@ -36,6 +36,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RelativeTo;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.RobotContainer.AllianceColor;
 import frc.robot.Robot;
 import frc.robot.sensors.AprilTagVision;
 import frc.utils.AllianceUtil;
@@ -442,6 +443,14 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     return this.runOnce(this::zeroHeading).ignoringDisable(true).withName("Reset Gyro");
   }
 
+  public void resetGryoToVision(){
+    if(AllianceUtil.getAlliance()==AllianceColor.BLUE){
+      m_gyro.setAngleAdjustment(-getPose().getRotation().getDegrees());
+    }else if(AllianceUtil.getAlliance()==AllianceColor.RED){
+      m_gyro.setAngleAdjustment(-getPose().getRotation().getDegrees()+180);
+    }
+  }
+  
   /**
    * Returns the heading of the robot.
    *
