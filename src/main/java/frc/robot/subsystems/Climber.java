@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
@@ -20,20 +19,27 @@ public class Climber extends SubsystemBase implements Logged {
   }
 
   public void setSpeed(double speed) {
-    if(leftClimber.getEncoder().getPosition()*-1<ClimberConstants.climbMax&&speed<0||speed>0){
+    if (leftClimber.getEncoder().getPosition() * -1 < ClimberConstants.climbMax && speed < 0
+        || speed > 0) {
       leftClimber.set(speed);
-    }else leftClimber.set(0);
-    if(rightClimber.getEncoder().getPosition()<ClimberConstants.climbMax&&speed<0||speed>0){
-    rightClimber.set(-speed);
-    }else rightClimber.set(0);
+    } else leftClimber.set(0);
+    if (rightClimber.getEncoder().getPosition() < ClimberConstants.climbMax && speed < 0
+        || speed > 0) {
+      rightClimber.set(-speed);
+    } else rightClimber.set(0);
     this.log("Climb Speed", speed);
   }
-  public Command zero(){
-    return this.runOnce(()->{rightClimber.getEncoder().setPosition(0);
-    leftClimber.getEncoder().setPosition(0);});
+
+  public Command zero() {
+    return this.runOnce(
+        () -> {
+          rightClimber.getEncoder().setPosition(0);
+          leftClimber.getEncoder().setPosition(0);
+        });
   }
-  public void periodic(){
-    this.log("Right Climb Encoder",rightClimber.getEncoder().getPosition());
-    this.log("Left Climb Encoder",leftClimber.getEncoder().getPosition()*-1);
+
+  public void periodic() {
+    this.log("Right Climb Encoder", rightClimber.getEncoder().getPosition());
+    this.log("Left Climb Encoder", leftClimber.getEncoder().getPosition() * -1);
   }
 }

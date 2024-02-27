@@ -42,17 +42,15 @@ public class Arm extends SubsystemBase implements Logged {
   }
 
   public boolean atSpeakerAngle() {
-    return Math.abs(getAngle()-ArmConstants.kShootAngle)<ArmConstants.kAtAngleTolerance;
+    return Math.abs(getAngle() - ArmConstants.kShootAngle) < ArmConstants.kAtAngleTolerance;
   }
 
   public boolean atAmpAngle() {
-    return Math.abs(getAngle()-ArmConstants.kArmAmpAngle)<ArmConstants.kAtAngleTolerance;
+    return Math.abs(getAngle() - ArmConstants.kArmAmpAngle) < ArmConstants.kAtAngleTolerance;
   }
 
-
-
   public boolean atIntakeAngle() {
-    return Math.abs(getAngle()-ArmConstants.kIntakeAngle)<ArmConstants.kAtAngleTolerance;
+    return Math.abs(getAngle() - ArmConstants.kIntakeAngle) < ArmConstants.kAtAngleTolerance;
   }
 
   public Command intakePosition() {
@@ -88,6 +86,7 @@ public class Arm extends SubsystemBase implements Logged {
           setVoltage(voltage);
         });
   }
+
   public Command subwooferPosition() {
     return this.run(
         () -> {

@@ -95,9 +95,9 @@ public class RobotContainer implements Logged {
         new RunCommand(
             () -> {
               if (shootake.hasNote()) {
-                if(m_robotDrive.isSpeakerAligned()){
-                  lights.setLightColor(0,255,0);
-                }else{
+                if (m_robotDrive.isSpeakerAligned()) {
+                  lights.setLightColor(0, 255, 0);
+                } else {
                   lights.setLightColor(255, 80, 0);
                 }
               } else {
@@ -124,8 +124,18 @@ public class RobotContainer implements Logged {
     // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
     m_driverController.button(2).whileTrue(m_robotDrive.autoDriveToSpeakerShoot());
-    m_driverController.button(3).whileTrue(new RunCommand(() -> {m_robotDrive.driveToGoal(AllianceNoteLocation.CENTER.getPickUpPose());},m_robotDrive));
-    m_driverController.button(5).whileTrue(m_robotDrive.driveToGoalCommand(()->AllianceNoteLocation.CENTER.getPickUpPose()));
+    m_driverController
+        .button(3)
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  m_robotDrive.driveToGoal(AllianceNoteLocation.CENTER.getPickUpPose());
+                },
+                m_robotDrive));
+    m_driverController
+        .button(5)
+        .whileTrue(
+            m_robotDrive.driveToGoalCommand(() -> AllianceNoteLocation.CENTER.getPickUpPose()));
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
     xbox.povRight().onTrue(arm.ampPosition());
@@ -137,7 +147,7 @@ public class RobotContainer implements Logged {
     xbox.start().whileTrue(shootake.slowIntakeCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
-    SmartDashboard.putData("Reset Climber",climber.zero());
+    SmartDashboard.putData("Reset Climber", climber.zero());
     SmartDashboard.putNumber("X to Reset", 0);
     SmartDashboard.putNumber("Y to Reset", 0);
     SmartDashboard.putData(
@@ -169,13 +179,12 @@ public class RobotContainer implements Logged {
             .until(() -> shootake.hasNote())
             .withTimeout(2.0),
         m_robotDrive.stopCommand(),
-        arm.speakerCommandStop()
-        );
+        arm.speakerCommandStop());
   }
 
   public Command pickUpNoteCommand(AllianceNoteLocation noteLocation) {
     return new SequentialCommandGroup(
-        m_robotDrive.driveToGoalCommand(()->noteLocation.getPickUpPose()), pickUpNoteCommand());
+        m_robotDrive.driveToGoalCommand(() -> noteLocation.getPickUpPose()), pickUpNoteCommand());
   }
 
   public Command speakerShoot() {
@@ -186,19 +195,28 @@ public class RobotContainer implements Logged {
   public void autons() {
     autonChooser.setDefaultOption("Nothing", m_robotDrive.stopCommand());
 
-    autonChooser.addOption("Auto-Align 1 Note", new SequentialCommandGroup(
-      new ParallelCommandGroup(
-      m_robotDrive.driveCommand(()->.25,()->0,()->0,()->RelativeTo.DRIVER_RELATIVE,false),
-      new RunCommand(()->shootake.setRetained(true),shootake)
-      ).withTimeout(1.5),
-      m_robotDrive.stopCommand(),
-      speakerShoot()
-    ));
+    autonChooser.addOption(
+        "Auto-Align 1 Note",
+        new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                    m_robotDrive.driveCommand(
+                        () -> .25, () -> 0, () -> 0, () -> RelativeTo.DRIVER_RELATIVE, false),
+                    new RunCommand(() -> shootake.setRetained(true), shootake))
+                .withTimeout(1.5),
+            m_robotDrive.stopCommand(),
+            speakerShoot()));
 
     autonChooser.addOption(
         "2 Note (Middle)",
         new SequentialCommandGroup(
-            speakerShoot(),shootake.stopCommand(), pickUpNoteCommand(AllianceNoteLocation.CENTER), speakerShoot()));
+            speakerShoot().withTimeout(0),
+            shootake.stopCommand(),
+            pickUpNoteCommand(AllianceNoteLocation.CENTER),
+            new RunCommand(
+                () -> {
+                  SmartDashboard.putString("Until", "Until");
+                }),
+            speakerShoot()));
 
     autonChooser.addOption(
         "2 Note (Top)",
@@ -208,12 +226,11 @@ public class RobotContainer implements Logged {
     autonChooser.addOption(
         "3 Note (NO Bottom)",
         new SequentialCommandGroup(
-          speakerShoot(),
-          pickUpNoteCommand(AllianceNoteLocation.CENTER),
-          speakerShoot(),
-          pickUpNoteCommand(AllianceNoteLocation.TOP),
-          speakerShoot()
-        ));
+            speakerShoot(),
+            pickUpNoteCommand(AllianceNoteLocation.CENTER),
+            speakerShoot(),
+            pickUpNoteCommand(AllianceNoteLocation.TOP),
+            speakerShoot()));
     autonChooser.addOption(
         "1 Note",
         new SequentialCommandGroup(

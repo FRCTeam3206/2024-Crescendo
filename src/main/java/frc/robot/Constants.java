@@ -180,7 +180,7 @@ public final class Constants {
   public static final class ClimberConstants {
     public static final int kLeftClimberCANId = 8;
     public static final int kRightClimberCANId = 9;
-    public static final double climbMax=3.7;
+    public static final double climbMax = 3.7;
   }
 
   public static enum ArmPostition {
@@ -205,7 +205,11 @@ public final class Constants {
 
     private AllianceNoteLocation(Pose2d bluePose, Pose2d pickUpPose) {
       this.bluePose = bluePose;
-      this.pickUpPose=bluePose.transformBy(new Transform2d(new Translation2d(-Constants.AutoAlignConstants.kPickUpNoteDist,0), new Rotation2d()));
+      this.pickUpPose =
+          bluePose.transformBy(
+              new Transform2d(
+                  new Translation2d(-Constants.AutoAlignConstants.kPickUpNoteDist, 0),
+                  new Rotation2d()));
     }
 
     public Pose2d getPose() {
@@ -313,21 +317,21 @@ public final class Constants {
             Units.inchesToMeters(161.638409 + 114.0),
             new Rotation2d());
 
-    public static final Pose2d kTopNotePickUpPose = new Pose2d(
-      AllianceNoteLocation.TOP.getPose().getX() + kPickUpNoteDist,
-      AllianceNoteLocation.TOP.getPose().getY(),
-      new Rotation2d()
-    );
-    public static final Pose2d kCenterNotePickUpPose = new Pose2d(
-      AllianceNoteLocation.CENTER.getPose().getX() + kPickUpNoteDist,
-      AllianceNoteLocation.CENTER.getPose().getY(),
-      new Rotation2d()
-    );
-    public static final Pose2d kBottomNotePickUpPose = new Pose2d(
-      AllianceNoteLocation.BOTTOM.getPose().getX() + kPickUpNoteDist,
-      AllianceNoteLocation.BOTTOM.getPose().getY(),
-      new Rotation2d()
-    );
+    public static final Pose2d kTopNotePickUpPose =
+        new Pose2d(
+            AllianceNoteLocation.TOP.getPose().getX() + kPickUpNoteDist,
+            AllianceNoteLocation.TOP.getPose().getY(),
+            new Rotation2d());
+    public static final Pose2d kCenterNotePickUpPose =
+        new Pose2d(
+            AllianceNoteLocation.CENTER.getPose().getX() + kPickUpNoteDist,
+            AllianceNoteLocation.CENTER.getPose().getY(),
+            new Rotation2d());
+    public static final Pose2d kBottomNotePickUpPose =
+        new Pose2d(
+            AllianceNoteLocation.BOTTOM.getPose().getX() + kPickUpNoteDist,
+            AllianceNoteLocation.BOTTOM.getPose().getY(),
+            new Rotation2d());
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
     // public static final Pose2d kRedShootPose =
     //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());

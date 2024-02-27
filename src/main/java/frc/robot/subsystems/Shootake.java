@@ -53,9 +53,11 @@ public class Shootake extends SubsystemBase implements Logged {
           setRetained(true);
         });
   }
-  public Command stopCommand(){
-    return this.runOnce(()->this.setSpeed(0));
+
+  public Command stopCommand() {
+    return this.runOnce(() -> this.setSpeed(0));
   }
+
   public Command intakeCommand() {
     return this.run(
         () -> {
