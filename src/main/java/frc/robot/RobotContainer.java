@@ -223,7 +223,14 @@ public class RobotContainer implements Logged {
                 .withTimeout(1.5),
             m_robotDrive.stopCommand(),
             speakerShoot()));
-
+    autonChooser.addOption("Subwoofer", new SequentialCommandGroup(
+      arm.subwooferPosition().withTimeout(2),
+      shootake.speakerShootCommand(),
+      m_robotDrive.driveCommand(
+                        () -> .25, () -> 0, () -> 0, () -> RelativeTo.DRIVER_RELATIVE, false),
+                    new RunCommand(() -> shootake.setRetained(true), shootake),
+      m_robotDrive.stopCommand()
+      ));
     autonChooser.addOption(
         "2 Note (Middle Shoot)",
         new SequentialCommandGroup(
