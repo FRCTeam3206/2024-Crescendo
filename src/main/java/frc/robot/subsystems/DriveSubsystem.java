@@ -252,11 +252,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    * @param rateLimit Whether to enable rate limiting for smoother control.
    */
-  private double rotationSpeed = 0;
-
   public void drive(
       double xSpeed, double ySpeed, double rot, RelativeTo relativeTo, boolean rateLimit) {
-    this.rotationSpeed = rot;
     double xSpeedCommanded;
     double ySpeedCommanded;
 

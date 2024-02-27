@@ -231,14 +231,6 @@ public class RobotContainer implements Logged {
             speakerShoot(),
             pickUpNoteCommand(AllianceNoteLocation.TOP),
             speakerShoot()));
-    autonChooser.addOption(
-        "1 Note",
-        new SequentialCommandGroup(
-            new RunCommand(
-                    () -> m_robotDrive.drive(.25, 0, 0, RelativeTo.ROBOT_RELATIVE, false),
-                    m_robotDrive)
-                .withTimeout(1),
-            shootake.shootCommand(() -> false)));
     SmartDashboard.putData(autonChooser);
   }
 
