@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -170,7 +171,7 @@ public final class Constants {
 
     public static final double kArmAmpAngle = 2.1;
     public static final double kShootAngle = 0.069;
-    public static final double kIntakeAngle = 3.434;
+    public static final double kIntakeAngle = 3.535;
     public static final double kSubwooferAngle = 1.51;
 
     public static final double kAtAngleTolerance = 0.05;
@@ -195,18 +196,24 @@ public final class Constants {
   }
 
   public static enum AllianceNoteLocation {
-    BOTTOM(AutoAlignConstants.kBlueBottomNotePose),
-    CENTER(AutoAlignConstants.kBlueCenterNotePose),
-    TOP(AutoAlignConstants.kBlueTopNotePose);
+    BOTTOM(AutoAlignConstants.kBlueBottomNotePose, AutoAlignConstants.kBottomNotePickUpPose),
+    CENTER(AutoAlignConstants.kBlueCenterNotePose, AutoAlignConstants.kCenterNotePickUpPose),
+    TOP(AutoAlignConstants.kBlueTopNotePose, AutoAlignConstants.kTopNotePickUpPose);
 
     private Pose2d bluePose;
+    private Pose2d pickUpPose;
 
-    private AllianceNoteLocation(Pose2d bluePose) {
+    private AllianceNoteLocation(Pose2d bluePose, Pose2d pickUpPose) {
       this.bluePose = bluePose;
+      this.pickUpPose=bluePose.transformBy(new Transform2d(new Translation2d(-Constants.AutoAlignConstants.kPickUpNoteDist,0), new Rotation2d()));
     }
 
     public Pose2d getPose() {
       return AllianceUtil.getPoseForAlliance(bluePose);
+    }
+
+    public Pose2d getPickUpPose() {
+      return AllianceUtil.getPoseForAlliance(pickUpPose);
     }
   }
 
@@ -305,6 +312,22 @@ public final class Constants {
             Units.inchesToMeters(114.0),
             Units.inchesToMeters(161.638409 + 114.0),
             new Rotation2d());
+
+    public static final Pose2d kTopNotePickUpPose = new Pose2d(
+      AllianceNoteLocation.TOP.getPose().getX() + kPickUpNoteDist,
+      AllianceNoteLocation.TOP.getPose().getY(),
+      new Rotation2d()
+    );
+    public static final Pose2d kCenterNotePickUpPose = new Pose2d(
+      AllianceNoteLocation.CENTER.getPose().getX() + kPickUpNoteDist,
+      AllianceNoteLocation.CENTER.getPose().getY(),
+      new Rotation2d()
+    );
+    public static final Pose2d kBottomNotePickUpPose = new Pose2d(
+      AllianceNoteLocation.BOTTOM.getPose().getX() + kPickUpNoteDist,
+      AllianceNoteLocation.BOTTOM.getPose().getY(),
+      new Rotation2d()
+    );
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
     // public static final Pose2d kRedShootPose =
     //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());

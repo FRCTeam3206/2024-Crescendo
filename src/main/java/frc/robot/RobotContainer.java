@@ -124,7 +124,7 @@ public class RobotContainer implements Logged {
     // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
     m_driverController.button(2).whileTrue(m_robotDrive.autoDriveToSpeakerShoot());
-
+    m_driverController.button(5).onTrue(new RunCommand(() -> {m_robotDrive.driveToGoal(AllianceNoteLocation.CENTER.getPickUpPose());}));
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
     xbox.povRight().onTrue(arm.ampPosition());
@@ -158,6 +158,7 @@ public class RobotContainer implements Logged {
 
   public Command pickUpNoteCommand() {
     return new SequentialCommandGroup(
+        m_robotDrive.stopCommand(),
         arm.intakeCommandStop(),
         new ParallelCommandGroup(
                 m_robotDrive.driveCommand(
@@ -167,7 +168,8 @@ public class RobotContainer implements Logged {
             .until(() -> shootake.hasNote())
             .withTimeout(2.0),
         m_robotDrive.stopCommand(),
-        arm.speakerCommandStop().withTimeout(2.0));
+        arm.speakerCommandStop()
+        );
   }
 
   public Command pickUpNoteCommand(AllianceNoteLocation noteLocation) {
@@ -195,7 +197,7 @@ public class RobotContainer implements Logged {
     autonChooser.addOption(
         "2 Note (Middle)",
         new SequentialCommandGroup(
-            speakerShoot(), pickUpNoteCommand(AllianceNoteLocation.CENTER), speakerShoot()));
+            speakerShoot(),shootake.stopCommand(), pickUpNoteCommand(AllianceNoteLocation.CENTER), speakerShoot()));
 
     autonChooser.addOption(
         "2 Note (Top)",
@@ -211,53 +213,6 @@ public class RobotContainer implements Logged {
           pickUpNoteCommand(AllianceNoteLocation.TOP),
           speakerShoot()
         ));
-
-    // autonChooser.addOption(
-    //     "S Path",
-    //     generateAutonomousCommand(
-    //         // Start at the origin facing the +X direction
-    //         new Pose2d(0, 0, new Rotation2d(0)),
-    //         // Pass through these two interior waypoints, making an 's' curve path
-    //         List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-    //         // End 3 meters straight ahead of where we started, facing forward
-    //         new Pose2d(3, 0, new Rotation2d(Math.PI))));
-
-    // autonChooser.addOption(
-    //     "Forward 2 Meters",
-    //     generateAutonomousCommand(
-    //         new Pose2d(0, 0, new Rotation2d(0)), List.of(), new Pose2d(2, 0, new
-    // Rotation2d(0))));
-
-    // autonChooser.addOption(
-    //     "Figure 8",
-    //     generateAutonomousCommand(
-    //         new Pose2d(0, 0, new Rotation2d(0)),
-    //         List.of(
-    //             new Translation2d(5.5, 1),
-    //             new Translation2d(8.3, 4),
-    //             new Translation2d(11, 7),
-    //             new Translation2d(15.7, 4),
-    //             new Translation2d(11, 1),
-    //             new Translation2d(8.3, 4),
-    //             new Translation2d(5.5, 7),
-    //             new Translation2d(.7, 4)),
-    //         new Pose2d(1, 1, new Rotation2d(0))));
-
-    // Pose2d start = new Pose2d(1.9, 7.8 - Units.feetToMeters(6), new Rotation2d(0));
-    // Pose2d note = new Pose2d(2.3, 5.55, new Rotation2d(0));
-    // Pose2d amp = new Pose2d(1.9, 7.8, new Rotation2d(Math.PI));
-    // autonChooser.addOption(
-    //     "Score note in amp",
-    //     new SequentialCommandGroup(
-    //         new InstantCommand(
-    //             () -> {
-    //               m_robotDrive.resetOdometry(start);
-    //             }),
-    //         generateAutonomousCommand(start, List.of(), note),
-    //         // pickUpNote(),
-    //         generateAutonomousCommand(note, List.of(), amp)
-    //         // scoreToAmp()
-    //         ));
     autonChooser.addOption(
         "1 Note",
         new SequentialCommandGroup(

@@ -252,9 +252,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    * @param rateLimit Whether to enable rate limiting for smoother control.
    */
+  private double rotationSpeed=0;
   public void drive(
       double xSpeed, double ySpeed, double rot, RelativeTo relativeTo, boolean rateLimit) {
-
+    this.rotationSpeed=rot;
     double xSpeedCommanded;
     double ySpeedCommanded;
 
@@ -667,7 +668,21 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     return this.run(
         () -> {
           driveToDistFromPoint(noteLocation.getPose(), AutoAlignConstants.kPickUpNoteDist, 0.0);
-        });
+        }).until(()->{
+          this.log("Angle to Point",getAngleToPoint(
+                                        AllianceUtil.getPoseForAlliance(
+                                            noteLocation.getPose())));
+          this.log("Angle to Goal",getAngleToGoal(
+                            new Rotation2d(getAngleToPoint(
+                                        AllianceUtil.getPoseForAlliance(
+                                            noteLocation.getPose())))));
+          return isAtDistFromPoint(
+                        AllianceUtil.getPoseForAlliance(noteLocation.getPose()),
+                        AutoAlignConstants.kPickUpNoteDist)
+                    && Math.abs(getAngleToPoint(
+                                        AllianceUtil.getPoseForAlliance(
+                                            noteLocation.getPose()))-(getPose().getRotation().getRadians()))
+                        < AutoAlignConstants.kAtRotationGoalTolerance;});
   }
 
   /** Update the gyro when simulating the robot. */
