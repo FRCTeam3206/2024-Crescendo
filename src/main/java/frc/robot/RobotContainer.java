@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -162,25 +163,24 @@ public class RobotContainer implements Logged {
   public Command pickUpNoteCommand() {
     return new SequentialCommandGroup(
         m_robotDrive.stopCommand(),
-        arm.intakeCommandStop(),
+        new ParallelRaceGroup(arm.intakeCommandStop(),shootake.intakeCommand()),
         new ParallelCommandGroup(
                 m_robotDrive.driveCommand(
                     () -> 0.15, () -> 0.0, () -> 0.0, () -> RelativeTo.ROBOT_RELATIVE, true),
                 arm.intakePosition(),
                 shootake.intakeCommand())
             .until(() -> shootake.hasNote())
-            .withTimeout(2.0),
-        m_robotDrive.stopCommand());
+            .withTimeout(2.0),m_robotDrive.stopCommand(),shootake.retainCommand(),shootake.stopCommand());
   }
 
   public Command pickUpNoteCommand(AllianceNoteLocation noteLocation) {
     return new SequentialCommandGroup(
-        m_robotDrive.driveToPoseCommand(noteLocation.getPickUpPose()), pickUpNoteCommand());
+        new ParallelRaceGroup(m_robotDrive.driveToPoseCommand(noteLocation.getPickUpPose()),arm.intakePosition()), pickUpNoteCommand(),m_robotDrive.stopCommand());
   }
 
   public Command speakerShoot() {
-    return new SequentialCommandGroup(arm.speakerCommandStop(),
-        m_robotDrive.autoDriveToSpeakerShoot(), shootake.speakerShootCommand());
+    return new SequentialCommandGroup(m_robotDrive.stopCommand(),new ParallelCommandGroup(arm.speakerCommandStop(),new RunCommand(()->shootake.setRetained(true), shootake).withTimeout(.5),
+        m_robotDrive.autoDriveToSpeakerShoot()),m_robotDrive.stopCommand(), shootake.speakerShootCommand());
   }
   public Command ampShoot(){
     return new SequentialCommandGroup(arm.ampCommandStop(),

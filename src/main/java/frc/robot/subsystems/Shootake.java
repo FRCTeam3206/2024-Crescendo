@@ -53,7 +53,11 @@ public class Shootake extends SubsystemBase implements Logged {
           setRetained(true);
         });
   }
-
+  public Command retainCommand(){
+      return this.run(
+        ()->{setRetained(true);}
+      ).withTimeout(.25);
+  }
   public Command stopCommand() {
     return this.runOnce(() -> this.setSpeed(0));
   }
@@ -110,7 +114,7 @@ public class Shootake extends SubsystemBase implements Logged {
                   setRetained(false);
                   setSpeed(-1.0);
                 })
-            .withTimeout(1));
+            .withTimeout(.5));
   }
 
   /**
