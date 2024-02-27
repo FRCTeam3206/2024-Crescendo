@@ -8,6 +8,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -27,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AllianceNoteLocation;
+import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -175,17 +178,20 @@ public class RobotContainer implements Logged {
   }
 
   public Command pickUpNoteCommand(AllianceNoteLocation noteLocation) {
-    return new SequentialCommandGroup(
-        new ParallelRaceGroup(m_robotDrive.driveToPoseCommand(noteLocation.getPickUpPose()),arm.intakePosition()), pickUpNoteCommand(),m_robotDrive.stopCommand());
+    return pickUpNoteCommand(noteLocation.getPickUpPose());
   }
-
+public Command pickUpNoteCommand(Pose2d pickupPose) {
+    return new SequentialCommandGroup(
+        new ParallelRaceGroup(m_robotDrive.driveToPoseCommand(pickupPose,AutoAlignConstants.kAtNotePickupGoalTolerance),arm.intakePosition()), pickUpNoteCommand(),m_robotDrive.stopCommand());
+  }
   public Command speakerShoot() {
     return new SequentialCommandGroup(m_robotDrive.stopCommand(),new ParallelCommandGroup(arm.speakerCommandStop(),new RunCommand(()->shootake.setRetained(true), shootake).withTimeout(.5),
         m_robotDrive.autoDriveToSpeakerShoot()),m_robotDrive.stopCommand(), shootake.speakerShootCommand());
   }
+  
   public Command ampShoot(){
-    return new SequentialCommandGroup(arm.ampCommandStop(),
-        m_robotDrive.scoreToAmpCommand(), shootake.ampCommand().withTimeout(1));
+    return new SequentialCommandGroup(m_robotDrive.stopCommand(),new ParallelCommandGroup(arm.ampCommandStop(),
+        m_robotDrive.scoreToAmpCommand()),m_robotDrive.stopCommand(), new ParallelCommandGroup(m_robotDrive.stopCommand(),arm.ampPosition(),shootake.ampCommand()));
   }
   public Command bottomToSpeaker(){
     return new SequentialCommandGroup(
@@ -208,6 +214,12 @@ public class RobotContainer implements Logged {
   public Command topToAmp(){
     return new SequentialCommandGroup(
       pickUpNoteCommand(AllianceNoteLocation.TOP),
+      ampShoot()
+    );
+  }
+  public Command topToAmpWallSide(){
+    return new SequentialCommandGroup(
+      pickUpNoteCommand(AllianceNoteLocation.TOP.getPose().transformBy(new Transform2d(-AutoAlignConstants.kPickUpNoteDist, 0, new Rotation2d()))),
       ampShoot()
     );
   }
@@ -255,7 +267,7 @@ public class RobotContainer implements Logged {
         new SequentialCommandGroup(
             speakerShoot(),
             shootake.stopCommand(),
-            topToAmp()));
+            topToAmpWallSide()));
     autonChooser.addOption(
         "3 Note (Amp Side All Speaker)",
         new SequentialCommandGroup(
@@ -292,7 +304,7 @@ public class RobotContainer implements Logged {
     if (autonChooser.getSelected() == null) {
       return m_robotDrive.stopCommand();
     }
-    return new ConditionalCommand(autonChooser.getSelected(), m_robotDrive.stopCommand(), ()->m_robotDrive.getPose().getX()<.1&&m_robotDrive.getPose().getY()<.1);
+    return new ConditionalCommand(m_robotDrive.stopCommand(),autonChooser.getSelected(), ()->m_robotDrive.getPose().getX()<.1&&m_robotDrive.getPose().getY()<.1);
   }
 
   /**

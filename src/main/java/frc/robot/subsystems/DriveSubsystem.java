@@ -440,7 +440,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command zeroHeadingCommand() {
-    return this.runOnce(this::zeroHeading).ignoringDisable(true).withName("Reset Gyro");
+    return this.runOnce(()->{zeroHeading();m_gyro.setAngleAdjustment(0);}).ignoringDisable(true).withName("Reset Gyro");
   }
 
   public void resetGryoToVision(){
@@ -483,9 +483,13 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     return getAngleToGoal(Rotation2d.fromRadians(angleGoal));
   }
 
-  public boolean isAtGoal(Pose2d goalPose) {
+  public boolean isAtGoal(Pose2d goalPose,double translationTolerance) {
+    this.log("Is at Goal",getPose().getTranslation().getDistance(goalPose.getTranslation())
+            < translationTolerance
+        && Math.abs(getAngleToGoal(goalPose.getRotation()))
+            < AutoAlignConstants.kAtRotationGoalTolerance);
     return getPose().getTranslation().getDistance(goalPose.getTranslation())
-            < AutoAlignConstants.kAtGoalTolerance
+            < translationTolerance
         && Math.abs(getAngleToGoal(goalPose.getRotation()))
             < AutoAlignConstants.kAtRotationGoalTolerance;
   }
@@ -516,6 +520,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public void driveToGoal(Pose2d goalPose) {
+    System.out.println("Drive to Goal");
     Pose2d currentPose = getPose();
     double deltaX = goalPose.getX() - currentPose.getX();
     double deltaY = goalPose.getY() - currentPose.getY();
@@ -586,13 +591,16 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     drive(xVelocity, yVelocity, angularVelocity, RelativeTo.FIELD_RELATIVE, true);
   }
 
-  public Command driveToPoseCommand(Pose2d bluePose) {
+  public Command driveToPoseCommand(Pose2d bluePose,double translationTolerance) {
     return this.run(
             () -> {
               driveToGoal(AllianceUtil.getPoseForAlliance(bluePose));
             })
-        .until(() -> isAtGoal(AllianceUtil.getPoseForAlliance(bluePose)))
+        .until(() -> isAtGoal(AllianceUtil.getPoseForAlliance(bluePose),translationTolerance))
         .andThen(stopCommand());
+  }
+  public Command driveToPoseCommand(Pose2d bluePose){
+    return driveToPoseCommand(bluePose,AutoAlignConstants.kAtGoalTolerance);
   }
 
   public Command driveToSpeakerShootPoseCommand() {
@@ -603,7 +611,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     return driveToPoseCommand(AutoAlignConstants.kBlueAmpShootPose);
   }
   public Command scoreToAmpCommand(){
-    return driveToAmpSetupPoseCommand().andThen(driveCommand(()->0,()->.15,()->0,()->RelativeTo.FIELD_RELATIVE,false).withTimeout(.5));
+    return driveToAmpSetupPoseCommand().andThen(driveCommand(()->0,()->.15,()->0,()->RelativeTo.FIELD_RELATIVE,false).withTimeout(1));
   }
   public boolean isSpeakerAligned() {
     return isAtDistFromPoint(

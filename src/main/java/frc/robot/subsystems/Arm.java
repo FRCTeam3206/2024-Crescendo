@@ -105,5 +105,6 @@ public class Arm extends SubsystemBase implements Logged {
     return shootPosition().until(() -> atSpeakerAngle());
   }
 
-  public void periodic() {}
+  public void periodic() {
+  }
 }

@@ -157,7 +157,7 @@ public final class Constants {
 
   public static final class ArmConstants {
     public static final double kS = 0.0;
-    public static final double kG = 1.55;
+    public static final double kG = 1.2;
     public static final double kV = 0.0;
 
     public static final double kP = 1;
@@ -169,12 +169,13 @@ public final class Constants {
 
     public static final double kArmZeroThreshold = .15;
 
-    public static final double kArmAmpAngle = 2.1;
+    public static final double kArmAmpAngle = 2.0;
     public static final double kShootAngle = 0.069;
     public static final double kIntakeAngle = 3.535;
     public static final double kSubwooferAngle = 1.51;
 
     public static final double kAtAngleTolerance = 0.05;
+    public static final double kActiveAngleTolerance=.15;
   }
 
   public static final class ClimberConstants {
@@ -184,10 +185,11 @@ public final class Constants {
   }
     public static final class AutoAlignConstants { // Also for driving to pose in general.
     public static final double kAtGoalTolerance = 0.02; // Decide/tune/test
+    public static final double kAtNotePickupGoalTolerance = .04;
     public static final double kAtRotationGoalTolerance = 0.04; // Decide/tune/test
     public static final double kPathFollowingP = 0.74; // Tune?
     public static final double kPathFollowingAngularP = 2.0 / Math.PI;
-    public static final double kShootDistFromSpeaker = 2.39; // 3.11; // Tune value
+    public static final double kShootDistFromSpeaker = 2.39; // 3.11; // Tune value //41 3/8" from subwoofer
     public static final double kShootDistAmp = 0.65; // Find value
     public static final double kPickUpNoteDist = 1.1;
     public static final double kMaxAngleSpeakerShootOffset =
