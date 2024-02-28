@@ -444,11 +444,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public void resetGryoToVision(){
-    if(AllianceUtil.getAlliance()==AllianceColor.BLUE){
-      m_gyro.setAngleAdjustment(-getPose().getRotation().getDegrees());
-    }else if(AllianceUtil.getAlliance()==AllianceColor.RED){
-      m_gyro.setAngleAdjustment(-getPose().getRotation().getDegrees()+180);
-    }
+    // if(AllianceUtil.getAlliance()==AllianceColor.BLUE){
+    //   m_gyro.setAngleAdjustment(-getPose().getRotation().getDegrees());
+    // }else if(AllianceUtil.getAlliance()==AllianceColor.RED){
+    //   m_gyro.setAngleAdjustment(-getPose().getRotation().getDegrees()+180);
+    // }
   }
   
   /**
