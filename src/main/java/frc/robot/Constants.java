@@ -251,6 +251,10 @@ public final class Constants {
             kBlueBottomNotePose.getX() - kPickUpNoteDist,
             kBlueBottomNotePose.getY(),
             new Rotation2d());
+
+    public static final Translation2d kWaypointToCenter = new Translation2d(5.11, 1.29);
+    public static final Pose2d kBottomCenterNotePose = new Pose2d();
+    
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
     // public static final Pose2d kRedShootPose =
     //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());

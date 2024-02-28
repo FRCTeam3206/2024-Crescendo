@@ -607,10 +607,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     drive(xVelocity, yVelocity, 0.0, RelativeTo.FIELD_RELATIVE, true);
   }
 
-  public void driveToWaypoint(Pose2d waypoint, double maxSpeed) {
-    driveToWaypoint(waypoint.getTranslation(), maxSpeed);
-  }
-
   public Command driveToPoseCommand(Pose2d bluePose,double translationTolerance) {
     return this.run(
             () -> {
