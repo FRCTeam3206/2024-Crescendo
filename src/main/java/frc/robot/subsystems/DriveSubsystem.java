@@ -17,6 +17,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -589,6 +590,25 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     double angularVelocity = deltaTheta * AutoAlignConstants.kPathFollowingAngularP;
     angularVelocity = MathUtil.clamp(angularVelocity, -1.0, 1.0);
     drive(xVelocity, yVelocity, angularVelocity, RelativeTo.FIELD_RELATIVE, true);
+  }
+
+  /**
+   * @param waypoint The point it's trying to get to.
+   * @param maxSpeed The max speed while reaching this waypoint.
+   */
+  public void driveToWaypoint(Translation2d waypoint, double maxSpeed) {
+    Pose2d currentPose = getPose();
+    double deltaX = waypoint.getX() - currentPose.getX();
+    double deltaY = waypoint.getY() - currentPose.getY();
+    double deltaPose = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+    double xVelocity = maxSpeed * (deltaX / deltaPose);
+    double yVelocity = maxSpeed * (deltaY / deltaPose);
+    drive(xVelocity, yVelocity, 0.0, RelativeTo.FIELD_RELATIVE, true);
+  }
+
+  public void driveToWaypoint(Pose2d waypoint, double maxSpeed) {
+    driveToWaypoint(waypoint.getTranslation(), maxSpeed);
   }
 
   public Command driveToPoseCommand(Pose2d bluePose,double translationTolerance) {
