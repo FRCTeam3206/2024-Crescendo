@@ -134,41 +134,44 @@ public class RobotContainer implements Logged {
             // m_robotDrive.autoDriveToSpeakerShoot()
             speakerShoot());
     m_driverController.button(5).whileTrue(m_robotDrive.scoreToAmpCommand());
-    m_driverController
-        .button(1)
-        .whileTrue(
-            new SequentialCommandGroup(
-                m_robotDrive.driveToWaypointCommand(
-                    AutoAlignConstants.kWaypointToCenter,
-                    AutoAlignConstants.kWaypointSpeed,
-                    AutoAlignConstants.kEndWaypointSpeed,
-                    AutoAlignConstants.kAtWaypointTolerance),
-                m_robotDrive.driveToSharedNotePoseCommand(),
-                m_robotDrive.driveToWaypointCommand(
-                    AutoAlignConstants.kWaypointToCenter,
-                    AutoAlignConstants.kWaypointSpeed,
-                    AutoAlignConstants.kEndWaypointSpeed,
-                    AutoAlignConstants.kAtWaypointTolerance)));
-    m_driverController
-        .button(2)
-        .whileTrue(
-            new SequentialCommandGroup(
-                m_robotDrive.driveToWaypointCommand(
-                    AutoAlignConstants.kWaypointToCenter,
-                    AutoAlignConstants.kWaypointSpeed,
-                    AutoAlignConstants.kAtWaypointTolerance),
-                m_robotDrive.driveToSharedNotePoseCommand(),
-                m_robotDrive.driveToWaypointCommand(
-                    AutoAlignConstants.kWaypointToCenter,
-                    AutoAlignConstants.kWaypointSpeed,
-                    AutoAlignConstants.kAtWaypointTolerance)));
-    m_driverController
-        .button(3)
-        .whileTrue(
-            new SequentialCommandGroup(
-                m_robotDrive.basicDriveToWaypointCommand(AutoAlignConstants.kWaypointToCenter),
-                m_robotDrive.driveToSharedNotePoseCommand(),
-                m_robotDrive.basicDriveToWaypointCommand(AutoAlignConstants.kWaypointToCenter)));
+    // m_driverController
+    //     .button(1)
+    //     .whileTrue(
+    //         new SequentialCommandGroup(
+    //             m_robotDrive.driveToWaypointCommand(
+    //                 AutoAlignConstants.kWaypointToCenter,
+    //                 AutoAlignConstants.kWaypointSpeed,
+    //                 AutoAlignConstants.kEndWaypointSpeed,
+    //                 AutoAlignConstants.kAtWaypointTolerance),
+    //             m_robotDrive.driveToSharedNotePoseCommand(),
+    //             m_robotDrive.driveToWaypointCommand(
+    //                 AutoAlignConstants.kWaypointToCenter,
+    //                 AutoAlignConstants.kWaypointSpeed,
+    //                 AutoAlignConstants.kEndWaypointSpeed,
+    //                 AutoAlignConstants.kAtWaypointTolerance),
+    //             m_robotDrive.autoDriveToSpeakerShoot()));
+    // m_driverController
+    //     .button(2)
+    //     .whileTrue(
+    //         new SequentialCommandGroup(
+    //             m_robotDrive.driveToWaypointCommand(
+    //                 AutoAlignConstants.kWaypointToCenter,
+    //                 AutoAlignConstants.kWaypointSpeed,
+    //                 AutoAlignConstants.kAtWaypointTolerance),
+    //             m_robotDrive.driveToSharedNotePoseCommand(),
+    //             m_robotDrive.driveToWaypointCommand(
+    //                 AutoAlignConstants.kWaypointToCenter,
+    //                 AutoAlignConstants.kWaypointSpeed,
+    //                 AutoAlignConstants.kAtWaypointTolerance),
+    //             m_robotDrive.autoDriveToSpeakerShoot()));
+    // m_driverController
+    //     .button(3)
+    //     .whileTrue(
+    //         new SequentialCommandGroup(
+    //             m_robotDrive.basicDriveToWaypointCommand(AutoAlignConstants.kWaypointToCenter),
+    //             m_robotDrive.driveToSharedNotePoseCommand(),
+    //             m_robotDrive.basicDriveToWaypointCommand(AutoAlignConstants.kWaypointToCenter),
+    //             m_robotDrive.autoDriveToSpeakerShoot()));
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
     xbox.povRight().onTrue(arm.ampPosition());
