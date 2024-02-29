@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AllianceNoteLocation;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutoConstants;
@@ -682,7 +683,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
                 getPose()
                         .getTranslation()
                         .getDistance(AllianceUtil.getTranslationForAlliance(waypoint))
-                    < AutoAlignConstants.kAtWaypointTolerance);
+                    < AutoAlignConstants.kAtWaypointTolerance)
+        .andThen(new WaitCommand(.1));
   }
 
   public Command driveToWaypointCommand(
