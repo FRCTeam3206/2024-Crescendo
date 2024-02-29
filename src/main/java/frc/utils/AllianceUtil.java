@@ -2,6 +2,7 @@ package frc.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotContainer.AllianceColor;
@@ -53,5 +54,9 @@ public class AllianceUtil {
         return redPose;
       }
     }
+  }
+
+  public static Translation2d getTranslationForAlliance(Translation2d blueTranslation) {
+    return getPoseForAlliance(new Pose2d(blueTranslation, new Rotation2d())).getTranslation();
   }
 }

@@ -136,6 +136,12 @@ public class RobotContainer implements Logged {
         .button(5)
         .whileTrue(
             m_robotDrive.scoreToAmpCommand());
+    m_driverController.button(1).whileTrue(
+      new SequentialCommandGroup(
+        m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance),
+        m_robotDrive.driveToSharedNotePoseCommand(),
+        m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance))
+      );
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
     xbox.povRight().onTrue(arm.ampPosition());
@@ -189,7 +195,7 @@ public Command pickUpNoteCommand(Pose2d pickupPose) {
   }
   public Command speakerShoot() {
     return new SequentialCommandGroup(m_robotDrive.stopCommand(),new ParallelCommandGroup(arm.speakerCommandStop(),new RunCommand(()->shootake.setRetained(true), shootake).withTimeout(.5),
-        m_robotDrive.autoDriveToSpeakerShoot()),m_robotDrive.stopCommand(), shootake.speakerShootCommand());
+        m_robotDrive.autoDriveToSpeakerShoot()),m_robotDrive.stopCommand(), shootake.speakerShootCommand(), shootake.stopCommand());
   }
   
   public Command ampShoot(){
@@ -226,19 +232,27 @@ public Command pickUpNoteCommand(Pose2d pickupPose) {
       ampShoot()
     );
   }
+  public Command pickUpBottomSharedNote() {
+    return new SequentialCommandGroup(
+      m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance),
+      m_robotDrive.driveToSharedNotePoseCommand(),
+      pickUpNoteCommand(),
+      m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance)
+    );
+  }
   public void autons() {
     autonChooser.setDefaultOption("Nothing", m_robotDrive.stopCommand());
 
     autonChooser.addOption(
-        "1 Note",
-        new SequentialCommandGroup(
-            new ParallelCommandGroup(
-                    m_robotDrive.driveCommand(
-                        () -> .25, () -> 0, () -> 0, () -> RelativeTo.DRIVER_RELATIVE, false),
-                    new RunCommand(() -> shootake.setRetained(true), shootake))
-                .withTimeout(1.5),
-            m_robotDrive.stopCommand(),
-            speakerShoot()));
+        "1 Note", speakerShoot());
+        // new SequentialCommandGroup(
+        //     new ParallelCommandGroup(
+        //             m_robotDrive.driveCommand(
+        //                 () -> .25, () -> 0, () -> 0, () -> RelativeTo.DRIVER_RELATIVE, false),
+        //             new RunCommand(() -> shootake.setRetained(true), shootake))
+        //         .withTimeout(1.5),
+        //     m_robotDrive.stopCommand(),
+        //     speakerShoot()));
     autonChooser.addOption("Subwoofer", new SequentialCommandGroup(
       arm.subwooferPosition().withTimeout(2),
       shootake.speakerShootCommand(),
@@ -251,55 +265,54 @@ public Command pickUpNoteCommand(Pose2d pickupPose) {
         "2 Note (Middle Shoot)",
         new SequentialCommandGroup(
             speakerShoot(),
-            shootake.stopCommand(),
             midToSpeaker()));
     autonChooser.addOption(
         "2 Note (Amp-Side Shoot)",
         new SequentialCommandGroup(
             speakerShoot(),
-            shootake.stopCommand(),
             topToSpeaker()));
     autonChooser.addOption(
         "2 Note (Stage-Side Shoot)",
         new SequentialCommandGroup(
             speakerShoot(),
-            shootake.stopCommand(),
             bottomToSpeaker()));
     autonChooser.addOption(
         "2 Note (Amp Score)",
         new SequentialCommandGroup(
             speakerShoot(),
-            shootake.stopCommand(),
             topToAmpWallSide()));
     autonChooser.addOption(
         "3 Note (Amp Side All Speaker)",
         new SequentialCommandGroup(
             speakerShoot(),
-            shootake.stopCommand(),
             midToSpeaker(),
             topToSpeaker()));
     autonChooser.addOption(
         "3 Note (Stage Side)",
         new SequentialCommandGroup(
             speakerShoot(),
-            shootake.stopCommand(),
             midToSpeaker(),
             bottomToSpeaker()));
     autonChooser.addOption(
         "3 Note (Amp Side One Amp)",
         new SequentialCommandGroup(
             speakerShoot(),
-            shootake.stopCommand(),
             midToSpeaker(),
             topToAmp()));
     autonChooser.addOption(
         "4 Note",
         new SequentialCommandGroup(
             speakerShoot(),
-            shootake.stopCommand(),
             bottomToSpeaker(),
             midToSpeaker(),
             topToAmp()));
+    autonChooser.addOption(
+      "2 Note DANGER Shared Note",
+      new SequentialCommandGroup(
+        speakerShoot(),
+        pickUpBottomSharedNote(),
+        speakerShoot()
+      ));
     SmartDashboard.putData(autonChooser);
   }
 

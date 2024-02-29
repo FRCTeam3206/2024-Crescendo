@@ -607,6 +607,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     drive(xVelocity, yVelocity, 0.0, RelativeTo.FIELD_RELATIVE, true);
   }
 
+  public Command driveToWaypointCommand(Translation2d waypoint, double maxSpeed, double tolerance) {
+    return this.run(() -> driveToWaypoint(AllianceUtil.getTranslationForAlliance(waypoint), maxSpeed)).until(() -> getPose().getTranslation().getDistance(AllianceUtil.getTranslationForAlliance(waypoint)) < tolerance);
+  }
+
   public Command driveToPoseCommand(Pose2d bluePose,double translationTolerance) {
     return this.run(
             () -> {
@@ -625,6 +629,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
 
   public Command driveToAmpSetupPoseCommand() {
     return driveToPoseCommand(AutoAlignConstants.kBlueAmpShootPose);
+  }
+  public Command driveToSharedNotePoseCommand() {
+    return driveToPoseCommand(AutoAlignConstants.kBottomSharedNotePickUpPose, AutoAlignConstants.kAtWaypointTolerance);
   }
   public Command scoreToAmpCommand(){
     return driveToAmpSetupPoseCommand().andThen(driveCommand(()->0,()->.15,()->0,()->RelativeTo.FIELD_RELATIVE,false).withTimeout(1));

@@ -252,8 +252,36 @@ public final class Constants {
             kBlueBottomNotePose.getY(),
             new Rotation2d());
 
-    public static final Translation2d kWaypointToCenter = new Translation2d(5.11, 1.29);
+    public static final Translation2d kWaypointToCenter = new Translation2d(3.11, 1.78);
     public static final Pose2d kBottomCenterNotePose = new Pose2d();
+
+    private static final double kFieldLength = 16.5412;
+    private static final double kFieldHeight = Units.inchesToMeters(323.0);
+
+    private static final double kSharedNoteX = kFieldLength / 2.0;
+
+    /**
+     * @param numFromTop Top is 0
+     */
+    private static final double getSharedNoteY(int numFromTop) {
+      return kFieldHeight - Units.inchesToMeters(29.64 + 66.0 * numFromTop);
+    }
+
+    private static final Translation2d kCenterNoteT =
+        new Translation2d(kSharedNoteX, getSharedNoteY(0));
+    private static final Translation2d kCenterNoteTM =
+        new Translation2d(kSharedNoteX, getSharedNoteY(1));
+    private static final Translation2d kCenterNoteM =
+        new Translation2d(kSharedNoteX, getSharedNoteY(2));
+    private static final Translation2d kCenterNoteBM =
+        new Translation2d(kSharedNoteX, getSharedNoteY(3));
+    private static final Translation2d kCenterNoteB =
+        new Translation2d(kSharedNoteX, getSharedNoteY(4));
+
+    public static final double kAtWaypointTolerance = 0.1;
+    public static final double kWaypointSpeed = 0.8;
+    public static final double kSharedNotePickUpDist = 1.5;
+    public static final Pose2d kBottomSharedNotePickUpPose = new Pose2d(kCenterNoteB.getX() - kSharedNotePickUpDist, kCenterNoteB.getY(), new Rotation2d(0));
     
     // public static final Pose2d kBlueShootPose = new Pose2d(3.110, 5.326, new Rotation2d());
     // public static final Pose2d kRedShootPose =
