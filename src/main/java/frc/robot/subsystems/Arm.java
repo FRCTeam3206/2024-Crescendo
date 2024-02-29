@@ -51,7 +51,9 @@ public class Arm extends SubsystemBase implements Logged {
     return this.run(
         () -> {
           double moveVoltage =
-              Math.abs(getAngle()-ArmConstants.kIntakeAngle)>ArmConstants.kArmZeroThreshold ? 2.5 : 0.0;
+              Math.abs(getAngle() - ArmConstants.kIntakeAngle) > ArmConstants.kArmZeroThreshold
+                  ? 2.5
+                  : 0.0;
           if (Math.abs(getAngle() - 3.5) < .05) {
             setVoltage(0);
           } else {
@@ -64,7 +66,9 @@ public class Arm extends SubsystemBase implements Logged {
     return this.run(
         () -> {
           double appliedVoltage =
-              Math.abs(getAngle()-ArmConstants.kShootAngle)>ArmConstants.kArmZeroThreshold ? -2.5 : 0.0;
+              Math.abs(getAngle() - ArmConstants.kShootAngle) > ArmConstants.kArmZeroThreshold
+                  ? -2.5
+                  : 0.0;
           setVoltage(appliedVoltage);
         });
   }
@@ -105,6 +109,5 @@ public class Arm extends SubsystemBase implements Logged {
     return shootPosition().until(() -> atSpeakerAngle());
   }
 
-  public void periodic() {
-  }
+  public void periodic() {}
 }

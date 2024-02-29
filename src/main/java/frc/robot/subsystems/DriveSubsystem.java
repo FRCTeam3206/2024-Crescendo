@@ -36,7 +36,6 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RelativeTo;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.RobotContainer.AllianceColor;
 import frc.robot.Robot;
 import frc.robot.sensors.AprilTagVision;
 import frc.utils.AllianceUtil;
@@ -440,17 +439,23 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command zeroHeadingCommand() {
-    return this.runOnce(()->{zeroHeading();m_gyro.setAngleAdjustment(0);}).ignoringDisable(true).withName("Reset Gyro");
+    return this.runOnce(
+            () -> {
+              zeroHeading();
+              m_gyro.setAngleAdjustment(0);
+            })
+        .ignoringDisable(true)
+        .withName("Reset Gyro");
   }
 
-  public void resetGryoToVision(){
+  public void resetGryoToVision() {
     // if(AllianceUtil.getAlliance()==AllianceColor.BLUE){
     //   m_gyro.setAngleAdjustment(-getPose().getRotation().getDegrees());
     // }else if(AllianceUtil.getAlliance()==AllianceColor.RED){
     //   m_gyro.setAngleAdjustment(-getPose().getRotation().getDegrees()+180);
     // }
   }
-  
+
   /**
    * Returns the heading of the robot.
    *
@@ -483,13 +488,13 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     return getAngleToGoal(Rotation2d.fromRadians(angleGoal));
   }
 
-  public boolean isAtGoal(Pose2d goalPose,double translationTolerance) {
-    this.log("Is at Goal",getPose().getTranslation().getDistance(goalPose.getTranslation())
-            < translationTolerance
-        && Math.abs(getAngleToGoal(goalPose.getRotation()))
-            < AutoAlignConstants.kAtRotationGoalTolerance);
-    return getPose().getTranslation().getDistance(goalPose.getTranslation())
-            < translationTolerance
+  public boolean isAtGoal(Pose2d goalPose, double translationTolerance) {
+    this.log(
+        "Is at Goal",
+        getPose().getTranslation().getDistance(goalPose.getTranslation()) < translationTolerance
+            && Math.abs(getAngleToGoal(goalPose.getRotation()))
+                < AutoAlignConstants.kAtRotationGoalTolerance);
+    return getPose().getTranslation().getDistance(goalPose.getTranslation()) < translationTolerance
         && Math.abs(getAngleToGoal(goalPose.getRotation()))
             < AutoAlignConstants.kAtRotationGoalTolerance;
   }
@@ -591,16 +596,17 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     drive(xVelocity, yVelocity, angularVelocity, RelativeTo.FIELD_RELATIVE, true);
   }
 
-  public Command driveToPoseCommand(Pose2d bluePose,double translationTolerance) {
+  public Command driveToPoseCommand(Pose2d bluePose, double translationTolerance) {
     return this.run(
             () -> {
               driveToGoal(AllianceUtil.getPoseForAlliance(bluePose));
             })
-        .until(() -> isAtGoal(AllianceUtil.getPoseForAlliance(bluePose),translationTolerance))
+        .until(() -> isAtGoal(AllianceUtil.getPoseForAlliance(bluePose), translationTolerance))
         .andThen(stopCommand());
   }
-  public Command driveToPoseCommand(Pose2d bluePose){
-    return driveToPoseCommand(bluePose,AutoAlignConstants.kAtGoalTolerance);
+
+  public Command driveToPoseCommand(Pose2d bluePose) {
+    return driveToPoseCommand(bluePose, AutoAlignConstants.kAtGoalTolerance);
   }
 
   public Command driveToSpeakerShootPoseCommand() {
@@ -610,9 +616,14 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   public Command driveToAmpSetupPoseCommand() {
     return driveToPoseCommand(AutoAlignConstants.kBlueAmpShootPose);
   }
-  public Command scoreToAmpCommand(){
-    return driveToAmpSetupPoseCommand().andThen(driveCommand(()->0,()->.15,()->0,()->RelativeTo.FIELD_RELATIVE,false).withTimeout(1));
+
+  public Command scoreToAmpCommand() {
+    return driveToAmpSetupPoseCommand()
+        .andThen(
+            driveCommand(() -> 0, () -> .15, () -> 0, () -> RelativeTo.FIELD_RELATIVE, false)
+                .withTimeout(1));
   }
+
   public boolean isSpeakerAligned() {
     return isAtDistFromPoint(
             AllianceUtil.getPoseForAlliance(AutoAlignConstants.kBlueSpeakerPose),

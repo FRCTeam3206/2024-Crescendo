@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -175,7 +174,7 @@ public final class Constants {
     public static final double kSubwooferAngle = 1.51;
 
     public static final double kAtAngleTolerance = 0.05;
-    public static final double kActiveAngleTolerance=.15;
+    public static final double kActiveAngleTolerance = .15;
   }
 
   public static final class ClimberConstants {
@@ -183,13 +182,15 @@ public final class Constants {
     public static final int kRightClimberCANId = 9;
     public static final double climbMax = 3.7;
   }
-    public static final class AutoAlignConstants { // Also for driving to pose in general.
+
+  public static final class AutoAlignConstants { // Also for driving to pose in general.
     public static final double kAtGoalTolerance = 0.02; // Decide/tune/test
     public static final double kAtNotePickupGoalTolerance = .04;
     public static final double kAtRotationGoalTolerance = 0.04; // Decide/tune/test
     public static final double kPathFollowingP = 0.74; // Tune?
     public static final double kPathFollowingAngularP = 2.0 / Math.PI;
-    public static final double kShootDistFromSpeaker = 2.33; // 3.11; // Tune value //42.5 from subwoofer
+    public static final double kShootDistFromSpeaker =
+        2.33; // 3.11; // Tune value //42.5 from subwoofer
     public static final double kShootDistAmp = 0.65; // Find value
     public static final double kPickUpNoteDist = 1.1;
     public static final double kMaxAngleSpeakerShootOffset =
@@ -239,8 +240,8 @@ public final class Constants {
     public static final Pose2d kTopNotePickUpPose =
         new Pose2d(
             kBlueTopNotePose.getX(),
-            kBlueTopNotePose.getY()-kPickUpNoteDist,
-            new Rotation2d(Math.PI/2));
+            kBlueTopNotePose.getY() - kPickUpNoteDist,
+            new Rotation2d(Math.PI / 2));
     public static final Pose2d kCenterNotePickUpPose =
         new Pose2d(
             kBlueCenterNotePose.getX() - kPickUpNoteDist,
@@ -256,6 +257,7 @@ public final class Constants {
     //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());
 
   }
+
   public static enum ArmPostition {
     SHOOT,
     AMP,
@@ -278,7 +280,7 @@ public final class Constants {
 
     private AllianceNoteLocation(Pose2d bluePose, Pose2d pickUpPose) {
       this.bluePose = bluePose;
-      this.pickUpPose=pickUpPose;
+      this.pickUpPose = pickUpPose;
     }
 
     public Pose2d getPose() {
@@ -333,8 +335,6 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
-
-
 
   public static final class VisionConstants {
     // TODO Figure out how much to trust state pose estimate versus vision pose estimate (higher
