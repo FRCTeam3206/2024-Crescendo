@@ -177,6 +177,7 @@ public class RobotContainer implements Logged {
             .until(() -> shootake.hasNote())
             .withTimeout(2.0),
         m_robotDrive.stopCommand(),
+        shootake.intakeCommand().withTimeout(.25),
         shootake.retainCommand(),
         shootake.stopCommand());
   }
