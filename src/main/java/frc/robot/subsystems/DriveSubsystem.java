@@ -593,6 +593,31 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   /**
+   * Like go to pose, but doesn't account for rotation.
+   */
+  public void basicDriveToWaypoint(Translation2d waypoint) {
+    System.out.println("Drive to Goal");
+    Pose2d currentPose = getPose();
+    double deltaX = waypoint.getX() - currentPose.getX();
+    double deltaY = waypoint.getY() - currentPose.getY();
+    this.log("Move Dx", deltaX);
+    this.log("Move Dy", deltaY);
+    double deltaPose = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    // if (deltaPose > AutoAlignConstants.kMaxDistStillGo) {
+    //   drive(0, 0, 0, false, false);
+    //   return;
+    // }
+    double xVelocity = AutoAlignConstants.kPathFollowingP * deltaX;
+    double yVelocity = AutoAlignConstants.kPathFollowingP * deltaY;
+    double maxSpeed = AutoAlignConstants.kPathFollowingP * deltaPose;
+    if (maxSpeed > 1.0) {
+      xVelocity /= maxSpeed;
+      yVelocity /= maxSpeed;
+    }
+    drive(xVelocity, yVelocity, 0.0, RelativeTo.FIELD_RELATIVE, true);
+  }
+
+  /**
    * @param waypoint The point it's trying to get to.
    * @param maxSpeed The max speed while reaching this waypoint.
    */
@@ -617,9 +642,14 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     Pose2d currentPose = getPose();
     double deltaX = waypoint.getX() - currentPose.getX();
     double deltaY = waypoint.getY() - currentPose.getY();
+    this.log("Waypoint dx", deltaX);
+    this.log("Waypoint dy", deltaY);
 
     double rawXSpeed = AutoAlignConstants.kPathFollowingP * deltaX;
     double rawYSpeed = AutoAlignConstants.kPathFollowingP * deltaY;
+    this.log("Raw x", rawXSpeed);
+    this.log("Raw y", rawYSpeed);
+
     double xVelocity = Math.signum(rawXSpeed) * (endSpeed + (maxSpeed - endSpeed) * (Math.abs(rawXSpeed) > 1.0 ? 1.0 : Math.abs(rawXSpeed)));
     double yVelocity = Math.signum(rawYSpeed) * (endSpeed + (maxSpeed - endSpeed) * (Math.abs(rawYSpeed) > 1.0 ? 1.0 : Math.abs(rawYSpeed)));
     drive(xVelocity, yVelocity, 0.0, RelativeTo.FIELD_RELATIVE, true);
@@ -627,6 +657,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
 
   public Command driveToWaypointCommand(Translation2d waypoint, double maxSpeed, double tolerance) {
     return this.run(() -> driveToWaypoint(AllianceUtil.getTranslationForAlliance(waypoint), maxSpeed)).until(() -> getPose().getTranslation().getDistance(AllianceUtil.getTranslationForAlliance(waypoint)) < tolerance);
+  }
+  
+  public Command basicDriveToWaypointCommand(Translation2d waypoint) {
+    return this.run(() -> basicDriveToWaypoint(AllianceUtil.getTranslationForAlliance(waypoint))).until(() -> getPose().getTranslation().getDistance(AllianceUtil.getTranslationForAlliance(waypoint)) < AutoAlignConstants.kAtWaypointTolerance);
   }
 
   public Command driveToWaypointCommand(Translation2d waypoint, double maxSpeed, double endSpeed, double tolerance) {

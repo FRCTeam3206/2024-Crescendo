@@ -148,6 +148,12 @@ public class RobotContainer implements Logged {
         m_robotDrive.driveToSharedNotePoseCommand(),
         m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance))
       );
+    m_driverController.button(3).whileTrue(
+      new SequentialCommandGroup(
+        m_robotDrive.basicDriveToWaypointCommand(AutoAlignConstants.kWaypointToCenter),
+        m_robotDrive.driveToSharedNotePoseCommand(),
+        m_robotDrive.basicDriveToWaypointCommand(AutoAlignConstants.kWaypointToCenter))
+      );
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
     xbox.povRight().onTrue(arm.ampPosition());
@@ -240,10 +246,12 @@ public Command pickUpNoteCommand(Pose2d pickupPose) {
   }
   public Command pickUpBottomSharedNote() {
     return new SequentialCommandGroup(
-      m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kEndWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance),
+      m_robotDrive.basicDriveToWaypointCommand(AutoAlignConstants.kWaypointToCenter),
+      // m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kEndWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance),
       m_robotDrive.driveToSharedNotePoseCommand(),
       pickUpNoteCommand(),
-      m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kEndWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance)
+      m_robotDrive.basicDriveToWaypointCommand(AutoAlignConstants.kWaypointToCenter)
+      // m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kEndWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance)
     );
   }
   public void autons() {
