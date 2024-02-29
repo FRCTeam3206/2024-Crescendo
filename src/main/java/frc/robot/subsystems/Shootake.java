@@ -4,6 +4,8 @@ import static frc.robot.Constants.ShootakeConstants.*;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,7 +23,7 @@ public class Shootake extends SubsystemBase implements Logged {
   CANSparkMax bottomRoller = new CANSparkMax(kBottomCANID, MotorType.kBrushless);
   Servo finger = new Servo(kFingerPort);
   DigitalInput hasNoteSensor = new DigitalInput(ShootakeConstants.kNoteSensorChannel);
-
+  Debouncer shootDebounce=new Debouncer(.25);
   public Shootake() {
     topRoller.setSmartCurrentLimit(23);
     bottomRoller.setSmartCurrentLimit(23);
@@ -106,7 +108,7 @@ public class Shootake extends SubsystemBase implements Logged {
                   setRetained(true);
                   setSpeed(-1.0);
                 })
-            .until(() -> getAverageSpeed() > kShootakeFreeSpeed),
+            .until(() -> shootDebounce.calculate(getAverageSpeed() > kShootakeFreeSpeed)),
         this.run(
                 () -> {
                   setRetained(false);

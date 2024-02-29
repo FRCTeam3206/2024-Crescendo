@@ -215,6 +215,7 @@ public class RobotContainer implements Logged {
             .until(() -> shootake.hasNote())
             .withTimeout(2.0),
         m_robotDrive.stopCommand(),
+        shootake.intakeCommand().withTimeout(.25),
         shootake.retainCommand(),
         shootake.stopCommand());
   }
@@ -241,8 +242,7 @@ public class RobotContainer implements Logged {
             new RunCommand(() -> shootake.setRetained(true), shootake).withTimeout(.5),
             m_robotDrive.autoDriveToSpeakerShoot()),
         m_robotDrive.stopCommand(),
-        shootake.speakerShootCommand(),
-        shootake.stopCommand());
+        shootake.speakerShootCommand());
   }
 
   public Command ampShoot() {
