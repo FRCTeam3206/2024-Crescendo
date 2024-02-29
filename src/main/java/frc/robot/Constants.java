@@ -146,7 +146,7 @@ public final class Constants {
     public static final double kIntakeSpeed = 1;
     public static final double kSlowIntakeSpeed = 0.2;
     public static final double kOutakeSpeed = -0.2;
-    public static final double kAmpSpeed = -.3;
+    public static final double kAmpSpeed = -.5;
     public static final double kShootakeFreeSpeed = 5300.0;
     public static final double kShootakeLoadSpeedThreshold = 4750.0;
 
@@ -174,7 +174,7 @@ public final class Constants {
     public static final double kSubwooferAngle = 1.51;
 
     public static final double kAtAngleTolerance = 0.05;
-    public static final double kActiveAngleTolerance = .15;
+    public static final double kActiveAngleTolerance = .10;
   }
 
   public static final class ClimberConstants {
