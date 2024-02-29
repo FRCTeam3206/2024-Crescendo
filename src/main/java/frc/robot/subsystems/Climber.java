@@ -17,16 +17,18 @@ public class Climber extends SubsystemBase implements Logged {
     leftClimber.setSmartCurrentLimit(30);
     rightClimber.setSmartCurrentLimit(30);
   }
-  public void setSpeedOverride(double speed){
+
+  public void setSpeedOverride(double speed) {
     leftClimber.set(speed);
     rightClimber.set(-speed);
   }
+
   public void setSpeed(double speed) {
-    if ((leftClimber.getEncoder().getPosition() < ClimberConstants.climbMax && speed >0)
+    if ((leftClimber.getEncoder().getPosition() < ClimberConstants.climbMax && speed > 0)
         || speed < 0) {
       leftClimber.set(speed);
     } else leftClimber.set(0);
-    if ((rightClimber.getEncoder().getPosition()*-1 < ClimberConstants.climbMax && speed > 0)
+    if ((rightClimber.getEncoder().getPosition() * -1 < ClimberConstants.climbMax && speed > 0)
         || speed < 0) {
       rightClimber.set(-speed);
     } else rightClimber.set(0);
@@ -42,7 +44,7 @@ public class Climber extends SubsystemBase implements Logged {
   }
 
   public void periodic() {
-    this.log("Right Climb Encoder", rightClimber.getEncoder().getPosition()* -1);
-    this.log("Left Climb Encoder", leftClimber.getEncoder().getPosition() );
+    this.log("Right Climb Encoder", rightClimber.getEncoder().getPosition() * -1);
+    this.log("Left Climb Encoder", leftClimber.getEncoder().getPosition());
   }
 }
