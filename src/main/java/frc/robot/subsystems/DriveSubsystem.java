@@ -607,8 +607,29 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     drive(xVelocity, yVelocity, 0.0, RelativeTo.FIELD_RELATIVE, true);
   }
 
+  /**
+   * @param waypoint
+   * @param maxSpeed Do not give a max speed greater than 1.0. This would not behave as expected.
+   * @param endSpeedGiven
+   */
+  public void driveToWaypoint(Translation2d waypoint, double maxSpeed, double endSpeedGiven) {
+    double endSpeed = endSpeedGiven > maxSpeed ? maxSpeed : endSpeedGiven;
+    Pose2d currentPose = getPose();
+    double deltaX = waypoint.getX() - currentPose.getX();
+    double deltaY = waypoint.getY() - currentPose.getY();
+    double deltaPose = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+    double xVelocity = endSpeed + (maxSpeed - endSpeed) * (deltaX / deltaPose);
+    double yVelocity = endSpeed + (maxSpeed - endSpeed) * (deltaY / deltaPose);
+    drive(xVelocity, yVelocity, 0.0, RelativeTo.FIELD_RELATIVE, true);
+  }
+
   public Command driveToWaypointCommand(Translation2d waypoint, double maxSpeed, double tolerance) {
     return this.run(() -> driveToWaypoint(AllianceUtil.getTranslationForAlliance(waypoint), maxSpeed)).until(() -> getPose().getTranslation().getDistance(AllianceUtil.getTranslationForAlliance(waypoint)) < tolerance);
+  }
+
+  public Command driveToWaypointCommand(Translation2d waypoint, double maxSpeed, double endSpeed, double tolerance) {
+    return this.run(() -> driveToWaypoint(AllianceUtil.getTranslationForAlliance(waypoint), maxSpeed, endSpeed)).until(() -> getPose().getTranslation().getDistance(AllianceUtil.getTranslationForAlliance(waypoint)) < tolerance);
   }
 
   public Command driveToPoseCommand(Pose2d bluePose,double translationTolerance) {

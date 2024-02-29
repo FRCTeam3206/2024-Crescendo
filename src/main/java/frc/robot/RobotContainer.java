@@ -138,6 +138,12 @@ public class RobotContainer implements Logged {
             m_robotDrive.scoreToAmpCommand());
     m_driverController.button(1).whileTrue(
       new SequentialCommandGroup(
+        m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kEndWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance),
+        m_robotDrive.driveToSharedNotePoseCommand(),
+        m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kEndWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance))
+      );
+    m_driverController.button(2).whileTrue(
+      new SequentialCommandGroup(
         m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance),
         m_robotDrive.driveToSharedNotePoseCommand(),
         m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance))
@@ -234,10 +240,10 @@ public Command pickUpNoteCommand(Pose2d pickupPose) {
   }
   public Command pickUpBottomSharedNote() {
     return new SequentialCommandGroup(
-      m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance),
+      m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kEndWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance),
       m_robotDrive.driveToSharedNotePoseCommand(),
       pickUpNoteCommand(),
-      m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance)
+      m_robotDrive.driveToWaypointCommand(AutoAlignConstants.kWaypointToCenter, AutoAlignConstants.kWaypointSpeed, AutoAlignConstants.kEndWaypointSpeed, AutoAlignConstants.kAtWaypointTolerance)
     );
   }
   public void autons() {

@@ -280,6 +280,7 @@ public final class Constants {
 
     public static final double kAtWaypointTolerance = 0.1;
     public static final double kWaypointSpeed = 0.8;
+    public static final double kEndWaypointSpeed = 0.5;
     public static final double kSharedNotePickUpDist = 1.5;
     public static final Pose2d kBottomSharedNotePickUpPose = new Pose2d(kCenterNoteB.getX() - kSharedNotePickUpDist, kCenterNoteB.getY(), new Rotation2d(0));
     
