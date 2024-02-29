@@ -617,10 +617,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     Pose2d currentPose = getPose();
     double deltaX = waypoint.getX() - currentPose.getX();
     double deltaY = waypoint.getY() - currentPose.getY();
-    double deltaPose = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 
-    double xVelocity = endSpeed + (maxSpeed - endSpeed) * (deltaX / deltaPose);
-    double yVelocity = endSpeed + (maxSpeed - endSpeed) * (deltaY / deltaPose);
+    double rawXSpeed = AutoAlignConstants.kPathFollowingP * deltaX;
+    double rawYSpeed = AutoAlignConstants.kPathFollowingP * deltaY;
+    double xVelocity = Math.signum(rawXSpeed) * (endSpeed + (maxSpeed - endSpeed) * (Math.abs(rawXSpeed) > 1.0 ? 1.0 : Math.abs(rawXSpeed)));
+    double yVelocity = Math.signum(rawYSpeed) * (endSpeed + (maxSpeed - endSpeed) * (Math.abs(rawYSpeed) > 1.0 ? 1.0 : Math.abs(rawYSpeed)));
     drive(xVelocity, yVelocity, 0.0, RelativeTo.FIELD_RELATIVE, true);
   }
 
