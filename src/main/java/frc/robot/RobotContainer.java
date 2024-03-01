@@ -248,7 +248,7 @@ public class RobotContainer implements Logged {
   public Command ampShoot() {
     return new SequentialCommandGroup(
         m_robotDrive.stopCommand(),
-        new ParallelCommandGroup(arm.ampCommandStop(), m_robotDrive.scoreToAmpCommand()),
+        new ParallelCommandGroup(arm.ampCommandStop().withTimeout(1.5), m_robotDrive.scoreToAmpCommand()),
         m_robotDrive.stopCommand(),
         new ParallelCommandGroup(
             m_robotDrive.stopCommand(), arm.ampPosition(), shootake.ampCommand()));
