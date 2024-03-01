@@ -146,7 +146,7 @@ public final class Constants {
     public static final double kIntakeSpeed = 1;
     public static final double kSlowIntakeSpeed = 0.2;
     public static final double kOutakeSpeed = -0.2;
-    public static final double kAmpSpeed = -.5;
+    public static final double kAmpSpeed = -.7;
     public static final double kShootakeFreeSpeed = 5300.0;
     public static final double kShootakeLoadSpeedThreshold = 4750.0;
 
@@ -174,7 +174,7 @@ public final class Constants {
     public static final double kSubwooferAngle = 1.51;
 
     public static final double kAtAngleTolerance = 0.05;
-    public static final double kActiveAngleTolerance=.15;
+    public static final double kActiveAngleTolerance=.10;
   }
 
   public static final class ClimberConstants {
@@ -189,7 +189,8 @@ public final class Constants {
     public static final double kAtRotationGoalTolerance = 0.04; // Decide/tune/test
     public static final double kPathFollowingP = 0.74; // Tune?
     public static final double kPathFollowingAngularP = 2.0 / Math.PI;
-    public static final double kShootDistFromSpeaker = 2.33; // 3.11; // Tune value //42.5 from subwoofer
+    public static final double kShootDistFromSpeaker =
+        2.40; // 3.11; // Tune value //42.5 from subwoofer //pose is 2.34
     public static final double kShootDistAmp = 0.65; // Find value
     public static final double kPickUpNoteDist = 1.1;
     public static final double kMaxAngleSpeakerShootOffset =
