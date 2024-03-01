@@ -34,6 +34,16 @@ public class Shootake extends SubsystemBase implements Logged {
     return -(topRoller.getEncoder().getVelocity() + bottomRoller.getEncoder().getVelocity()) / 2;
   }
 
+  @Log
+  private double getTopRollerSpeed() {
+    return -topRoller.getEncoder().getVelocity();
+  }
+
+  @Log
+  private double getBottomRollerSpeed() {
+    return -bottomRoller.getEncoder().getVelocity();
+  }
+
   public void setSpeed(double speed) {
     topRoller.set(speed);
     bottomRoller.set(speed);
