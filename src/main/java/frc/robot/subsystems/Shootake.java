@@ -23,7 +23,7 @@ public class Shootake extends SubsystemBase implements Logged {
   CANSparkMax bottomRoller = new CANSparkMax(kBottomCANID, MotorType.kBrushless);
   Servo finger = new Servo(kFingerPort);
   DigitalInput hasNoteSensor = new DigitalInput(ShootakeConstants.kNoteSensorChannel);
-  Debouncer shootDebounce=new Debouncer(.25);
+  Debouncer shootDebounce=new Debouncer(.125);
   public Shootake() {
     topRoller.setSmartCurrentLimit(23);
     bottomRoller.setSmartCurrentLimit(23);

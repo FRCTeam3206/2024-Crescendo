@@ -147,7 +147,7 @@ public final class Constants {
     public static final double kSlowIntakeSpeed = 0.2;
     public static final double kOutakeSpeed = -0.2;
     public static final double kAmpSpeed = -.7;
-    public static final double kShootakeFreeSpeed = 5300.0;
+    public static final double kShootakeFreeSpeed = 5100.0;
     public static final double kShootakeLoadSpeedThreshold = 4750.0;
 
     public static final double kRetainedValue = .6;
