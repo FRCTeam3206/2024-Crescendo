@@ -190,7 +190,7 @@ public final class Constants {
     public static final double kPathFollowingP = 0.74; // Tune?
     public static final double kPathFollowingAngularP = 2.0 / Math.PI;
     public static final double kShootDistFromSpeaker =
-        2.40; // 3.11; // Tune value //42.5 from subwoofer //pose is 2.34
+        2.39; // 3.11; // Tune value //42.5 from subwoofer //pose is 2.34
     public static final double kShootDistAmp = 0.65; // Find value
     public static final double kPickUpNoteDist = 1.1;
     public static final double kMaxAngleSpeakerShootOffset =

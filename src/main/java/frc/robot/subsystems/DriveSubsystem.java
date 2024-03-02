@@ -525,7 +525,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public void driveToGoal(Pose2d goalPose) {
-    System.out.println("Drive to Goal");
     Pose2d currentPose = getPose();
     double deltaX = goalPose.getX() - currentPose.getX();
     double deltaY = goalPose.getY() - currentPose.getY();
