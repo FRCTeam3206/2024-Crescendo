@@ -204,8 +204,7 @@ public class RobotContainer implements Logged {
             new RunCommand(() -> shootake.setRetained(true), shootake).withTimeout(.5),
             m_robotDrive.autoDriveToSpeakerShoot()),
         m_robotDrive.stopCommand(),
-        new ParallelRaceGroup(m_robotDrive.setXCommand(),
-        shootake.speakerShootCommand()));
+        new ParallelRaceGroup(m_robotDrive.setXCommand(), shootake.speakerShootCommand()));
   }
 
   public Command ampShoot() {
