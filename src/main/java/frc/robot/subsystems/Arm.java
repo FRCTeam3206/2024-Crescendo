@@ -4,24 +4,18 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ArmPostition;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Arm extends SubsystemBase implements Logged {
   private CANSparkMax armMotor = new CANSparkMax(ArmConstants.kArmCANId, MotorType.kBrushless);
-  private ArmFeedforward armFeedforward =
-      new ArmFeedforward(ArmConstants.kS, ArmConstants.kG, ArmConstants.kV); // ks, kg, kv
   private PIDController armPID =
       new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
-  private double angleGoal = Math.PI;
-  private ArmPostition position = ArmPostition.SHOOT;
 
   public Arm() {
     armMotor.setSmartCurrentLimit(45);
@@ -41,11 +35,25 @@ public class Arm extends SubsystemBase implements Logged {
     // 0.25);
   }
 
+  public boolean atSpeakerAngle() {
+    return Math.abs(getAngle() - ArmConstants.kShootAngle) < ArmConstants.kAtAngleTolerance;
+  }
+
+  public boolean atAmpAngle() {
+    return Math.abs(getAngle() - ArmConstants.kArmAmpAngle) < ArmConstants.kAtAngleTolerance;
+  }
+
+  public boolean atIntakeAngle() {
+    return Math.abs(getAngle() - ArmConstants.kIntakeAngle) < ArmConstants.kAtAngleTolerance;
+  }
+
   public Command intakePosition() {
     return this.run(
         () -> {
           double moveVoltage =
-              getAngle() < Math.PI / 2 + ArmConstants.kArmZeroThreshold ? 2.5 : 0.0;
+              Math.abs(getAngle() - ArmConstants.kIntakeAngle) > ArmConstants.kArmZeroThreshold
+                  ? 2.5
+                  : 0.0;
           if (Math.abs(getAngle() - 3.5) < .05) {
             setVoltage(0);
           } else {
@@ -58,7 +66,9 @@ public class Arm extends SubsystemBase implements Logged {
     return this.run(
         () -> {
           double appliedVoltage =
-              getAngle() > Math.PI / 2 - ArmConstants.kArmZeroThreshold ? -2.5 : 0.0;
+              Math.abs(getAngle() - ArmConstants.kShootAngle) > ArmConstants.kArmZeroThreshold
+                  ? -2.5
+                  : 0.0;
           setVoltage(appliedVoltage);
         });
   }
@@ -73,6 +83,30 @@ public class Arm extends SubsystemBase implements Logged {
           voltage = MathUtil.clamp(voltage, -2.5, 2.5);
           setVoltage(voltage);
         });
+  }
+
+  public Command subwooferPosition() {
+    return this.run(
+        () -> {
+          armPID.setSetpoint(ArmConstants.kSubwooferAngle);
+          double pid = armPID.calculate(getAngle());
+          double ff = Math.cos(getAngle()) * ArmConstants.kG;
+          double voltage = pid + ff;
+          voltage = MathUtil.clamp(voltage, -2.5, 2.5);
+          setVoltage(voltage);
+        });
+  }
+
+  public Command intakeCommandStop() {
+    return intakePosition().until(() -> atIntakeAngle());
+  }
+
+  public Command ampCommandStop() {
+    return ampPosition().until(() -> atAmpAngle());
+  }
+
+  public Command speakerCommandStop() {
+    return shootPosition().until(() -> atSpeakerAngle());
   }
 
   public void periodic() {}

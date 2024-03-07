@@ -8,6 +8,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -16,13 +18,18 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.AllianceNoteLocation;
+import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -30,6 +37,7 @@ import frc.robot.Constants.RelativeTo;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Shootake;
 import java.util.List;
 import monologue.Annotations.Log;
@@ -44,7 +52,8 @@ import monologue.Logged;
 public class RobotContainer implements Logged {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final Shootake shootake = new Shootake();
+  Lights lights = new Lights();
+  final Shootake shootake = new Shootake();
   private final Arm arm = new Arm();
   private final Climber climber = new Climber();
   @Log private final String currentBranch = BuildConstants.GIT_BRANCH;
@@ -81,18 +90,26 @@ public class RobotContainer implements Logged {
             () -> RelativeTo.DRIVER_RELATIVE,
             true));
     shootake.setDefaultCommand(shootake.idleCommand());
-    arm.setDefaultCommand(
-        new RunCommand(
-            () -> {
-              arm.setVoltage(MathUtil.applyDeadband(xbox.getLeftY() * 2, 0.00));
-            },
-            arm));
     climber.setDefaultCommand(
         new RunCommand(
             () -> {
-              climber.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), 0.5));
+              climber.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), 0.1));
             },
             climber));
+    lights.setDefaultCommand(
+        new RunCommand(
+            () -> {
+              if (shootake.hasNote()) {
+                if (m_robotDrive.isSpeakerAligned()) {
+                  lights.setLightColor(0, 255, 0);
+                } else {
+                  lights.setLightColor(255, 80, 0);
+                }
+              } else {
+                lights.setLightColor(0, 0, 255);
+              }
+            },
+            lights));
   }
 
   // new RunCommand(
@@ -109,16 +126,18 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    // m_driverController.button(9).whileTrue(m_robotDrive.pickUpNotePoseCommand(Constants.AllianceNoteLocation.CENTER));
-    // m_driverController.button(5).whileTrue(m_robotDrive.driveToSpeakerShootPoseCommand());
-    // m_driverController.button(6).whileTrue(m_robotDrive.driveToShootInSpeakerCommand());
-    m_driverController.button(2).whileTrue(m_robotDrive.autoDriveToSpeakerShoot());
-    m_driverController.button(8).whileTrue(m_robotDrive.driveToAmpPoseCommand());
-    // m_driverController.button(2).whileTrue(m_robotDrive.setXCommand());
-
+    // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
+    // 5.326,new Rotation2d(Math.PI))));
+    m_driverController
+        .button(2)
+        .whileTrue(
+            // m_robotDrive.autoDriveToSpeakerShoot()
+            speakerShoot());
+    m_driverController.button(5).whileTrue(m_robotDrive.scoreToAmpCommand());
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
     xbox.povRight().onTrue(arm.ampPosition());
+    xbox.povLeft().onTrue(arm.subwooferPosition());
     xbox.a().whileTrue(shootake.intakeCommand());
     xbox.b().onTrue(shootake.speakerShootCommand());
     xbox.y().whileTrue(shootake.ampCommand());
@@ -126,7 +145,7 @@ public class RobotContainer implements Logged {
     xbox.start().whileTrue(shootake.slowIntakeCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
-
+    SmartDashboard.putData("Reset Climber", climber.zero());
     SmartDashboard.putNumber("X to Reset", 0);
     SmartDashboard.putNumber("Y to Reset", 0);
     SmartDashboard.putData(
@@ -146,64 +165,136 @@ public class RobotContainer implements Logged {
   // ConditionalCommand(getAutonomousCommand(), getAutonomousCommand(), () -> )));
   // }
 
+  public Command pickUpNoteCommand() {
+    return new SequentialCommandGroup(
+        m_robotDrive.stopCommand(),
+        new ParallelRaceGroup(arm.intakeCommandStop(), shootake.intakeCommand()),
+        new ParallelCommandGroup(
+                m_robotDrive.driveCommand(
+                    () -> 0.15, () -> 0.0, () -> 0.0, () -> RelativeTo.ROBOT_RELATIVE, true),
+                arm.intakePosition(),
+                shootake.intakeCommand())
+            .until(() -> shootake.hasNote())
+            .withTimeout(2.0),
+        m_robotDrive.stopCommand(),
+        shootake.intakeCommand().withTimeout(.25),
+        shootake.retainCommand(),
+        shootake.stopCommand());
+  }
+
+  public Command pickUpNoteCommand(AllianceNoteLocation noteLocation) {
+    return pickUpNoteCommand(noteLocation.getPickUpPose());
+  }
+
+  public Command pickUpNoteCommand(Pose2d pickupPose) {
+    return new SequentialCommandGroup(
+        new ParallelRaceGroup(
+            m_robotDrive.driveToPoseCommand(
+                pickupPose, AutoAlignConstants.kAtNotePickupGoalTolerance),
+            arm.intakePosition()),
+        pickUpNoteCommand(),
+        m_robotDrive.stopCommand());
+  }
+
+  public Command speakerShoot() {
+    return new SequentialCommandGroup(
+        m_robotDrive.stopCommand(),
+        new ParallelCommandGroup(
+            arm.speakerCommandStop(),
+            new RunCommand(() -> shootake.setRetained(true), shootake).withTimeout(.5),
+            m_robotDrive.autoDriveToSpeakerShoot()),
+        m_robotDrive.stopCommand(),
+        new ParallelRaceGroup(m_robotDrive.setXCommand(), shootake.speakerShootCommand()));
+  }
+
+  public Command ampShoot() {
+    return new SequentialCommandGroup(
+        m_robotDrive.stopCommand(),
+        new ParallelCommandGroup(arm.ampCommandStop(), m_robotDrive.scoreToAmpCommand()),
+        m_robotDrive.stopCommand(),
+        new ParallelCommandGroup(
+            m_robotDrive.stopCommand(), arm.ampPosition(), shootake.ampCommand()));
+  }
+
+  public Command bottomToSpeaker() {
+    return new SequentialCommandGroup(
+        pickUpNoteCommand(AllianceNoteLocation.BOTTOM), speakerShoot());
+  }
+
+  public Command midToSpeaker() {
+    return new SequentialCommandGroup(
+        pickUpNoteCommand(AllianceNoteLocation.CENTER), speakerShoot());
+  }
+
+  public Command topToSpeaker() {
+    return new SequentialCommandGroup(pickUpNoteCommand(AllianceNoteLocation.TOP), speakerShoot());
+  }
+
+  public Command topToAmp() {
+    return new SequentialCommandGroup(pickUpNoteCommand(AllianceNoteLocation.TOP), ampShoot());
+  }
+
+  public Command topToAmpWallSide() {
+    return new SequentialCommandGroup(
+        pickUpNoteCommand(
+            AllianceNoteLocation.TOP
+                .getPose()
+                .transformBy(
+                    new Transform2d(-AutoAlignConstants.kPickUpNoteDist, 0, new Rotation2d()))),
+        ampShoot());
+  }
+
   public void autons() {
-    // autonChooser.setDefaultOption(
-    //     "Nothing", m_robotDrive.driveCommand(() -> 0, () -> 0, () -> 0, () -> true, true));
+    autonChooser.setDefaultOption("Nothing", m_robotDrive.stopCommand());
 
-    // autonChooser.addOption(
-    //     "S Path",
-    //     generateAutonomousCommand(
-    //         // Start at the origin facing the +X direction
-    //         new Pose2d(0, 0, new Rotation2d(0)),
-    //         // Pass through these two interior waypoints, making an 's' curve path
-    //         List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-    //         // End 3 meters straight ahead of where we started, facing forward
-    //         new Pose2d(3, 0, new Rotation2d(Math.PI))));
-
-    // autonChooser.addOption(
-    //     "Forward 2 Meters",
-    //     generateAutonomousCommand(
-    //         new Pose2d(0, 0, new Rotation2d(0)), List.of(), new Pose2d(2, 0, new
-    // Rotation2d(0))));
-
-    // autonChooser.addOption(
-    //     "Figure 8",
-    //     generateAutonomousCommand(
-    //         new Pose2d(0, 0, new Rotation2d(0)),
-    //         List.of(
-    //             new Translation2d(5.5, 1),
-    //             new Translation2d(8.3, 4),
-    //             new Translation2d(11, 7),
-    //             new Translation2d(15.7, 4),
-    //             new Translation2d(11, 1),
-    //             new Translation2d(8.3, 4),
-    //             new Translation2d(5.5, 7),
-    //             new Translation2d(.7, 4)),
-    //         new Pose2d(1, 1, new Rotation2d(0))));
-
-    // Pose2d start = new Pose2d(1.9, 7.8 - Units.feetToMeters(6), new Rotation2d(0));
-    // Pose2d note = new Pose2d(2.3, 5.55, new Rotation2d(0));
-    // Pose2d amp = new Pose2d(1.9, 7.8, new Rotation2d(Math.PI));
-    // autonChooser.addOption(
-    //     "Score note in amp",
-    //     new SequentialCommandGroup(
-    //         new InstantCommand(
-    //             () -> {
-    //               m_robotDrive.resetOdometry(start);
-    //             }),
-    //         generateAutonomousCommand(start, List.of(), note),
-    //         // pickUpNote(),
-    //         generateAutonomousCommand(note, List.of(), amp)
-    //         // scoreToAmp()
-    //         ));
     autonChooser.addOption(
         "1 Note",
         new SequentialCommandGroup(
-            new RunCommand(
-                    () -> m_robotDrive.drive(.25, 0, 0, RelativeTo.ROBOT_RELATIVE, false),
-                    m_robotDrive)
-                .withTimeout(1),
-            shootake.shootCommand(() -> false)));
+            new ParallelCommandGroup(
+                    m_robotDrive.driveCommand(
+                        () -> .25, () -> 0, () -> 0, () -> RelativeTo.DRIVER_RELATIVE, false),
+                    new RunCommand(() -> shootake.setRetained(true), shootake))
+                .withTimeout(1.5),
+            m_robotDrive.stopCommand(),
+            speakerShoot()));
+    autonChooser.addOption(
+        "Subwoofer",
+        new SequentialCommandGroup(
+            arm.subwooferPosition().withTimeout(2),
+            shootake.speakerShootCommand(),
+            m_robotDrive
+                .driveCommand(() -> .25, () -> 0, () -> 0, () -> RelativeTo.DRIVER_RELATIVE, false)
+                .withTimeout(1.5),
+            new RunCommand(() -> shootake.setRetained(true), shootake),
+            m_robotDrive.stopCommand()));
+    autonChooser.addOption(
+        "2 Note (Middle Shoot)",
+        new SequentialCommandGroup(speakerShoot(), shootake.stopCommand(), midToSpeaker()));
+    autonChooser.addOption(
+        "2 Note (Amp-Side Shoot)",
+        new SequentialCommandGroup(speakerShoot(), shootake.stopCommand(), topToSpeaker()));
+    autonChooser.addOption(
+        "2 Note (Stage-Side Shoot)",
+        new SequentialCommandGroup(speakerShoot(), shootake.stopCommand(), bottomToSpeaker()));
+    autonChooser.addOption(
+        "2 Note (Amp Score)",
+        new SequentialCommandGroup(speakerShoot(), shootake.stopCommand(), topToAmpWallSide()));
+    autonChooser.addOption(
+        "3 Note (Amp Side All Speaker)",
+        new SequentialCommandGroup(
+            speakerShoot(), shootake.stopCommand(), midToSpeaker(), topToSpeaker()));
+    autonChooser.addOption(
+        "3 Note (Stage Side)",
+        new SequentialCommandGroup(
+            speakerShoot(), shootake.stopCommand(), midToSpeaker(), bottomToSpeaker()));
+    autonChooser.addOption(
+        "3 Note (Amp Side One Amp)",
+        new SequentialCommandGroup(
+            speakerShoot(), shootake.stopCommand(), midToSpeaker(), topToAmp()));
+    autonChooser.addOption(
+        "4 Note",
+        new SequentialCommandGroup(
+            speakerShoot(), shootake.stopCommand(), bottomToSpeaker(), midToSpeaker(), topToAmp()));
     SmartDashboard.putData(autonChooser);
   }
 
@@ -211,7 +302,10 @@ public class RobotContainer implements Logged {
     if (autonChooser.getSelected() == null) {
       return m_robotDrive.stopCommand();
     }
-    return autonChooser.getSelected();
+    return new ConditionalCommand(
+        m_robotDrive.stopCommand(),
+        autonChooser.getSelected(),
+        () -> m_robotDrive.getPose().getX() < .1 && m_robotDrive.getPose().getY() < .1);
   }
 
   /**

@@ -2,7 +2,6 @@ package frc.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotContainer.AllianceColor;
@@ -11,7 +10,7 @@ import java.util.function.Supplier;
 public class AllianceUtil {
   private static AllianceColor alliance = AllianceColor.UNKNOWN;
   private static Supplier<Pose2d> robotPose = () -> new Pose2d();
-  public static final double kFieldLength = Units.inchesToMeters(2.0 * (76.1 + 250.50));
+  public static final double kFieldLength = 16.5412;
 
   public static final Pose2d mapBluePoseToRed(Pose2d bluePose) {
     return new Pose2d(

@@ -4,6 +4,7 @@ import static frc.robot.Constants.ShootakeConstants.*;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +22,7 @@ public class Shootake extends SubsystemBase implements Logged {
   CANSparkMax bottomRoller = new CANSparkMax(kBottomCANID, MotorType.kBrushless);
   Servo finger = new Servo(kFingerPort);
   DigitalInput hasNoteSensor = new DigitalInput(ShootakeConstants.kNoteSensorChannel);
+  Debouncer shootDebounce = new Debouncer(.125);
 
   public Shootake() {
     topRoller.setSmartCurrentLimit(23);
@@ -32,6 +34,16 @@ public class Shootake extends SubsystemBase implements Logged {
     return -(topRoller.getEncoder().getVelocity() + bottomRoller.getEncoder().getVelocity()) / 2;
   }
 
+  @Log
+  private double getTopRollerSpeed() {
+    return -topRoller.getEncoder().getVelocity();
+  }
+
+  @Log
+  private double getBottomRollerSpeed() {
+    return -bottomRoller.getEncoder().getVelocity();
+  }
+
   public void setSpeed(double speed) {
     topRoller.set(speed);
     bottomRoller.set(speed);
@@ -39,7 +51,7 @@ public class Shootake extends SubsystemBase implements Logged {
 
   public void setRetained(boolean retained) {
     SmartDashboard.putNumber("Servo Retainer", retained ? 1 : 0);
-    finger.set(retained ? 0 : .6);
+    finger.set(retained ? ShootakeConstants.kRetainedValue : ShootakeConstants.kNotRetainedValue);
   }
 
   public boolean hasNote() {
@@ -52,6 +64,18 @@ public class Shootake extends SubsystemBase implements Logged {
           setSpeed(0.0);
           setRetained(true);
         });
+  }
+
+  public Command retainCommand() {
+    return this.run(
+            () -> {
+              setRetained(true);
+            })
+        .withTimeout(.25);
+  }
+
+  public Command stopCommand() {
+    return this.runOnce(() -> this.setSpeed(0));
   }
 
   public Command intakeCommand() {
@@ -94,7 +118,7 @@ public class Shootake extends SubsystemBase implements Logged {
                   setRetained(true);
                   setSpeed(-1.0);
                 })
-            .until(() -> getAverageSpeed() > kShootakeFreeSpeed),
+            .until(() -> shootDebounce.calculate(getAverageSpeed() > kShootakeFreeSpeed)),
         this.run(
                 () -> {
                   setRetained(false);
@@ -106,7 +130,7 @@ public class Shootake extends SubsystemBase implements Logged {
                   setRetained(false);
                   setSpeed(-1.0);
                 })
-            .withTimeout(1));
+            .withTimeout(.5));
   }
 
   /**
