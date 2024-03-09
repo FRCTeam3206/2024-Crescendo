@@ -6,10 +6,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkPIDController;
-import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -40,33 +39,33 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   private final SparkAbsoluteEncoder m_armEncoder;
   private final SparkPIDController m_armPIDController;
 
-  private final DutyCycleEncoder m_armDCEncoder = new DutyCycleEncoder(5);
-  private final DutyCycleEncoderSim m_simArmEncoder = new DutyCycleEncoderSim(m_armDCEncoder);
-
   @Log private double m_armSetpointRads = 4 * Math.PI / 4;
   @Log private double m_armKp = ArmConstants.kPSpark;
   @Log private double armAngle;
+
+  @Log private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+  @Log private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
 
   private final ArmFeedforward m_feedforward =
       new ArmFeedforward(
           ArmConstants.kSVolts, ArmConstants.kGVolts,
           ArmConstants.kVVoltSecondPerRad, ArmConstants.kAVoltSecondSquaredPerRad);
 
-  private final PIDController m_simplePID = new PIDController(m_armKp, 0, 0);
+  private final PIDController m_pid = new PIDController(m_armKp, 0, 0);
 
-  private final ProfiledPIDController m_armProfiledPID =
-      new ProfiledPIDController(
-          m_armKp,
-          0,
-          0,
+  private final TrapezoidProfile m_profile =
+      new TrapezoidProfile(
           new TrapezoidProfile.Constraints(
               ArmConstants.kMaxVelocityRadPerSecond,
               ArmConstants.kMaxAccelerationRadPerSecSquared));
 
+  // These are used for the arm simulator
+  private final DutyCycleEncoder m_armDCEncoder = new DutyCycleEncoder(5);
+  private final DutyCycleEncoderSim m_simArmEncoder = new DutyCycleEncoderSim(m_armDCEncoder);
+
   private final PWMSparkMax m_simMotor = new PWMSparkMax(5);
   private final DCMotor m_simGearBox = DCMotor.getNEO(1);
 
-  // private final EncoderSim m_simEncoder;
   private final SingleJointedArmSim m_simArm =
       new SingleJointedArmSim(
           m_simGearBox,
@@ -76,7 +75,10 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
           ArmConstants.kMinAngleRads,
           ArmConstants.kMaxAngleRads,
           true,
-          0);
+          0,
+          VecBuilder.fill(
+              Units.rotationsToRadians(1.0 / 1024)) // Add noise with a std-dev of 0.5 degrees
+          );
 
   @Log
   private final Mechanism2d m_mech2d =
@@ -106,7 +108,6 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     m_armEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
     m_armEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
     m_armEncoder.setZeroOffset(ArmConstants.kArmZeroRads);
-    // m_simEncoder = new EncoderSim(m_armEncoder);
 
     m_armPIDController = m_motor.getPIDController();
     m_armPIDController.setFeedbackDevice(m_armEncoder);
@@ -114,7 +115,8 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     m_armPIDController.setI(0);
     m_armPIDController.setD(0);
     m_armPIDController.setPositionPIDWrappingEnabled(true);
-    // m_armPIDController.setPositionPIDWrappingMaxInput();
+
+    m_pid.enableContinuousInput(0, 2 * Math.PI);
 
     m_armTower.setColor(new Color8Bit(Color.kBlue));
 
@@ -135,7 +137,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   @Log
-  public double getAngleRads() {
+  public double getAngle() {
     if (Robot.isReal()) {
       return m_armEncoder.getPosition();
     } else {
@@ -143,15 +145,36 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     }
   }
 
+  @Log
+  public double getVelocity() {
+    if (Robot.isReal()) {
+      return m_armEncoder.getVelocity();
+    } else {
+      return m_simArm.getVelocityRadPerSec();
+    }
+  }
+
   public void moveToGoal(double goal) {
-    var ff = m_feedforward.calculate(getAngleRads(), 0);
+    m_goal = new TrapezoidProfile.State(goal, 0); // target is to be stationary at angle "goal"
+
+    m_setpoint =
+        m_profile.calculate(
+            0.020, m_setpoint, m_goal); // get updated setpoint from trapezoidal profile
+
+    this.log("Setpoint Position", m_setpoint.position);
+    this.log("Setpoint Velocity", m_setpoint.velocity);
+
+    var ff = m_feedforward.calculate(m_setpoint.position, m_setpoint.velocity);
     this.log("FeedForward", ff);
-    var pidOutput = ff + m_armProfiledPID.calculate(getAngleRads(), goal);
-    this.log("Setpoint Position", m_armProfiledPID.getSetpoint().position);
-    pidOutput = MathUtil.clamp(pidOutput, -6, 6);
-    this.log("PID Output Voltage", pidOutput);
-    m_motor.setVoltage(pidOutput);
-    m_simMotor.setVoltage(pidOutput);
+
+    var pid = m_pid.calculate(getAngle(), m_setpoint.position);
+    this.log("PID", pid);
+
+    var output = pid + ff;
+    // output = MathUtil.clamp(output, -6, 6);
+    this.log("PID Output Voltage", output);
+    m_motor.setVoltage(output);
+    m_simMotor.setVoltage(output);
   }
 
   public Command moveToGoalCommand(double goal) {
@@ -159,9 +182,8 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public void reset() {
-    if (Robot.isSimulation()) {
-      m_armProfiledPID.reset(m_simArm.getAngleRads());
-    }
+    m_setpoint = new TrapezoidProfile.State(getAngle(), getVelocity());
+    m_pid.reset();
   }
 
   public void stop() {

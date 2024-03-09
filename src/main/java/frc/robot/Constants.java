@@ -161,19 +161,19 @@ public final class Constants {
     public static final double kArmZeroThreshold = Math.PI * .15;
 
     // These are fake gains; in actuality these must be determined individually for each robot
-    public static final double kPSpark = 20;
+    public static final double kPSpark = 10;
     public static final double kSVolts = 0;
-    public static final double kGVolts = 1.3;
+    public static final double kGVolts = 4.74;
     public static final double kVVoltSecondPerRad = 0.8;
     public static final double kAVoltSecondSquaredPerRad = 0.08;
 
     public static final double kArmReduction = 41;
-    public static final double kArmLength = Units.inchesToMeters(15.25);
-    public static final double kArmMass = Units.lbsToKilograms(13.4);
-    public static final double kArmMOI = 1.02  // kg*m² - estimated from CAD
+    public static final double kArmLength = Units.inchesToMeters(14.0);
+    public static final double kArmMass = Units.lbsToKilograms(12.725);
+    public static final double kArmMOI = 1.02; // kg*m² - estimated from CAD
 
-    public static final double kMaxVelocityRadPerSecond = 6;
-    public static final double kMaxAccelerationRadPerSecSquared = 6;
+    public static final double kMaxVelocityRadPerSecond = 1;
+    public static final double kMaxAccelerationRadPerSecSquared = 1;
 
     public static final double kArmZeroRads = 5.48;
     public static final double kMinAngleRads = Units.degreesToRadians(-20);
