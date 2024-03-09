@@ -71,7 +71,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
       new SingleJointedArmSim(
           m_simGearBox,
           ArmConstants.kArmReduction,
-          SingleJointedArmSim.estimateMOI(ArmConstants.kArmLength, ArmConstants.kArmMass),
+          ArmConstants.kArmMOI,
           ArmConstants.kArmLength,
           ArmConstants.kMinAngleRads,
           ArmConstants.kMaxAngleRads,

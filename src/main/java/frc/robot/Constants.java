@@ -170,6 +170,7 @@ public final class Constants {
     public static final double kArmReduction = 41;
     public static final double kArmLength = Units.inchesToMeters(15.25);
     public static final double kArmMass = Units.lbsToKilograms(13.4);
+    public static final double kArmMOI = 1.02  // kg*m² - estimated from CAD
 
     public static final double kMaxVelocityRadPerSecond = 6;
     public static final double kMaxAccelerationRadPerSecSquared = 6;
