@@ -77,7 +77,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
           true,
           0,
           VecBuilder.fill(
-              Units.rotationsToRadians(1.0 / 1024)) // Add noise with a std-dev of 0.5 degrees
+              Units.rotationsToRadians(1.0 / 10024)) // Add noise with a std-dev of 0.5 degrees
           );
 
   @Log
