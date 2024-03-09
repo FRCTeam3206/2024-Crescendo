@@ -37,7 +37,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
   private CANSparkMax m_motor = new CANSparkMax(ArmConstants.kArmCANId, MotorType.kBrushless);
   private final SparkAbsoluteEncoder m_armEncoder;
-  private final SparkPIDController m_armPIDController;
+  // private final SparkPIDController m_armPIDController;
 
   @Log private double m_armSetpointRads = 4 * Math.PI / 4;
   @Log private double m_armKp = ArmConstants.kPSpark;
@@ -109,12 +109,12 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     m_armEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
     m_armEncoder.setZeroOffset(ArmConstants.kArmZeroRads);
 
-    m_armPIDController = m_motor.getPIDController();
-    m_armPIDController.setFeedbackDevice(m_armEncoder);
-    m_armPIDController.setP(ArmConstants.kPSpark);
-    m_armPIDController.setI(0);
-    m_armPIDController.setD(0);
-    m_armPIDController.setPositionPIDWrappingEnabled(true);
+    // m_armPIDController = m_motor.getPIDController();
+    // m_armPIDController.setFeedbackDevice(m_armEncoder);
+    // m_armPIDController.setP(ArmConstants.kPSpark);
+    // m_armPIDController.setI(0);
+    // m_armPIDController.setD(0);
+    // m_armPIDController.setPositionPIDWrappingEnabled(true);
 
     m_pid.enableContinuousInput(0, 2 * Math.PI);
 
