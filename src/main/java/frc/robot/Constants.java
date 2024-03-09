@@ -163,13 +163,18 @@ public final class Constants {
     // These are fake gains; in actuality these must be determined individually for each robot
     public static final double kPSpark = 10;
     public static final double kSVolts = 0;
-    public static final double kGVolts = 4.74;
+
+    public static final double kGVolts = 1.8;
     public static final double kVVoltSecondPerRad = 0.8;
     public static final double kAVoltSecondSquaredPerRad = 0.08;
 
     public static final double kArmReduction = 41;
-    public static final double kArmLength = Units.inchesToMeters(14.0);
-    public static final double kArmMass = Units.lbsToKilograms(12.725);
+    // arm sim assumes a uniform rod in the inertia calculation
+    // this leads to dumb results when trying to simulate a real arm
+    // instead, use the moment calculated by CAD and then figure out the 
+    // length that gives the right inertia
+    public static final double kArmLength = 1.5;  // m - back calculated
+    public static final double kArmMass = 1.33;  // kg - back calculated
     public static final double kArmMOI = 1.02; // kg*m² - estimated from CAD
 
     public static final double kMaxVelocityRadPerSecond = 1;
