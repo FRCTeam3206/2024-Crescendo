@@ -16,14 +16,13 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 
-public class AprilTagVision {
+public class AprilTagCamera {
   private final PhotonCamera camera;
   private final PhotonPoseEstimator photonEstimator;
-  SwerveDrivePoseEstimator swervePoseEstimator;
   private double lastEstTimestamp = 0;
 
-  public AprilTagVision(
-      String cameraName, Transform3d distToCamera, SwerveDrivePoseEstimator swervePoseEstimator) {
+  public AprilTagCamera(
+      String cameraName, Transform3d distToCamera) {
     camera = new PhotonCamera(cameraName);
     AprilTagFieldLayout fieldLayout;
     try {
@@ -39,15 +38,14 @@ public class AprilTagVision {
             camera,
             distToCamera);
     photonEstimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
-    this.swervePoseEstimator = swervePoseEstimator;
   }
 
-  public void addVisionMeasurementToEstimator() {
+  public void addVisionMeasurementToEstimator(SwerveDrivePoseEstimator poseEstimator) {
     var visionEst = getEstimatedGlobalPose();
     if (visionEst.isPresent()) {
       Pose2d estPose2d = visionEst.get().estimatedPose.toPose2d();
       Matrix<N3, N1> estStdDevs = getEstimationStandardDeviations(estPose2d);
-      swervePoseEstimator.addVisionMeasurement(
+      poseEstimator.addVisionMeasurement(
           estPose2d, visionEst.get().timestampSeconds, estStdDevs);
     }
   }

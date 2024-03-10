@@ -148,16 +148,6 @@ public class RobotContainer implements Logged {
     SmartDashboard.putData("Reset Climber", climber.zero());
     SmartDashboard.putNumber("X to Reset", 0);
     SmartDashboard.putNumber("Y to Reset", 0);
-    SmartDashboard.putData(
-        "Reset Pose",
-        new InstantCommand(
-            () -> {
-              m_robotDrive.resetOdometry(
-                  new Pose2d(
-                      SmartDashboard.getNumber("X to Reset", 0),
-                      SmartDashboard.getNumber("Y to Reset", 0),
-                      m_robotDrive.getPose().getRotation()));
-            }));
   }
 
   // public Command pickUpNoteCommand(NoteLocation noteLocation) {

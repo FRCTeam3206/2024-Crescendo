@@ -84,7 +84,6 @@ public class Robot extends TimedRobot implements Logged {
     if (AllianceUtil.getAlliance() == RobotContainer.AllianceColor.UNKNOWN) {
       AllianceUtil.setAlliance();
     }
-    m_robotContainer.m_robotDrive.resetGryoToVision();
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
      * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -118,7 +117,6 @@ public class Robot extends TimedRobot implements Logged {
     if (AllianceUtil.getAlliance() == RobotContainer.AllianceColor.UNKNOWN) {
       AllianceUtil.setAlliance();
     }
-    m_robotContainer.m_robotDrive.resetGryoToVision();
   }
 
   /** This function is called periodically during operator control. */
