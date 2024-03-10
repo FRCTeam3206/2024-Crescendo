@@ -163,13 +163,13 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     this.log("Setpoint Position", m_setpoint.position);
     this.log("Setpoint Velocity", m_setpoint.velocity);
 
-    var ff = m_feedforward.calculate(m_setpoint.position, m_setpoint.velocity);
+    double ff = m_feedforward.calculate(m_setpoint.position, m_setpoint.velocity);
     this.log("FeedForward", ff);
 
-    var pid = m_pid.calculate(getAngle(), m_setpoint.position);
+    double pid = m_pid.calculate(getAngle(), m_setpoint.position);
     this.log("PID", pid);
 
-    var output = pid + ff;
+    double output = pid + ff;
     // output = MathUtil.clamp(output, -6, 6);
     this.log("PID Output Voltage", output);
     m_motor.setVoltage(output);
