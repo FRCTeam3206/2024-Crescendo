@@ -123,8 +123,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     odometry.periodic();
     this.log("Robot Pose", odometry.getPose());
     field.setRobotPose(getPose());
-    // this.log("Angle from speaker",
-    // getAngleFromPointPositive(AllianceUtil.getPoseForAlliance(AutoAlignConstants.kBlueSpeakerPose)));
   }
 
   /**
@@ -141,11 +139,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     return DriveConstants.kDriveKinematics.toChassisSpeeds(desiredStates);
   }
 
-  /**
-   * Updates the odometry (including for sim). Should be called from periodic(). This code comes
-   * from Team 2713:
-   * https://github.com/FRC2713/Robot2022-v2/blob/main/src/main/java/frc/robot/subsystems/SwerveIO/BabySwerver.java#L126-151
-   */
+  
 
   /**
    * Method to drive the robot using joystick info.
@@ -241,14 +235,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
             DriveConstants.kDriveKinematics.toSwerveModuleStates(
                 new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     }
-    // desiredStates = swerveModuleStates;
     setModuleStates(desiredStates);
-    //             SwerveDriveKinematics.desaturateWheelSpeeds(
-    //     swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    // frontLeft.setDesiredState(swerveModuleStates[0]);
-    // frontRight.setDesiredState(swerveModuleStates[1]);
-    // rearLeft.setDesiredState(swerveModuleStates[2]);
-    // rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
   /**
@@ -302,10 +289,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
           new SwerveModuleState(0, Rotation2d.fromDegrees(45))
         });
-    // frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-    // frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    // rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    // rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
   /** Creates a command that continually sets the wheels into an X formation to prevent movement. */
@@ -369,11 +352,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     return odometry.getGryo().getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
-  // public double distBetweenPoses(Pose2d pose1, Pose2d pose2) {
-  //   return Math.sqrt(
-  //       Math.pow(pose1.getX() - pose2.getX(), 2) + Math.pow(pose1.getY() - pose2.getY(), 2));
-  // }
-
   public double getAngleToGoal(Rotation2d angleGoal) {
     return angleGoal.minus(getPose().getRotation()).getRadians();
   }
@@ -425,10 +403,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     this.log("Move Dx", deltaX);
     this.log("Move Dy", deltaY);
     double deltaPose = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-    // if (deltaPose > AutoAlignConstants.kMaxDistStillGo) {
-    //   drive(0, 0, 0, false, false);
-    //   return;
-    // }
     double xVelocity = AutoAlignConstants.kPathFollowingP * deltaX;
     double yVelocity = AutoAlignConstants.kPathFollowingP * deltaY;
     double maxSpeed = AutoAlignConstants.kPathFollowingP * deltaPose;

@@ -57,6 +57,11 @@ public class SwerveOdometry {
     }
   }
 
+  /**
+   * Updates the odometry (including for sim). Should be called from periodic(). This code comes
+   * from Team 2713:
+   * https://github.com/FRC2713/Robot2022-v2/blob/main/src/main/java/frc/robot/subsystems/SwerveIO/BabySwerver.java#L126-151
+   */
   public void simulationPeriodic() {
     SimDouble gyroSimAngle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
     gyroSimAngle.set(-getPose().getRotation().getDegrees());
