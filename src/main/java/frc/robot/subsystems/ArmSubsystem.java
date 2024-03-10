@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
-import com.revrobotics.SparkPIDController;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -39,8 +38,8 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   private final SparkAbsoluteEncoder m_armEncoder;
   // private final SparkPIDController m_armPIDController;
 
-  @Log private double m_armSetpointRads = 4 * Math.PI / 4;
   @Log private double m_armKp = ArmConstants.kPSpark;
+  @Log private double m_armKd = ArmConstants.kDSpark;
   @Log private double armAngle;
 
   @Log private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
@@ -51,7 +50,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
           ArmConstants.kSVolts, ArmConstants.kGVolts,
           ArmConstants.kVVoltSecondPerRad, ArmConstants.kAVoltSecondSquaredPerRad);
 
-  private final PIDController m_pid = new PIDController(m_armKp, 0, 0);
+  private final PIDController m_pid = new PIDController(m_armKp, 0, m_armKd);
 
   private final TrapezoidProfile m_profile =
       new TrapezoidProfile(
@@ -102,12 +101,13 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
     m_motor.setSmartCurrentLimit(45);
     m_motor.setIdleMode(IdleMode.kBrake);
-    m_motor.setInverted(true);
+    m_motor.setInverted(false);
 
     m_armEncoder = m_motor.getAbsoluteEncoder(Type.kDutyCycle);
     m_armEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
     m_armEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
     m_armEncoder.setZeroOffset(ArmConstants.kArmZeroRads);
+    m_armEncoder.setAverageDepth(4);
 
     // m_armPIDController = m_motor.getPIDController();
     // m_armPIDController.setFeedbackDevice(m_armEncoder);
@@ -138,11 +138,16 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
   @Log
   public double getAngle() {
+    double angle;
     if (Robot.isReal()) {
-      return m_armEncoder.getPosition();
+      angle =  m_armEncoder.getPosition(); 
     } else {
-      return m_armDCEncoder.getAbsolutePosition();
+      angle = m_armDCEncoder.getAbsolutePosition();
     }
+    if (angle > ArmConstants.kMaxAngleRads) {
+      angle -= 2*Math.PI;
+    }
+    return angle;
   }
 
   @Log
@@ -155,6 +160,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public void moveToGoal(double goal) {
+    this.log("Goal", goal);
     m_goal = new TrapezoidProfile.State(goal, 0); // target is to be stationary at angle "goal"
 
     m_setpoint =

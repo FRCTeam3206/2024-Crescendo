@@ -161,26 +161,27 @@ public final class Constants {
     public static final double kArmZeroThreshold = Math.PI * .15;
 
     // These are fake gains; in actuality these must be determined individually for each robot
-    public static final double kPSpark = 10;
+    public static final double kPSpark = 4;  
+    public static final double kDSpark = 0;
     public static final double kSVolts = 0;
 
-    public static final double kGVolts = 1.8;
+    public static final double kGVolts = 1.0;
     public static final double kVVoltSecondPerRad = 0.8;
     public static final double kAVoltSecondSquaredPerRad = 0.08;
 
     public static final double kArmReduction = 41;
     // arm sim assumes a uniform rod in the inertia calculation
     // this leads to dumb results when trying to simulate a real arm
-    // instead, use the moment calculated by CAD and then figure out the 
+    // instead, use the moment calculated by CAD and then figure out the
     // length that gives the right inertia
-    public static final double kArmLength = 1.5;  // m - back calculated
-    public static final double kArmMass = 1.33;  // kg - back calculated
+    public static final double kArmLength = 1.5; // m - back calculated
+    public static final double kArmMass = 1.33; // kg - back calculated
     public static final double kArmMOI = 1.02; // kg*m² - estimated from CAD
 
-    public static final double kMaxVelocityRadPerSecond = 1;
-    public static final double kMaxAccelerationRadPerSecSquared = 1;
+    public static final double kMaxVelocityRadPerSecond = 2.5;
+    public static final double kMaxAccelerationRadPerSecSquared = 2.5;
 
-    public static final double kArmZeroRads = 5.48;
+    public static final double kArmZeroRads = 5.4;
     public static final double kMinAngleRads = Units.degreesToRadians(-20);
     public static final double kMaxAngleRads = Units.degreesToRadians(200);
 
@@ -190,7 +191,7 @@ public final class Constants {
 
     // The offset of the arm from the horizontal in its neutral position,
     // measured from the horizontal
-    public static final double kArmOffsetRads = 6.106;
+    public static final double kArmOffsetRads = 6.131;
   }
 
   public static enum ArmPostition {
