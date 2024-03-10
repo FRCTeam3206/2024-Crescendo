@@ -155,16 +155,39 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final double kS = 0.0;
-    public static final double kG = 1.2;
-    public static final double kV = 0.0;
-
-    public static final double kP = 1;
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
-
     public static final int kArmCANId = 5;
-    public static final double kArmZeroOffset = 0.266;
+
+    // These are fake gains; in actuality these must be determined individually for each robot
+    public static final double kPSpark = 10;
+    public static final double kSVolts = 0;
+
+    public static final double kGVolts = 1.8;
+    public static final double kVVoltSecondPerRad = 0.8;
+    public static final double kAVoltSecondSquaredPerRad = 0.08;
+
+    public static final double kArmReduction = 41;
+    // arm sim assumes a uniform rod in the inertia calculation
+    // this leads to dumb results when trying to simulate a real arm
+    // instead, use the moment calculated by CAD and then figure out the
+    // length that gives the right inertia
+    public static final double kArmLength = 1.5; // m - back calculated
+    public static final double kArmMass = 1.33; // kg - back calculated
+    public static final double kArmMOI = 1.02; // kg*m² - estimated from CAD
+
+    public static final double kMaxVelocityRadPerSecond = 1;
+    public static final double kMaxAccelerationRadPerSecSquared = 1;
+
+    public static final double kArmZeroRads = 5.48;
+    public static final double kMinAngleRads = Units.degreesToRadians(-20);
+    public static final double kMaxAngleRads = Units.degreesToRadians(200);
+
+    // Keys for values stored in Preferences
+    public static final String kArmPositionKey = "ArmPosition";
+    public static final String kArmPKey = "ArmP";
+
+    // The offset of the arm from the horizontal in its neutral position,
+    // measured from the horizontal
+    public static final double kArmOffsetRads = 6.106;
 
     public static final double kArmZeroThreshold = .15;
 
