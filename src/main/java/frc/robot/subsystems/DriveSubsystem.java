@@ -19,12 +19,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.Constants.AllianceNoteLocation;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RelativeTo;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Robot;
 import frc.robot.sensors.AprilTagCamera;
 import frc.utils.AllianceUtil;
 import frc.utils.SwerveUtils;
@@ -60,7 +60,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           DriveConstants.kRearRightTurningCanId,
           DriveConstants.kBackRightChassisAngularOffset);
 
-
   // Slew rate filter variables for controlling lateral acceleration
   private double currentRotation = 0.0;
   private double currentTranslationDir = 0.0;
@@ -84,34 +83,36 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           new Pose2d());
 
   private final AprilTagCamera poseCamera1 =
-      new AprilTagCamera(
-          VisionConstants.kCameraName1, VisionConstants.kDistToCamera1);
+      new AprilTagCamera(VisionConstants.kCameraName1, VisionConstants.kDistToCamera1);
   private final AprilTagCamera poseCamera2 =
-      new AprilTagCamera(
-          VisionConstants.kCameraName2, VisionConstants.kDistToCamera2);
-
+      new AprilTagCamera(VisionConstants.kCameraName2, VisionConstants.kDistToCamera2);
 
   SwerveModuleState[] desiredStates =
       new SwerveModuleState[] {
-        frontLeft.getState(),
-        frontRight.getState(),
-        rearLeft.getState(),
-        rearRight.getState()
+        frontLeft.getState(), frontRight.getState(), rearLeft.getState(), rearRight.getState()
       };
 
   private Field2d field = new Field2d();
   private SwerveOdometry odometry;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     SmartDashboard.putData("Field", field);
 
-    
-    odometry=new SwerveOdometry(DriveConstants.kDriveKinematics,()->new SwerveModulePosition[] {
-          frontLeft.getPosition(),
-          frontRight.getPosition(),
-          rearLeft.getPosition(),
-          rearRight.getPosition()
-        }, ()->desiredStates, "navX-Sensor[0]").addCamera(poseCamera1).addCamera(poseCamera2);
+    odometry =
+        new SwerveOdometry(
+                DriveConstants.kDriveKinematics,
+                () ->
+                    new SwerveModulePosition[] {
+                      frontLeft.getPosition(),
+                      frontRight.getPosition(),
+                      rearLeft.getPosition(),
+                      rearRight.getPosition()
+                    },
+                () -> desiredStates,
+                "navX-Sensor[0]")
+            .addCamera(poseCamera1)
+            .addCamera(poseCamera2);
     odometry.setIsReal(Robot.isReal());
     AllianceUtil.setRobot(odometry::getPose);
   }
@@ -120,7 +121,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   public void periodic() {
     // Update the odometry in the periodic block
     odometry.periodic();
-    this.log("Robot Pose",odometry.getPose());
+    this.log("Robot Pose", odometry.getPose());
     field.setRobotPose(getPose());
     // this.log("Angle from speaker",
     // getAngleFromPointPositive(AllianceUtil.getPoseForAlliance(AutoAlignConstants.kBlueSpeakerPose)));
@@ -137,8 +138,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   }
 
   public ChassisSpeeds getRobotRelativeChassisSpeeds() {
-    return DriveConstants.kDriveKinematics.toChassisSpeeds(
-        desiredStates);
+    return DriveConstants.kDriveKinematics.toChassisSpeeds(desiredStates);
   }
 
   /**
@@ -146,8 +146,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    * from Team 2713:
    * https://github.com/FRC2713/Robot2022-v2/blob/main/src/main/java/frc/robot/subsystems/SwerveIO/BabySwerver.java#L126-151
    */
-
-
 
   /**
    * Method to drive the robot using joystick info.
@@ -298,7 +296,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
   /** Sets the wheels into an X formation to prevent movement. */
   public void setX() {
     System.out.println("Xing");
-    setModuleStates(new SwerveModuleState[] {
+    setModuleStates(
+        new SwerveModuleState[] {
           new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
           new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
           new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),

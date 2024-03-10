@@ -21,8 +21,7 @@ public class AprilTagCamera {
   private final PhotonPoseEstimator photonEstimator;
   private double lastEstTimestamp = 0;
 
-  public AprilTagCamera(
-      String cameraName, Transform3d distToCamera) {
+  public AprilTagCamera(String cameraName, Transform3d distToCamera) {
     camera = new PhotonCamera(cameraName);
     AprilTagFieldLayout fieldLayout;
     try {
@@ -45,8 +44,7 @@ public class AprilTagCamera {
     if (visionEst.isPresent()) {
       Pose2d estPose2d = visionEst.get().estimatedPose.toPose2d();
       Matrix<N3, N1> estStdDevs = getEstimationStandardDeviations(estPose2d);
-      poseEstimator.addVisionMeasurement(
-          estPose2d, visionEst.get().timestampSeconds, estStdDevs);
+      poseEstimator.addVisionMeasurement(estPose2d, visionEst.get().timestampSeconds, estStdDevs);
     }
   }
 
