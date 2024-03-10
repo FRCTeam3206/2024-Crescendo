@@ -174,7 +174,7 @@ public final class Constants {
     public static final double kSubwooferAngle = 1.51;
 
     public static final double kAtAngleTolerance = 0.05;
-    public static final double kActiveAngleTolerance=.10;
+    public static final double kActiveAngleTolerance = .10;
   }
 
   public static final class ClimberConstants {
@@ -291,6 +291,7 @@ public final class Constants {
     // public static final Pose2d kRedShootPose =
     //     mapBluePoseToRed(kBlueShootPose); // new Pose2d(13.349, 5.326, new Rotation2d());
 
+    public static final double kWaypointFollowingAtGoalTolerance = 0.05;
   }
 
   public static enum ArmPostition {

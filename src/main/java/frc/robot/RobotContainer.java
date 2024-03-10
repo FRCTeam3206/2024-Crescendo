@@ -126,6 +126,14 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    m_driverController.button(1).whileTrue(
+      new SequentialCommandGroup(
+        m_robotDrive.workingDriveToWaypointCommand(AutoAlignConstants.kWaypointToCenter),
+        m_robotDrive.driveToSharedNotePoseCommand(),
+        m_robotDrive.workingDriveToWaypointCommand(AutoAlignConstants.kWaypointToCenter),
+        m_robotDrive.autoDriveToSpeakerShoot()
+      )
+    );
     // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
     m_driverController
@@ -151,7 +159,7 @@ public class RobotContainer implements Logged {
     //                 AutoAlignConstants.kAtWaypointTolerance),
     //             m_robotDrive.autoDriveToSpeakerShoot()));
     // m_driverController
-    //     .button(2)
+    //     .button(1)
     //     .whileTrue(
     //         new SequentialCommandGroup(
     //             m_robotDrive.driveToWaypointCommand(
@@ -248,7 +256,8 @@ public class RobotContainer implements Logged {
   public Command ampShoot() {
     return new SequentialCommandGroup(
         m_robotDrive.stopCommand(),
-        new ParallelCommandGroup(arm.ampCommandStop().withTimeout(1.5), m_robotDrive.scoreToAmpCommand()),
+        new ParallelCommandGroup(
+            arm.ampCommandStop().withTimeout(1.5), m_robotDrive.scoreToAmpCommand()),
         m_robotDrive.stopCommand(),
         new ParallelCommandGroup(
             m_robotDrive.stopCommand(), arm.ampPosition(), shootake.ampCommand()));

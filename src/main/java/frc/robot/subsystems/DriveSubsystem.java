@@ -665,6 +665,38 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     drive(xVelocity, yVelocity, 0.0, RelativeTo.FIELD_RELATIVE, true);
   }
 
+  public void workingDriveToWaypoint(Translation2d waypoint) {
+    Pose2d currentPose = getPose();
+    double deltaX = waypoint.getX() - currentPose.getX();
+    double deltaY = waypoint.getY() - currentPose.getY();
+    this.log("Move Dx", deltaX);
+    this.log("Move Dy", deltaY);
+    double deltaPose = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    // if (deltaPose > AutoAlignConstants.kMaxDistStillGo) {
+    //   drive(0, 0, 0, false, false);
+    //   return;
+    // }
+    double xVelocity = AutoAlignConstants.kPathFollowingP * deltaX;
+    double yVelocity = AutoAlignConstants.kPathFollowingP * deltaY;
+    double maxSpeed = AutoAlignConstants.kPathFollowingP * deltaPose;
+    if (maxSpeed > 1.0) {
+      xVelocity /= maxSpeed;
+      yVelocity /= maxSpeed;
+    }
+    drive(xVelocity, yVelocity, 0.0, RelativeTo.FIELD_RELATIVE, true);
+  }
+
+  public Command workingDriveToWaypointCommand(Translation2d waypoint) {
+    return this.run(() -> workingDriveToWaypoint(AllianceUtil.getTranslationForAlliance(waypoint)))
+        .until(
+            () ->
+                getPose()
+                        .getTranslation()
+                        .getDistance(AllianceUtil.getTranslationForAlliance(waypoint))
+                    < AutoAlignConstants.kWaypointFollowingAtGoalTolerance)
+        .andThen(new WaitCommand(.1));
+  }
+
   public Command driveToWaypointCommand(Translation2d waypoint, double maxSpeed, double tolerance) {
     return this.run(
             () -> driveToWaypoint(AllianceUtil.getTranslationForAlliance(waypoint), maxSpeed))
@@ -673,7 +705,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
                 getPose()
                         .getTranslation()
                         .getDistance(AllianceUtil.getTranslationForAlliance(waypoint))
-                    < tolerance);
+                    < tolerance)
+        .andThen(stopCommand())
+        .andThen(new WaitCommand(.1));
   }
 
   public Command basicDriveToWaypointCommand(Translation2d waypoint) {
@@ -684,6 +718,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
                         .getTranslation()
                         .getDistance(AllianceUtil.getTranslationForAlliance(waypoint))
                     < AutoAlignConstants.kAtWaypointTolerance)
+        .andThen(stopCommand())
         .andThen(new WaitCommand(.1));
   }
 
@@ -698,7 +733,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
                 getPose()
                         .getTranslation()
                         .getDistance(AllianceUtil.getTranslationForAlliance(waypoint))
-                    < tolerance);
+                    < tolerance)
+        .andThen(stopCommand())
+        .andThen(new WaitCommand(.1));
   }
 
   public Command driveToPoseCommand(Pose2d bluePose, double translationTolerance) {
