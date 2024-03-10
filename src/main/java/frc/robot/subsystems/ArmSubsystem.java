@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
-import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -103,11 +102,11 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     m_motor.setIdleMode(IdleMode.kBrake);
     m_motor.setInverted(false);
 
-    m_armEncoder = m_motor.getAbsoluteEncoder(Type.kDutyCycle);
+    m_armEncoder = m_motor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     m_armEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
     m_armEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
     m_armEncoder.setZeroOffset(ArmConstants.kArmZeroRads);
-    m_armEncoder.setAverageDepth(4);
+    m_armEncoder.setAverageDepth(8);
 
     // m_armPIDController = m_motor.getPIDController();
     // m_armPIDController.setFeedbackDevice(m_armEncoder);
@@ -119,9 +118,6 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     m_pid.enableContinuousInput(0, 2 * Math.PI);
 
     m_armTower.setColor(new Color8Bit(Color.kBlue));
-
-    // Preferences.initDouble(ArmConstants.kArmPositionKey, m_armSetpointRads);
-    // Preferences.initDouble(ArmConstants.kArmPKey, m_armKp);
   }
 
   public void simulationPeriodic() {
@@ -140,12 +136,12 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   public double getAngle() {
     double angle;
     if (Robot.isReal()) {
-      angle =  m_armEncoder.getPosition(); 
+      angle = m_armEncoder.getPosition();
     } else {
       angle = m_armDCEncoder.getAbsolutePosition();
     }
     if (angle > ArmConstants.kMaxAngleRads) {
-      angle -= 2*Math.PI;
+      angle -= 2 * Math.PI;
     }
     return angle;
   }
@@ -196,38 +192,6 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     m_motor.setVoltage(0);
     m_simMotor.setVoltage(0);
   }
-
-  // @Override
-  // public void useState(TrapezoidProfile.State setpoint) {
-  //   // Calculate the feedforward from the sepoint
-  //   this.log("setpoint.position", setpoint.position);
-  //   this.log("setpoint.velocity", setpoint.velocity);
-
-  //   double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
-  //   // Add the feedforward to the PID output to get the motor output
-  //   this.log("FeedForward", feedforward);
-
-  //   m_armPIDController.setReference(
-  //       setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
-  // }
-
-  // public Command setArmGoalCommand(double kArmOffsetRads) {
-  //   return Commands.runOnce(() -> setGoal(kArmOffsetRads), this);
-  // }
-
-  /** Load setpoint and kP from preferences. */
-  // public void loadPreferences() {
-  //   // Read Preferences for Arm setpoint and kP on entering Teleop
-  //   m_armSetpointRads = Preferences.getDouble(ArmConstants.kArmPositionKey, m_armSetpointRads);
-  //   if (m_armKp != Preferences.getDouble(ArmConstants.kArmPKey, m_armKp)) {
-  //     m_armKp = Preferences.getDouble(ArmConstants.kArmPKey, m_armKp);
-  //     m_simplePID.setP(m_armKp);
-  //   }
-  // }
-
-  // public Command loadPreferencesCommand() {
-  //   return runOnce(this::loadPreferences);
-  // }
 
   @Override
   public void periodic() {

@@ -116,7 +116,7 @@ public class RobotContainer implements Logged {
 
     // xbox.a().onTrue(arm.setArmGoalCommand(0.5));
     // xbox.b().onTrue(arm.setArmGoalCommand(0));
-    xbox.b().whileTrue(arm.runOnce(arm::reset).andThen(arm.moveToGoalCommand(3*Math.PI / 4)));
+    xbox.b().whileTrue(arm.runOnce(arm::reset).andThen(arm.moveToGoalCommand(3 * Math.PI / 4)));
     xbox.y().whileTrue(arm.runOnce(arm::reset).andThen(arm.moveToGoalCommand(Math.PI / 2 - 0.05)));
     xbox.x().whileTrue(arm.runOnce(arm::reset).andThen(arm.moveToGoalCommand(Math.PI / 4)));
     xbox.a().whileTrue(arm.runOnce(arm::reset).andThen(arm.moveToGoalCommand(3.3)));
