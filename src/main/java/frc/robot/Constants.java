@@ -160,7 +160,7 @@ public final class Constants {
 
     public static final double kArmZeroThreshold = Math.PI * .15;
 
-    // These are fake gains; in actuality these must be determined individually for each robot
+    // These gains were tuned on Troodo on 3/10/2024
     public static final double kPSpark = 4;
     public static final double kDSpark = 0;
     public static final double kSVolts = 0;
@@ -169,6 +169,14 @@ public final class Constants {
     public static final double kVVoltSecondPerRad = 0.8;
     public static final double kAVoltSecondSquaredPerRad = 0.08;
 
+    public static final double kMaxVelocityRadPerSecond = 2.5;
+    public static final double kMaxAccelerationRadPerSecSquared = 2.5;
+
+    public static final double kArmZeroRads = 5.4;
+    public static final double kMinAngleRads = Units.degreesToRadians(-20);
+    public static final double kMaxAngleRads = Units.degreesToRadians(200);
+
+    // These constants are only used for the simulated arm
     public static final double kArmReduction = 41;
     // arm sim assumes a uniform rod in the inertia calculation
     // this leads to dumb results when trying to simulate a real arm
@@ -177,21 +185,6 @@ public final class Constants {
     public static final double kArmLength = 1.5; // m - back calculated
     public static final double kArmMass = 1.33; // kg - back calculated
     public static final double kArmMOI = 1.02; // kg*m² - estimated from CAD
-
-    public static final double kMaxVelocityRadPerSecond = 2.5;
-    public static final double kMaxAccelerationRadPerSecSquared = 2.5;
-
-    public static final double kArmZeroRads = 5.4;
-    public static final double kMinAngleRads = Units.degreesToRadians(-20);
-    public static final double kMaxAngleRads = Units.degreesToRadians(200);
-
-    // Keys for values stored in Preferences
-    public static final String kArmPositionKey = "ArmPosition";
-    public static final String kArmPKey = "ArmP";
-
-    // The offset of the arm from the horizontal in its neutral position,
-    // measured from the horizontal
-    public static final double kArmOffsetRads = 6.131;
   }
 
   public static enum ArmPostition {
