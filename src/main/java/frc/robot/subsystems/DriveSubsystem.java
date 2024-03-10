@@ -295,7 +295,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
 
   /** Sets the wheels into an X formation to prevent movement. */
   public void setX() {
-    System.out.println("Xing");
     setModuleStates(
         new SwerveModuleState[] {
           new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
