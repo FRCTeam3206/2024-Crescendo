@@ -157,7 +157,7 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int kArmCANId = 5;
 
-    // These are fake gains; in actuality these must be determined individually for each robot
+    // These gains were tuned for Troodo n 3/10
     public static final double kPSpark = 10;
     public static final double kSVolts = 0;
 
@@ -180,14 +180,6 @@ public final class Constants {
     public static final double kArmZeroRads = 5.48;
     public static final double kMinAngleRads = Units.degreesToRadians(-20);
     public static final double kMaxAngleRads = Units.degreesToRadians(200);
-
-    // Keys for values stored in Preferences
-    public static final String kArmPositionKey = "ArmPosition";
-    public static final String kArmPKey = "ArmP";
-
-    // The offset of the arm from the horizontal in its neutral position,
-    // measured from the horizontal
-    public static final double kArmOffsetRads = 6.106;
 
     public static final double kArmZeroThreshold = .15;
 
