@@ -179,19 +179,19 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command intakePosition() {
-    return this.run(() -> moveToGoal(ArmConstants.kIntakeAngle));
+    return this.runOnce(this::reset).andThen(this.run(() -> moveToGoal(ArmConstants.kIntakeAngle)));
   }
 
   public Command shootPosition() {
-    return this.run(() -> moveToGoal(ArmConstants.kShootAngle));
+    return this.runOnce(this::reset).andThen(this.run(() -> moveToGoal(ArmConstants.kShootAngle)));
   }
 
   public Command ampPosition() {
-    return this.run(() -> moveToGoal(ArmConstants.kArmAmpAngle));
+    return this.runOnce(this::reset).andThen(this.run(() -> moveToGoal(ArmConstants.kArmAmpAngle)));
   }
 
   public Command subwooferPosition() {
-    return this.run(() -> moveToGoal(ArmConstants.kSubwooferAngle));
+    return this.runOnce(this::reset).andThen(this.run(() -> moveToGoal(ArmConstants.kSubwooferAngle)));
   }
 
   public boolean atSpeakerAngle() {
