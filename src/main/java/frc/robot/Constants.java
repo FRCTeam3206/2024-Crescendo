@@ -161,7 +161,7 @@ public final class Constants {
     public static final double kArmZeroThreshold = Math.PI * .15;
 
     // These gains were tuned on Troodo on 3/10/2024
-    public static final double kPSpark = 4;
+    public static final double kPSpark = 6;
     public static final double kDSpark = 0;
     public static final double kSVolts = 0;
 
@@ -169,8 +169,8 @@ public final class Constants {
     public static final double kVVoltSecondPerRad = 0.8;
     public static final double kAVoltSecondSquaredPerRad = 0.08;
 
-    public static final double kMaxVelocityRadPerSecond = 2.5;
-    public static final double kMaxAccelerationRadPerSecSquared = 2.5;
+    public static final double kMaxVelocityRadPerSecond = 3.5;
+    public static final double kMaxAccelerationRadPerSecSquared = 3.5;
 
     public static final double kArmZeroRads = 5.4;
     public static final double kMinAngleRads = Units.degreesToRadians(-20);

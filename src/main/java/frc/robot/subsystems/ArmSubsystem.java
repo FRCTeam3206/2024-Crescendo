@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import edu.wpi.first.math.VecBuilder;
@@ -104,9 +105,12 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
     m_armEncoder = m_motor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     m_armEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
-    m_armEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
+    m_armEncoder.setVelocityConversionFactor(2*Math.PI/60);
     m_armEncoder.setZeroOffset(ArmConstants.kArmZeroRads);
     m_armEncoder.setAverageDepth(8);
+
+    m_motor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
+    m_motor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
 
     // m_armPIDController = m_motor.getPIDController();
     // m_armPIDController.setFeedbackDevice(m_armEncoder);
