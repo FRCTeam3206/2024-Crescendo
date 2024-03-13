@@ -40,6 +40,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.Robot;
 import frc.robot.sensors.AprilTagVision;
 import frc.utils.AllianceUtil;
+import frc.utils.PositionLimiterUtil;
 import frc.utils.SwerveUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -123,6 +124,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
 
     AllianceUtil.setRobot(this::getPose);
 
+    PositionLimiterUtil.setPoseSupplier(this::getPose);
+
     AutoBuilder.configureHolonomic(
         this::getPose,
         (Pose2d pose) -> {
@@ -157,6 +160,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     // Update the odometry in the periodic block
     updateOdometry();
     m_field.setRobotPose(getPose());
+    this.log("Position Limiter Configured", PositionLimiterUtil.isConfigured());
     // this.log("Angle from speaker",
     // getAngleFromPointPositive(AllianceUtil.getPoseForAlliance(AutoAlignConstants.kBlueSpeakerPose)));
   }
@@ -312,6 +316,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     double xSpeedDelivered = OutreachConstants.kMaxDriveSpeedMultiplier * xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = OutreachConstants.kMaxDriveSpeedMultiplier * ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
+    if (PositionLimiterUtil.xVelocityNotAllowed(xSpeedDelivered)) xSpeedDelivered = 0.0;
+    if (PositionLimiterUtil.yVelocityNotAllowed(ySpeedDelivered)) ySpeedDelivered = 0.0;
 
     SwerveModuleState[] desiredStates;
     switch (relativeTo) {

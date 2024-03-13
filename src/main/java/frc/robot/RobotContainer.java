@@ -39,6 +39,8 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Shootake;
+import frc.utils.PositionLimiterUtil;
+
 import java.util.List;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -148,6 +150,8 @@ public class RobotContainer implements Logged {
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
     SmartDashboard.putData("Reset Climber", climber.zero());
+    SmartDashboard.putData("Set Max Point 1", new InstantCommand(() -> PositionLimiterUtil.configurePoint1()));
+    SmartDashboard.putData("Set Max Point 2", new InstantCommand(() -> PositionLimiterUtil.configurePoint2()));
     SmartDashboard.putNumber("X to Reset", 0);
     SmartDashboard.putNumber("Y to Reset", 0);
     SmartDashboard.putData(
