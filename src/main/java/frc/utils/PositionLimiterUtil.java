@@ -37,6 +37,7 @@ public class PositionLimiterUtil {
     }
 
     public static boolean xVelocityNotAllowed(double desiredVelocity) {
+        if (!isConfigured()) return false;
         double currentX = currentPose.get().getX();
         if (desiredVelocity > 0.0) {
             return currentX > x1 && currentX > x2;
@@ -48,6 +49,7 @@ public class PositionLimiterUtil {
     }
 
     public static boolean yVelocityNotAllowed(double desiredVelocity) {
+        if (!isConfigured()) return false;
         double currentY = currentPose.get().getY();
         if (desiredVelocity > 0.0) {
             return currentY > y1 && currentY > y2;
