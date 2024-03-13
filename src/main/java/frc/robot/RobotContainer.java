@@ -126,23 +126,25 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    m_driverController.button(2).whileTrue(new ParallelCommandGroup(shootake.intakeCommand(), arm.intakePosition()));
+    m_driverController.button(1).whileTrue(shootake.setSpeedCommand(() -> 1.0 - m_driverController.getRawAxis(3)));
     // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
-    m_driverController
-        .button(2)
-        .whileTrue(
-            // m_robotDrive.autoDriveToSpeakerShoot()
-            speakerShoot());
-    m_driverController.button(5).whileTrue(m_robotDrive.scoreToAmpCommand());
-    xbox.povUp().onTrue(arm.intakePosition());
-    xbox.povDown().onTrue(arm.shootPosition());
-    xbox.povRight().onTrue(arm.ampPosition());
-    xbox.povLeft().onTrue(arm.subwooferPosition());
-    xbox.a().whileTrue(shootake.intakeCommand());
-    xbox.b().onTrue(shootake.speakerShootCommand());
-    xbox.y().whileTrue(shootake.ampCommand());
-    xbox.x().whileTrue(shootake.outakeCommand());
-    xbox.start().whileTrue(shootake.slowIntakeCommand());
+    // m_driverController
+    //     .button(2)
+    //     .whileTrue(
+    //         // m_robotDrive.autoDriveToSpeakerShoot()
+    //         speakerShoot());
+    // m_driverController.button(5).whileTrue(m_robotDrive.scoreToAmpCommand());
+    // xbox.povUp().onTrue(arm.intakePosition());
+    // xbox.povDown().onTrue(arm.shootPosition());
+    // xbox.povRight().onTrue(arm.ampPosition());
+    // xbox.povLeft().onTrue(arm.subwooferPosition());
+    // xbox.a().whileTrue(shootake.intakeCommand());
+    // xbox.b().onTrue(shootake.speakerShootCommand());
+    // xbox.y().whileTrue(shootake.ampCommand());
+    // xbox.x().whileTrue(shootake.outakeCommand());
+    // xbox.start().whileTrue(shootake.slowIntakeCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
     SmartDashboard.putData("Reset Climber", climber.zero());

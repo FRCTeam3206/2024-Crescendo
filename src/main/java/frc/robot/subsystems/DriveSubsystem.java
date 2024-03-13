@@ -34,6 +34,7 @@ import frc.robot.Constants.AllianceNoteLocation;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.OutreachConstants;
 import frc.robot.Constants.RelativeTo;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Robot;
@@ -308,8 +309,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     }
 
     // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
-    double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
+    double xSpeedDelivered = OutreachConstants.kMaxDriveSpeedMultiplier * xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedDelivered = OutreachConstants.kMaxDriveSpeedMultiplier * ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
     SwerveModuleState[] desiredStates;

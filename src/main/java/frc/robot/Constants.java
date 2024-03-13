@@ -336,6 +336,11 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
+  public static final class OutreachConstants {
+    public static final double kMaxDriveSpeedMultiplier = 0.5;
+    public static final double kMaxShootPercentSpeed = 0.9; // Max allowed, not max possible
+  }
+
   public static final class VisionConstants {
     // TODO Figure out how much to trust state pose estimate versus vision pose estimate (higher
     // number = trust less)
