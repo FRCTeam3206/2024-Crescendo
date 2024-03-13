@@ -313,8 +313,14 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     }
 
     // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = OutreachConstants.kMaxDriveSpeedMultiplier * xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
-    double ySpeedDelivered = OutreachConstants.kMaxDriveSpeedMultiplier * ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
+    double xSpeedDelivered =
+        OutreachConstants.kMaxDriveSpeedMultiplier
+            * xSpeedCommanded
+            * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedDelivered =
+        OutreachConstants.kMaxDriveSpeedMultiplier
+            * ySpeedCommanded
+            * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
     if (PositionLimiterUtil.xVelocityNotAllowed(xSpeedDelivered)) xSpeedDelivered = 0.0;
     if (PositionLimiterUtil.yVelocityNotAllowed(ySpeedDelivered)) ySpeedDelivered = 0.0;

@@ -16,7 +16,6 @@ import frc.robot.Constants.OutreachConstants;
 import frc.robot.Constants.ShootakeConstants;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -53,9 +52,7 @@ public class Shootake extends SubsystemBase implements Logged {
   }
 
   public Command setSpeedCommand(Supplier<Double> speed) {
-    return this.run(
-      () -> setSpeed(speed.get())
-    );
+    return this.run(() -> setSpeed(speed.get()));
   }
 
   public void setRetained(boolean retained) {

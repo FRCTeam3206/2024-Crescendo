@@ -40,9 +40,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Shootake;
 import frc.utils.PositionLimiterUtil;
-
 import java.util.List;
-
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -129,8 +127,12 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    m_driverController.button(2).whileTrue(new ParallelCommandGroup(shootake.intakeCommand(), arm.intakePosition()));
-    m_driverController.button(1).whileTrue(shootake.setSpeedCommand(() -> 1.0 - m_driverController.getRawAxis(3)));
+    m_driverController
+        .button(2)
+        .whileTrue(new ParallelCommandGroup(shootake.intakeCommand(), arm.intakePosition()));
+    m_driverController
+        .button(1)
+        .whileTrue(shootake.setSpeedCommand(() -> 1.0 - m_driverController.getRawAxis(3)));
     // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
     // m_driverController
@@ -151,9 +153,13 @@ public class RobotContainer implements Logged {
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
     SmartDashboard.putData("Reset Climber", climber.zero());
-    SmartDashboard.putData("Set Max Point 1", new InstantCommand(() -> PositionLimiterUtil.configurePoint1()));
-    SmartDashboard.putData("Set Max Point 2", new InstantCommand(() -> PositionLimiterUtil.configurePoint2()));
-    SmartDashboard.putData("Reset Maximum Positions", new InstantCommand(() -> PositionLimiterUtil.resetConfiguration()));
+    SmartDashboard.putData(
+        "Set Max Point 1", new InstantCommand(() -> PositionLimiterUtil.configurePoint1()));
+    SmartDashboard.putData(
+        "Set Max Point 2", new InstantCommand(() -> PositionLimiterUtil.configurePoint2()));
+    SmartDashboard.putData(
+        "Reset Maximum Positions",
+        new InstantCommand(() -> PositionLimiterUtil.resetConfiguration()));
     SmartDashboard.putNumber("X to Reset", 0);
     SmartDashboard.putNumber("Y to Reset", 0);
     SmartDashboard.putData(
