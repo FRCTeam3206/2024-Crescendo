@@ -42,6 +42,7 @@ import frc.robot.subsystems.Shootake;
 import frc.utils.PositionLimiterUtil;
 
 import java.util.List;
+
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -152,6 +153,7 @@ public class RobotContainer implements Logged {
     SmartDashboard.putData("Reset Climber", climber.zero());
     SmartDashboard.putData("Set Max Point 1", new InstantCommand(() -> PositionLimiterUtil.configurePoint1()));
     SmartDashboard.putData("Set Max Point 2", new InstantCommand(() -> PositionLimiterUtil.configurePoint2()));
+    SmartDashboard.putData("Reset Maximum Positions", new InstantCommand(() -> PositionLimiterUtil.resetConfiguration()));
     SmartDashboard.putNumber("X to Reset", 0);
     SmartDashboard.putNumber("Y to Reset", 0);
     SmartDashboard.putData(

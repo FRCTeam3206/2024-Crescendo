@@ -36,6 +36,11 @@ public class PositionLimiterUtil {
         point2Configured = true;
     }
 
+    public static void resetConfiguration() {
+        point1Configured = false;
+        point2Configured = false;
+    }
+
     public static boolean xVelocityNotAllowed(double desiredVelocity) {
         if (!isConfigured()) return false;
         double currentX = currentPose.get().getX();
