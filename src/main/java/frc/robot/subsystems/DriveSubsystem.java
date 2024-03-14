@@ -259,7 +259,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    */
   public void drive(
       double xSpeed, double ySpeed, double rot, RelativeTo relativeTo, boolean rateLimit) {
-    double xSpeedCommanded;
+    this.log("Desired X Velocity", xSpeed);
+    this.log("Desired Y Velocity", ySpeed);
+    if (PositionLimiterUtil.xVelocityNotAllowed(xSpeed)) xSpeed = 0.0;
+    if (PositionLimiterUtil.yVelocityNotAllowed(ySpeed)) ySpeed = 0.0;
+        double xSpeedCommanded;
     double ySpeedCommanded;
 
     if (rateLimit) {
@@ -322,8 +326,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
             * ySpeedCommanded
             * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
-    if (PositionLimiterUtil.xVelocityNotAllowed(xSpeedDelivered)) xSpeedDelivered = 0.0;
-    if (PositionLimiterUtil.yVelocityNotAllowed(ySpeedDelivered)) ySpeedDelivered = 0.0;
+    
 
     SwerveModuleState[] desiredStates;
     switch (relativeTo) {

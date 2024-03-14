@@ -52,7 +52,19 @@ public class Shootake extends SubsystemBase implements Logged {
   }
 
   public Command setSpeedCommand(Supplier<Double> speed) {
-    return this.run(() -> setSpeed(speed.get()));
+    return new SequentialCommandGroup(
+      this.run(() -> setSpeed(speed.get()))
+    );
+    // return new SequentialCommandGroup(
+    //   new ParallelCommandGroup(
+    //     this.run(() -> setSpeed(speed.get())),
+    //     this.run(() -> setRetained(true))
+    //   ).withTimeout(1.0),
+    //   new ParallelCommandGroup(
+    //     () -> {setSpeed(speed.get());
+    //     setRetained(false);})
+    //   ).withTimeout(1.0)
+    // );
   }
 
   public void setRetained(boolean retained) {
@@ -68,7 +80,7 @@ public class Shootake extends SubsystemBase implements Logged {
     return this.run(
         () -> {
           setSpeed(0.0);
-          setRetained(false);
+          setRetained(true);
         });
   }
 
@@ -138,7 +150,27 @@ public class Shootake extends SubsystemBase implements Logged {
                 })
             .withTimeout(.5));
   }
-
+  public Command variableShoot(Supplier<Double> speed) {
+    return new SequentialCommandGroup(
+        this.run(
+                () -> {
+                  setRetained(true);
+                  setSpeed(-1.0);
+                })
+            .until(() -> shootDebounce.calculate(getAverageSpeed() > speed.get())),
+        this.run(
+                () -> {
+                  setRetained(false);
+                  setSpeed(-1.0);
+                })
+            .until(() -> !hasNote()),
+        this.run(
+                () -> {
+                  setRetained(false);
+                  setSpeed(-1.0);
+                })
+            .withTimeout(.5));
+  }
   /**
    * @deprecated Use {@code speakerShootCommand()} instead.
    */
