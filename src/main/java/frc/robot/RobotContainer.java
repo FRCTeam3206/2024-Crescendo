@@ -89,7 +89,7 @@ public class RobotContainer implements Logged {
             () ->
                 -MathUtil.applyDeadband(m_driverController.getTwist(), OIConstants.kDriveDeadband),
             () -> RelativeTo.DRIVER_RELATIVE,
-            true));
+            false));
     shootake.setDefaultCommand(shootake.idleCommand());
     climber.setDefaultCommand(
         new RunCommand(
