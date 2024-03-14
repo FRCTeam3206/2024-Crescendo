@@ -38,19 +38,17 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   private final SparkAbsoluteEncoder m_armEncoder;
   // private final SparkPIDController m_armPIDController;
 
-  @Log private double m_armKp = ArmConstants.kPSpark;
-  @Log private double m_armKd = ArmConstants.kDSpark;
   @Log private double armAngle;
 
-  @Log private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
-  @Log private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
+  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
 
   private final ArmFeedforward m_feedforward =
       new ArmFeedforward(
           ArmConstants.kSVolts, ArmConstants.kGVolts,
           ArmConstants.kVVoltSecondPerRad, ArmConstants.kAVoltSecondSquaredPerRad);
 
-  private final PIDController m_pid = new PIDController(m_armKp, 0, m_armKd);
+  private final PIDController m_pid = new PIDController(ArmConstants.kPSpark, 0, ArmConstants.kDSpark);
 
   private final TrapezoidProfile m_profile =
       new TrapezoidProfile(
@@ -105,7 +103,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
     m_armEncoder = m_motor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     m_armEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
-    m_armEncoder.setVelocityConversionFactor(2*Math.PI/60);
+    m_armEncoder.setVelocityConversionFactor(2*Math.PI);
     m_armEncoder.setZeroOffset(ArmConstants.kArmZeroRads);
     m_armEncoder.setAverageDepth(8);
 
