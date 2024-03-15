@@ -266,9 +266,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
         double xSpeedCommanded;
     double ySpeedCommanded;
 
+    double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
+
     if (rateLimit) {
       // Convert XY to polar for rate limiting
-      double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
       double inputTranslationMag = Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2));
 
       // Calculate the direction slew rate based on an estimate of the lateral
@@ -319,10 +320,12 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered =
         OutreachConstants.kMaxDriveSpeedMultiplier
+            * Math.abs(Math.cos(inputTranslationDir))
             * xSpeedCommanded
             * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered =
         OutreachConstants.kMaxDriveSpeedMultiplier
+            * Math.abs(Math.sin(inputTranslationDir))
             * ySpeedCommanded
             * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
