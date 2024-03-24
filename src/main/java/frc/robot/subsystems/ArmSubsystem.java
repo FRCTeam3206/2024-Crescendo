@@ -105,11 +105,11 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
       motorSim = new PWMSparkMax(5);
       dcEncoder = new DutyCycleEncoder(5);
       dcEncoderSim = new DutyCycleEncoderSim(dcEncoder);
-      
+
       // seed the encoder to have the correct sim arm starting position
       armSim.update(0.020);
       dcEncoderSim.setAbsolutePosition(armSim.getAngleRads());
-      
+
       // not used for simulation
       motor = null;
       encoder = null;
