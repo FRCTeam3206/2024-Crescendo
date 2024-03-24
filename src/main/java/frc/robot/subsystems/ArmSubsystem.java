@@ -189,8 +189,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command moveToGoalAndStopCommand(double goal) {
-    return moveToGoalCommand(goal)
-                  .until(this::atGoal);
+    return moveToGoalCommand(goal).until(this::atGoal);
   }
 
   public void reset() {

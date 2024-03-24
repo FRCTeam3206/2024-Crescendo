@@ -35,7 +35,6 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.RelativeTo;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
