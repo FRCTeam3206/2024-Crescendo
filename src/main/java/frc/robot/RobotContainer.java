@@ -136,10 +136,10 @@ public class RobotContainer implements Logged {
             // m_robotDrive.autoDriveToSpeakerShoot()
             speakerShoot());
     m_driverController.button(5).whileTrue(m_robotDrive.scoreToAmpCommand());
-    xbox.povUp().onTrue(arm.moveToGoalCommand(ArmConstants.kIntakeAngle));
-    xbox.povDown().onTrue(arm.shootPosition());
-    xbox.povRight().onTrue(arm.ampPosition());
-    xbox.povLeft().onTrue(arm.subwooferPosition());
+    xbox.povUp().whileTrue(arm.intakePosition());
+    xbox.povDown().whileTrue(arm.shootPosition());
+    xbox.povRight().whileTrue(arm.ampPosition());
+    xbox.povLeft().whileTrue(arm.subwooferPosition());
     xbox.a().whileTrue(shootake.intakeCommand());
     xbox.b().onTrue(shootake.speakerShootCommand());
     xbox.y().whileTrue(shootake.ampCommand());
