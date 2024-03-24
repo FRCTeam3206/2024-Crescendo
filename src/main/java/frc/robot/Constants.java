@@ -168,16 +168,16 @@ public final class Constants {
     public static final int kEncoderAveragingDepth = 2 ^ kEncoderAveragingBits;
 
     public static final double kArmZeroRads = 5.4;
-    public static final double kMinAngleRads = Units.degreesToRadians(-10);
-    public static final double kMaxAngleRads = Units.degreesToRadians(200);
+    public static final double kMinAngleRads = Units.degreesToRadians(-20);
+    public static final double kMaxAngleRads = Units.degreesToRadians(210);
 
     // Trapezoid profile constraints
-    public static final double kMaxVelocity = 3.5; // raidans/second
-    public static final double kMaxAcceleration = 3.5; // radians/second^2
+    public static final double kMaxVelocity = 2.0; // raidans/second
+    public static final double kMaxAcceleration = 2.0; // radians/second^2
 
     // Feedforward constants
     public static final double kS = 0.0; // volts
-    public static final double kG = 1.0; // volts
+    public static final double kG = 1.2; // volts
     public static final double kV = 0.8; // volts*second/radian
     public static final double kA = 0.08; // volts*second^2/radian
 
