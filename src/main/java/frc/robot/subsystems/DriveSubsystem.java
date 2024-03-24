@@ -195,8 +195,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           m_rearRight.getPosition()
         });
 
-    poseCamera1.addVisionMeasurementToEstimator();
-    poseCamera2.addVisionMeasurementToEstimator();
+    if (Robot.isReal()) {
+      poseCamera1.addVisionMeasurementToEstimator();
+      poseCamera2.addVisionMeasurementToEstimator();
+    }
 
     SwerveModuleState[] measuredStates =
         new SwerveModuleState[] {
