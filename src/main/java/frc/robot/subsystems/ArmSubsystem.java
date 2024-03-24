@@ -135,6 +135,11 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   @Override
   public void periodic() {
     super.periodic();
+
+    // the mechanism should track the real or simulated arm position
+    mechArm.setAngle(Units.radiansToDegrees(getAngle()));
+
+    // log items that can't be annotated
     this.log("Setpoint Position", setpoint.position);
     this.log("Setpoint Velocity", setpoint.velocity);
     this.log("Goal", this.goal.position);
@@ -142,7 +147,6 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
         "Voltage",
         ((Robot.isReal()) ? motor.get() : motorSim.get()) * RobotController.getBatteryVoltage());
     this.log("Current", (Robot.isReal()) ? motor.getOutputCurrent() : armSim.getCurrentDrawAmps());
-    mechArm.setAngle(Units.radiansToDegrees(getAngle()));
   }
 
   @Override
