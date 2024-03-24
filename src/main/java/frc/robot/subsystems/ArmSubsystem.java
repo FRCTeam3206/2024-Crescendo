@@ -92,6 +92,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
       motor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
 
       encoder = motor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
+      encoder.setZeroOffset(ArmConstants.kArmZeroOffset);
       encoder.setPositionConversionFactor(ArmConstants.kPositionConversionFactor);
       encoder.setVelocityConversionFactor(ArmConstants.kVelocityConversionFactor);
       encoder.setAverageDepth(ArmConstants.kEncoderAveragingDepth);
