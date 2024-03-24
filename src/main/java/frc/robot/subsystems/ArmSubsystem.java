@@ -131,6 +131,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
         "Voltage",
         ((Robot.isReal()) ? motor.get() : motorSim.get()) * RobotController.getBatteryVoltage());
     this.log("Current", (Robot.isReal()) ? motor.getOutputCurrent() : armSim.getCurrentDrawAmps());
+    mechArm.setAngle(Units.radiansToDegrees(getAngle()));
   }
 
   public void simulationPeriodic() {
@@ -140,7 +141,6 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(armSim.getCurrentDrawAmps()));
-    mechArm.setAngle(Units.radiansToDegrees(armSim.getAngleRads()));
   }
 
   @Log
