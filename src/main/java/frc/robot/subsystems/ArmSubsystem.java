@@ -69,11 +69,13 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
   private final MechanismRoot2d mechArmPivot =
       mech2d.getRoot("Pivot", 1.5 * ArmConstants.kArmRealLength, ArmConstants.kArmPivotHeight);
+
   @SuppressWarnings("unused")
   private final MechanismLigament2d mechArmTower =
       mechArmPivot.append(
           new MechanismLigament2d(
               "Tower", 1.5 * ArmConstants.kArmPivotHeight, -90, 12, new Color8Bit(Color.kBlue)));
+
   private final MechanismLigament2d mechArm =
       mechArmPivot.append(
           new MechanismLigament2d(
@@ -146,6 +148,12 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
         BatterySim.calculateDefaultBatteryLoadedVoltage(armSim.getCurrentDrawAmps()));
   }
 
+  /**
+   * Returns true when the arm is at its current goal and not moving. Tolerances for position and
+   * velocity are set in ArmConnstants.
+   *
+   * @return at goal and not moving
+   */
   @Log
   public boolean atGoal() {
     return MathUtil.isNear(
@@ -191,14 +199,6 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     this.log("Feedback", fb);
   }
 
-  public Command moveToGoalCommand(double goal) {
-    return runOnce(this::reset).andThen(run(() -> moveToGoal(goal)));
-  }
-
-  public Command moveToGoalAndStopCommand(double goal) {
-    return moveToGoalCommand(goal).until(this::atGoal);
-  }
-
   public void reset() {
     setpoint = new TrapezoidProfile.State(getAngle(), getVelocity());
     feedback.reset();
@@ -207,6 +207,32 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   public void stop() {
     setVoltage(0);
   }
+
+  /**
+   * Creates a command that will move the arm from its current location to the desired goal and hold
+   * it there. This command doesn't exit.
+   *
+   * @param goal the target angle (radians)
+   * @return Command that moves the arm and holds it at goal
+   */
+  public Command moveToGoalCommand(double goal) {
+    return runOnce(this::reset).andThen(run(() -> moveToGoal(goal)));
+  }
+
+  /**
+   * Creates a command that will move the arm from its current location to the desired goal. This
+   * command ends when the arm reaches the goal.
+   *
+   * @param goal the target angle (radians)
+   * @return Command that moves the arm and ends when it reaches the goal
+   */
+  public Command moveToGoalAndStopCommand(double goal) {
+    return moveToGoalCommand(goal).until(this::atGoal);
+  }
+
+  /**************************
+   * Game-specific commands *
+   **************************/
 
   public Command intakePosition() {
     return moveToGoalCommand(ArmConstants.kIntakeAngle);
