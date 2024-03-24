@@ -105,14 +105,19 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
       motorSim = new PWMSparkMax(5);
       dcEncoder = new DutyCycleEncoder(5);
       dcEncoderSim = new DutyCycleEncoderSim(dcEncoder);
-
+      
+      // seed the encoder to have the correct sim arm starting position
+      armSim.update(0.020);
+      dcEncoderSim.setAbsolutePosition(armSim.getAngleRads());
+      
       // not used for simulation
       motor = null;
       encoder = null;
     }
 
     feedback.enableContinuousInput(0, 2 * Math.PI);
-    this.goal = new TrapezoidProfile.State(armSim.getAngleRads(), 0);
+
+    this.goal = new TrapezoidProfile.State(getAngle(), 0);
     this.setpoint = new TrapezoidProfile.State(this.goal.position, 0);
   }
 
