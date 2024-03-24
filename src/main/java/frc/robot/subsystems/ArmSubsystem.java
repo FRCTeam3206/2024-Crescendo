@@ -162,7 +162,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
    *
    * @return at goal and not moving
    */
-  @Log(level = LogLevel.OVERRIDE_FILE_ONLY)  // may want to use on driver dashboard
+  @Log(level = LogLevel.OVERRIDE_FILE_ONLY) // may want to use on driver dashboard
   public boolean atGoal() {
     return MathUtil.isNear(
             this.goal.position, getAngle(), ArmConstants.kAtAngleTolerance, 0, 2 * Math.PI)
