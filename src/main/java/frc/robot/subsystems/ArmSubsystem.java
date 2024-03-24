@@ -223,14 +223,14 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command ampCommandStop() {
-    return this.ampPosition().until(this::atGoal);
+    return ampPosition().until(this::atGoal);
   }
 
   public Command speakerCommandStop() {
-    return this.shootPosition().until(this::atGoal);
+    return shootPosition().until(this::atGoal);
   }
 
   public Command intakeCommandStop() {
-    return this.intakePosition().until(this::atGoal);
+    return intakePosition().until(this::atGoal);
   }
 }
