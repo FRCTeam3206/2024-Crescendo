@@ -134,4 +134,10 @@ public class Robot extends TimedRobot implements Logged {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  @Override
+  public void simulationInit() {}
+
+  @Override
+  public void simulationPeriodic() {}
 }

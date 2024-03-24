@@ -135,7 +135,9 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     mechArm.setAngle(Units.radiansToDegrees(getAngle()));
   }
 
+  @Override
   public void simulationPeriodic() {
+    super.periodic();
     armSim.setInput(motorSim.get() * RobotController.getBatteryVoltage());
     armSim.update(0.020);
     dcEncoderSim.setAbsolutePosition(armSim.getAngleRads());
