@@ -29,12 +29,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AllianceNoteLocation;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.RelativeTo;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Lights;
@@ -54,12 +56,12 @@ public class RobotContainer implements Logged {
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   Lights lights = new Lights();
   final Shootake shootake = new Shootake();
-  private final Arm arm = new Arm();
+  private final ArmSubsystem arm = new ArmSubsystem();
   private final Climber climber = new Climber();
-  @Log private final String currentBranch = BuildConstants.GIT_BRANCH;
+  @Log.Once private final String currentBranch = BuildConstants.GIT_BRANCH;
 
   // The driver's controller
-  @Log CommandJoystick m_driverController = new CommandJoystick(OIConstants.kDriverControllerPort);
+  CommandJoystick m_driverController = new CommandJoystick(OIConstants.kDriverControllerPort);
 
   CommandXboxController xbox = new CommandXboxController(1);
   SendableChooser<Command> autonChooser = new SendableChooser<Command>();
@@ -134,7 +136,7 @@ public class RobotContainer implements Logged {
             // m_robotDrive.autoDriveToSpeakerShoot()
             speakerShoot());
     m_driverController.button(5).whileTrue(m_robotDrive.scoreToAmpCommand());
-    xbox.povUp().onTrue(arm.intakePosition());
+    xbox.povUp().onTrue(arm.moveToGoalCommand(ArmConstants.kIntakeAngle));
     xbox.povDown().onTrue(arm.shootPosition());
     xbox.povRight().onTrue(arm.ampPosition());
     xbox.povLeft().onTrue(arm.subwooferPosition());

@@ -185,7 +185,12 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command moveToGoalCommand(double goal) {
-    return this.run(() -> moveToGoal(goal));
+    return this.runOnce(this::reset).andThen(() -> moveToGoal(goal));
+  }
+
+  public Command moveToGoalAndStopCommand(double goal) {
+    return moveToGoalCommand(goal)
+                  .until(this::atGoal);
   }
 
   public void reset() {
@@ -195,5 +200,33 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
   public void stop() {
     setVoltage(0);
+  }
+
+  public Command intakePosition() {
+    return this.moveToGoalCommand(ArmConstants.kIntakeAngle);
+  }
+
+  public Command shootPosition() {
+    return this.moveToGoalCommand(ArmConstants.kShootAngle);
+  }
+
+  public Command ampPosition() {
+    return this.moveToGoalCommand(ArmConstants.kArmAmpAngle);
+  }
+
+  public Command subwooferPosition() {
+    return this.moveToGoalCommand(ArmConstants.kSubwooferAngle);
+  }
+
+  public Command ampCommandStop() {
+    return this.ampPosition().until(this::atGoal);
+  }
+
+  public Command speakerCommandStop() {
+    return this.shootPosition().until(this::atGoal);
+  }
+
+  public Command intakeCommandStop() {
+    return this.intakePosition().until(this::atGoal);
   }
 }
