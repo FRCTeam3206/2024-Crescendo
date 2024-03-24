@@ -69,10 +69,11 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
   private final MechanismRoot2d mechArmPivot =
       mech2d.getRoot("Pivot", 1.5 * ArmConstants.kArmRealLength, ArmConstants.kArmPivotHeight);
+  @SuppressWarnings("unused")
   private final MechanismLigament2d mechArmTower =
       mechArmPivot.append(
           new MechanismLigament2d(
-              "Tower", 1.5 * ArmConstants.kArmPivotHeight, -90, 6, new Color8Bit(Color.kBlue)));
+              "Tower", 1.5 * ArmConstants.kArmPivotHeight, -90, 12, new Color8Bit(Color.kBlue)));
   private final MechanismLigament2d mechArm =
       mechArmPivot.append(
           new MechanismLigament2d(
