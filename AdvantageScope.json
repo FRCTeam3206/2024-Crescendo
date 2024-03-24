@@ -1,0 +1,89 @@
+{
+  "version": "3.0.2",
+  "layout": [
+    {
+      "type": 1,
+      "legends": {
+        "left": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": [
+            {
+              "key": "NT:/Robot/m_robotContainer/arm/Setpoint Position",
+              "color": "#2b66a2",
+              "show": true
+            },
+            {
+              "key": "NT:/Robot/m_robotContainer/arm/getAngle",
+              "color": "#e5b31b",
+              "show": true
+            },
+            {
+              "key": "NT:/Robot/m_robotContainer/arm/Setpoint Velocity",
+              "color": "#af2437",
+              "show": true
+            },
+            {
+              "key": "NT:/Robot/m_robotContainer/arm/getVelocity",
+              "color": "#80588e",
+              "show": true
+            }
+          ]
+        },
+        "discrete": {
+          "fields": [
+            {
+              "key": "NT:/Robot/m_robotContainer/arm/atGoal",
+              "color": "#858584",
+              "show": true
+            }
+          ]
+        },
+        "right": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": [
+            {
+              "key": "NT:/Robot/m_robotContainer/arm/Requested Voltage",
+              "color": "#c0b487",
+              "show": true
+            },
+            {
+              "key": "NT:/Robot/m_robotContainer/arm/Voltage",
+              "color": "#e48b32",
+              "show": true
+            },
+            {
+              "key": "NT:/Robot/m_robotContainer/arm/Current",
+              "color": "#aacaee",
+              "show": true
+            }
+          ]
+        }
+      },
+      "title": "Line Graph"
+    },
+    {
+      "type": 10,
+      "fields": [
+        {
+          "key": "NT:/Robot/m_robotContainer/arm/mech2d",
+          "sourceTypeIndex": 0,
+          "sourceType": "Mechanism2d"
+        },
+        null,
+        null
+      ],
+      "listFields": [],
+      "options": {},
+      "configHidden": false,
+      "title": "Mechanism"
+    }
+  ]
+}
