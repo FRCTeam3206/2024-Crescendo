@@ -113,17 +113,16 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     feedback.enableContinuousInput(0, 2 * Math.PI);
     this.goal = new TrapezoidProfile.State(getAngle(), 0);
     this.setpoint = new TrapezoidProfile.State(this.goal.position, 0);
-
-    this.log("Setpoint Position (rad)", setpoint.position);
-    this.log("Setpoint Velocity (rad/s)", setpoint.velocity);
-    this.log("Goal (rad)", this.goal.position);
-    this.log("Feedforward (v)", 0);
-    this.log("Feedback (v)", 0);
   }
 
   @Override
   public void periodic() {
     super.periodic();
+    this.log("Setpoint Position", setpoint.position);
+    this.log("Setpoint Velocity", setpoint.velocity);
+    this.log("Goal", this.goal.position);
+    this.log("Voltage", ((Robot.isReal()) ? motor.get() : motorSim.get())*RobotController.getBatteryVoltage());
+    this.log("Current", (Robot.isReal()) ? motor.getOutputCurrent() : armSim.getCurrentDrawAmps());
   }
 
   public void simulationPeriodic() {
@@ -159,7 +158,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   private void setVoltage(double voltage) {
-    this.log("Output (volts)", voltage);
+    this.log("Requested Voltage", voltage);
     if (Robot.isReal()) {
       motor.setVoltage(voltage);
     } else {
@@ -177,11 +176,8 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
     setVoltage(output);
 
-    this.log("Setpoint Position (rad)", setpoint.position);
-    this.log("Setpoint Velocity (rad/s)", setpoint.velocity);
-    this.log("Goal (rad)", goal);
-    this.log("Feedforward (v)", ff);
-    this.log("Feedback (v)", fb);
+    this.log("Feedforward", ff);
+    this.log("Feedback", fb);
   }
 
   public Command moveToGoalCommand(double goal) {
