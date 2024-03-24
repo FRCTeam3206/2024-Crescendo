@@ -182,7 +182,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command moveToGoalCommand(double goal) {
-    return this.runOnce(this::reset).andThen(() -> moveToGoal(goal));
+    return runOnce(this::reset).andThen(run(() -> moveToGoal(goal)));
   }
 
   public Command moveToGoalAndStopCommand(double goal) {
@@ -199,19 +199,19 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command intakePosition() {
-    return this.moveToGoalCommand(ArmConstants.kIntakeAngle);
+    return moveToGoalCommand(ArmConstants.kIntakeAngle);
   }
 
   public Command shootPosition() {
-    return this.moveToGoalCommand(ArmConstants.kShootAngle);
+    return moveToGoalCommand(ArmConstants.kShootAngle);
   }
 
   public Command ampPosition() {
-    return this.moveToGoalCommand(ArmConstants.kArmAmpAngle);
+    return moveToGoalCommand(ArmConstants.kArmAmpAngle);
   }
 
   public Command subwooferPosition() {
-    return this.moveToGoalCommand(ArmConstants.kSubwooferAngle);
+    return moveToGoalCommand(ArmConstants.kSubwooferAngle);
   }
 
   public Command ampCommandStop() {
