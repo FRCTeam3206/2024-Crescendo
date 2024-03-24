@@ -122,7 +122,9 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     this.log("Setpoint Position", setpoint.position);
     this.log("Setpoint Velocity", setpoint.velocity);
     this.log("Goal", this.goal.position);
-    this.log("Voltage", ((Robot.isReal()) ? motor.get() : motorSim.get())*RobotController.getBatteryVoltage());
+    this.log(
+        "Voltage",
+        ((Robot.isReal()) ? motor.get() : motorSim.get()) * RobotController.getBatteryVoltage());
     this.log("Current", (Robot.isReal()) ? motor.getOutputCurrent() : armSim.getCurrentDrawAmps());
   }
 
