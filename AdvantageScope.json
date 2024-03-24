@@ -17,7 +17,7 @@
               "show": true
             },
             {
-              "key": "NT:/Robot/m_robotContainer/arm/getAngle",
+              "key": "NT:/Robot/m_robotContainer/arm/Angle",
               "color": "#e5b31b",
               "show": true
             },
@@ -27,7 +27,7 @@
               "show": true
             },
             {
-              "key": "NT:/Robot/m_robotContainer/arm/getVelocity",
+              "key": "NT:/Robot/m_robotContainer/arm/Velocity",
               "color": "#80588e",
               "show": true
             }
@@ -37,7 +37,7 @@
           "fields": [
             {
               "key": "NT:/Robot/m_robotContainer/arm/atGoal",
-              "color": "#858584",
+              "color": "#e48b32",
               "show": true
             }
           ]
@@ -51,17 +51,17 @@
           "fields": [
             {
               "key": "NT:/Robot/m_robotContainer/arm/Requested Voltage",
-              "color": "#c0b487",
+              "color": "#aacaee",
               "show": true
             },
             {
               "key": "NT:/Robot/m_robotContainer/arm/Voltage",
-              "color": "#e48b32",
+              "color": "#c0b487",
               "show": true
             },
             {
               "key": "NT:/Robot/m_robotContainer/arm/Current",
-              "color": "#aacaee",
+              "color": "#858584",
               "show": true
             }
           ]

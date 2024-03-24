@@ -45,7 +45,14 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
               ArmConstants.kMaxVelocity, ArmConstants.kMaxAcceleration));
   private final ArmFeedforward feedforward =
       new ArmFeedforward(ArmConstants.kS, ArmConstants.kG, ArmConstants.kG, ArmConstants.kA);
+
+  @Log(key = "Feedforward")
+  double ff = 0.0;
+
   private final PIDController feedback = new PIDController(ArmConstants.kP, 0, ArmConstants.kD);
+
+  @Log(key = "Feedback")
+  double fb = 0.0;
 
   // Simulation
   private final PWMSparkMax motorSim;
@@ -161,7 +168,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
         && MathUtil.isNear(0, getVelocity(), ArmConstants.kAtVelocityTolerance);
   }
 
-  @Log
+  @Log(key = "Angle")
   public double getAngle() {
     double angle = (Robot.isReal()) ? encoder.getPosition() : dcEncoder.getAbsolutePosition();
     if (angle > ArmConstants.kMaxAngleRads) {
@@ -170,7 +177,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     return angle;
   }
 
-  @Log
+  @Log(key = "Velocity")
   public double getVelocity() {
     double velocity = (Robot.isReal()) ? encoder.getVelocity() : armSim.getVelocityRadPerSec();
     return velocity;
@@ -189,14 +196,10 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     this.goal =
         new TrapezoidProfile.State(goal, 0); // goal is the desired endpoint with zero velocity
     this.setpoint = profile.calculate(0.020, this.setpoint, this.goal);
-    double ff = feedforward.calculate(setpoint.position, setpoint.velocity);
-    double fb = feedback.calculate(getAngle(), setpoint.position);
-    double output = fb + ff;
+    ff = feedforward.calculate(setpoint.position, setpoint.velocity);
+    fb = feedback.calculate(getAngle(), setpoint.position);
 
-    setVoltage(output);
-
-    this.log("Feedforward", ff);
-    this.log("Feedback", fb);
+    setVoltage(fb + ff);
   }
 
   public void reset() {
