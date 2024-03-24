@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Robot;
 import monologue.Annotations.Log;
+import monologue.LogLevel;
 import monologue.Logged;
 
 public class ArmSubsystem extends SubsystemBase implements Logged {
@@ -161,7 +162,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
    *
    * @return at goal and not moving
    */
-  @Log
+  @Log(level = LogLevel.OVERRIDE_FILE_ONLY)  // may want to use on driver dashboard
   public boolean atGoal() {
     return MathUtil.isNear(
             this.goal.position, getAngle(), ArmConstants.kAtAngleTolerance, 0, 2 * Math.PI)
