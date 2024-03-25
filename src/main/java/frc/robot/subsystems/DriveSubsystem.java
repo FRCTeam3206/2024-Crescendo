@@ -259,26 +259,26 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
    */
   public void drive(
       double xSpeed, double ySpeed, double rot, RelativeTo relativeTo, boolean rateLimit) {
-    if(relativeTo==RelativeTo.DRIVER_RELATIVE){
-      double angleDiff=getPose().getRotation().getRadians()-m_gyro.getRotation2d().getRadians();
-      double magnitude=Math.sqrt(xSpeed*xSpeed+ySpeed*ySpeed);
+    if (relativeTo == RelativeTo.DRIVER_RELATIVE) {
+      double angleDiff = getPose().getRotation().getRadians() - m_gyro.getRotation2d().getRadians();
+      double magnitude = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
       double angleDriven;
-      if(xSpeed==0.0){
-        angleDriven=Math.PI/2*Math.signum(ySpeed);
-      }else{
-        angleDriven=Math.atan(ySpeed/xSpeed);
+      if (xSpeed == 0.0) {
+        angleDriven = Math.PI / 2 * Math.signum(ySpeed);
+      } else {
+        angleDriven = Math.atan(ySpeed / xSpeed);
       }
-      this.log("Angle Driven",angleDriven);
-      if(xSpeed<0)angleDriven+=Math.PI;
-      xSpeed=magnitude*Math.cos(angleDriven+angleDiff);
-      ySpeed=magnitude*Math.sin(angleDriven+angleDiff);
-      relativeTo=RelativeTo.FIELD_RELATIVE;
+      this.log("Angle Driven", angleDriven);
+      if (xSpeed < 0) angleDriven += Math.PI;
+      xSpeed = magnitude * Math.cos(angleDriven + angleDiff);
+      ySpeed = magnitude * Math.sin(angleDriven + angleDiff);
+      relativeTo = RelativeTo.FIELD_RELATIVE;
     }
     this.log("Desired X Velocity", xSpeed);
     this.log("Desired Y Velocity", ySpeed);
     if (PositionLimiterUtil.xVelocityNotAllowed(xSpeed)) xSpeed = 0.0;
     if (PositionLimiterUtil.yVelocityNotAllowed(ySpeed)) ySpeed = 0.0;
-        double xSpeedCommanded;
+    double xSpeedCommanded;
     double ySpeedCommanded;
 
     if (rateLimit) {
@@ -341,7 +341,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
             * ySpeedCommanded
             * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
-    
 
     SwerveModuleState[] desiredStates;
     switch (relativeTo) {

@@ -111,9 +111,7 @@ public class RobotContainer implements Logged {
               }
             },
             lights));
-    arm.setDefaultCommand(
-        arm.shootPosition()
-    );
+    arm.setDefaultCommand(arm.shootPosition());
   }
 
   // new RunCommand(
@@ -135,10 +133,12 @@ public class RobotContainer implements Logged {
         .whileTrue(new ParallelCommandGroup(shootake.intakeCommand(), arm.intakePosition()));
     m_driverController
         .button(1)
-        //.whileTrue(shootake.setSpeedCommand(() -> m_driverController.getRawAxis(3)-1.0));
-                .whileTrue(shootake.variableShoot(()->(1.0-(m_driverController.getRawAxis(3)+1)/2)*3000));
+        // .whileTrue(shootake.setSpeedCommand(() -> m_driverController.getRawAxis(3)-1.0));
+        .whileTrue(
+            shootake.variableShoot(
+                () -> (1.0 - (m_driverController.getRawAxis(3) + 1) / 2) * 3000));
 
-        // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
+    // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
     // m_driverController
     //     .button(2)

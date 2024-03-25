@@ -52,9 +52,7 @@ public class Shootake extends SubsystemBase implements Logged {
   }
 
   public Command setSpeedCommand(Supplier<Double> speed) {
-    return new SequentialCommandGroup(
-      this.run(() -> setSpeed(speed.get()))
-    );
+    return new SequentialCommandGroup(this.run(() -> setSpeed(speed.get())));
     // return new SequentialCommandGroup(
     //   new ParallelCommandGroup(
     //     this.run(() -> setSpeed(speed.get())),
@@ -150,6 +148,7 @@ public class Shootake extends SubsystemBase implements Logged {
                 })
             .withTimeout(.5));
   }
+
   public Command variableShoot(Supplier<Double> speed) {
     return new SequentialCommandGroup(
         this.run(
@@ -171,6 +170,7 @@ public class Shootake extends SubsystemBase implements Logged {
                 })
             .withTimeout(.5));
   }
+
   /**
    * @deprecated Use {@code speakerShootCommand()} instead.
    */
