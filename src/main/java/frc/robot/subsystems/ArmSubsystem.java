@@ -32,6 +32,9 @@ import monologue.LogLevel;
 import monologue.Logged;
 
 public class ArmSubsystem extends SubsystemBase implements Logged {
+  @Log double angle = 0.0;
+  double lastAngle = 0.0;
+  @Log double velocity = 0.0;
 
   // Real Arm
   private final CANSparkMax motor;
@@ -45,12 +48,14 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
           new TrapezoidProfile.Constraints(
               ArmSubConstants.kMaxVelocity, ArmSubConstants.kMaxAcceleration));
   private final ArmFeedforward feedforward =
-      new ArmFeedforward(ArmSubConstants.kS, ArmSubConstants.kG, ArmSubConstants.kG, ArmSubConstants.kA);
+      new ArmFeedforward(
+          ArmSubConstants.kS, ArmSubConstants.kG, ArmSubConstants.kG, ArmSubConstants.kA);
 
   @Log(key = "Feedforward")
   double ff = 0.0;
 
-  private final PIDController feedback = new PIDController(ArmSubConstants.kP, 0, ArmSubConstants.kD);
+  private final PIDController feedback =
+      new PIDController(ArmSubConstants.kP, 0, ArmSubConstants.kD);
 
   @Log(key = "Feedback")
   double fb = 0.0;
@@ -76,7 +81,8 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
       new Mechanism2d(3 * ArmSubConstants.kArmRealLength, 3 * ArmSubConstants.kArmRealLength);
 
   private final MechanismRoot2d mechArmPivot =
-      mech2d.getRoot("Pivot", 1.5 * ArmSubConstants.kArmRealLength, ArmSubConstants.kArmPivotHeight);
+      mech2d.getRoot(
+          "Pivot", 1.5 * ArmSubConstants.kArmRealLength, ArmSubConstants.kArmPivotHeight);
 
   @SuppressWarnings("unused")
   private final MechanismLigament2d mechArmTower =
@@ -128,16 +134,22 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
     feedback.enableContinuousInput(0, 2 * Math.PI);
 
-    this.goal = new TrapezoidProfile.State(getAngle(), 0);
-    this.setpoint = new TrapezoidProfile.State(this.goal.position, 0);
+    angle = getAngle();
+    lastAngle = angle;
+    this.goal = new TrapezoidProfile.State(angle, 0);
+    this.setpoint = new TrapezoidProfile.State(angle, 0);
   }
 
   @Override
   public void periodic() {
     super.periodic();
+    angle = getAngle();
+    velocity = (angle - lastAngle) / 0.020;
+    lastAngle = angle;
+    this.log("error", this.setpoint.position - angle);
 
     // the mechanism should track the real or simulated arm position
-    mechArm.setAngle(Units.radiansToDegrees(getAngle()));
+    mechArm.setAngle(Units.radiansToDegrees(angle));
 
     // log items that can't be annotated
     this.log("Setpoint Position", setpoint.position);
@@ -151,7 +163,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
   @Override
   public void simulationPeriodic() {
-    super.periodic();
+    super.simulationPeriodic();
     armSim.setInput(motorSim.get() * RobotController.getBatteryVoltage());
     armSim.update(0.020);
     dcEncoderSim.setAbsolutePosition(armSim.getAngleRads());
