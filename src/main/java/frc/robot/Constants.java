@@ -198,7 +198,7 @@ public final class Constants {
     public static final double kArmMass = 1.33; // kg - back calculated
     public static final double kArmMOI = 1.02; // kg*m² - estimated from CAD
 
-    public static final double kArmZeroOffset = 5.348;  // radians
+    public static final double kArmZeroOffset = 5.348; // radians
 
     public static final double kArmZeroThreshold = .15;
 

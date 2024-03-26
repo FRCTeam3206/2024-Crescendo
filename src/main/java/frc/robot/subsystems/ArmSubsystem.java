@@ -169,8 +169,8 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   @Log(level = LogLevel.OVERRIDE_FILE_ONLY) // may want to use on driver dashboard
   public boolean atGoal() {
     return MathUtil.isNear(
-            this.goal.position, getAngle(), ArmConstants.kAtAngleTolerance, 0, 2 * Math.PI);
-        // && MathUtil.isNear(0, getVelocity(), ArmConstants.kAtVelocityTolerance);
+        this.goal.position, getAngle(), ArmConstants.kAtAngleTolerance, 0, 2 * Math.PI);
+    // && MathUtil.isNear(0, getVelocity(), ArmConstants.kAtVelocityTolerance);
   }
 
   @Log(key = "Angle")
