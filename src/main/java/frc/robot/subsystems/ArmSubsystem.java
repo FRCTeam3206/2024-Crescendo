@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ArmSubConstants;
 import frc.robot.Robot;
 import monologue.Annotations.Log;
 import monologue.LogLevel;
@@ -43,14 +43,14 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   private final TrapezoidProfile profile =
       new TrapezoidProfile(
           new TrapezoidProfile.Constraints(
-              ArmConstants.kMaxVelocity, ArmConstants.kMaxAcceleration));
+              ArmSubConstants.kMaxVelocity, ArmSubConstants.kMaxAcceleration));
   private final ArmFeedforward feedforward =
-      new ArmFeedforward(ArmConstants.kS, ArmConstants.kG, ArmConstants.kG, ArmConstants.kA);
+      new ArmFeedforward(ArmSubConstants.kS, ArmSubConstants.kG, ArmSubConstants.kG, ArmSubConstants.kA);
 
   @Log(key = "Feedforward")
   double ff = 0.0;
 
-  private final PIDController feedback = new PIDController(ArmConstants.kP, 0, ArmConstants.kD);
+  private final PIDController feedback = new PIDController(ArmSubConstants.kP, 0, ArmSubConstants.kD);
 
   @Log(key = "Feedback")
   double fb = 0.0;
@@ -63,50 +63,50 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   private final SingleJointedArmSim armSim =
       new SingleJointedArmSim(
           DCMotor.getNEO(1),
-          ArmConstants.kArmReduction,
-          ArmConstants.kArmMOI,
-          ArmConstants.kArmLength,
-          ArmConstants.kMinAngleRads,
-          ArmConstants.kMaxAngleRads,
+          ArmSubConstants.kArmReduction,
+          ArmSubConstants.kArmMOI,
+          ArmSubConstants.kArmLength,
+          ArmSubConstants.kMinAngleRads,
+          ArmSubConstants.kMaxAngleRads,
           true,
-          ArmConstants.kMinAngleRads);
+          ArmSubConstants.kMinAngleRads);
 
   @Log
   private final Mechanism2d mech2d =
-      new Mechanism2d(3 * ArmConstants.kArmRealLength, 3 * ArmConstants.kArmRealLength);
+      new Mechanism2d(3 * ArmSubConstants.kArmRealLength, 3 * ArmSubConstants.kArmRealLength);
 
   private final MechanismRoot2d mechArmPivot =
-      mech2d.getRoot("Pivot", 1.5 * ArmConstants.kArmRealLength, ArmConstants.kArmPivotHeight);
+      mech2d.getRoot("Pivot", 1.5 * ArmSubConstants.kArmRealLength, ArmSubConstants.kArmPivotHeight);
 
   @SuppressWarnings("unused")
   private final MechanismLigament2d mechArmTower =
       mechArmPivot.append(
           new MechanismLigament2d(
-              "Tower", 1.5 * ArmConstants.kArmPivotHeight, -90, 12, new Color8Bit(Color.kBlue)));
+              "Tower", 1.5 * ArmSubConstants.kArmPivotHeight, -90, 12, new Color8Bit(Color.kBlue)));
 
   private final MechanismLigament2d mechArm =
       mechArmPivot.append(
           new MechanismLigament2d(
               "Arm",
-              ArmConstants.kArmRealLength,
+              ArmSubConstants.kArmRealLength,
               Units.radiansToDegrees(armSim.getAngleRads()),
               6,
               new Color8Bit(Color.kYellow)));
 
   public ArmSubsystem() {
     if (Robot.isReal()) {
-      motor = new CANSparkMax(ArmConstants.kArmCANId, MotorType.kBrushless);
-      motor.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
+      motor = new CANSparkMax(ArmSubConstants.kArmCANId, MotorType.kBrushless);
+      motor.setSmartCurrentLimit(ArmSubConstants.kCurrentLimit);
       motor.setIdleMode(IdleMode.kBrake);
       motor.setInverted(false);
       motor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
       motor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
 
       encoder = motor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-      encoder.setZeroOffset(ArmConstants.kArmZeroOffset);
-      encoder.setPositionConversionFactor(ArmConstants.kPositionConversionFactor);
-      encoder.setVelocityConversionFactor(ArmConstants.kVelocityConversionFactor);
-      encoder.setAverageDepth(ArmConstants.kEncoderAveragingDepth);
+      encoder.setZeroOffset(ArmSubConstants.kArmZeroOffset);
+      encoder.setPositionConversionFactor(ArmSubConstants.kPositionConversionFactor);
+      encoder.setVelocityConversionFactor(ArmSubConstants.kVelocityConversionFactor);
+      encoder.setAverageDepth(ArmSubConstants.kEncoderAveragingDepth);
 
       // not used for real robot
       motorSim = null;
@@ -169,14 +169,14 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   @Log(level = LogLevel.OVERRIDE_FILE_ONLY) // may want to use on driver dashboard
   public boolean atGoal() {
     return MathUtil.isNear(
-            this.goal.position, getAngle(), ArmConstants.kAtAngleTolerance, 0, 2 * Math.PI)
-        && MathUtil.isNear(0, getVelocity(), ArmConstants.kAtVelocityTolerance);
+            this.goal.position, getAngle(), ArmSubConstants.kAtAngleTolerance, 0, 2 * Math.PI)
+        && MathUtil.isNear(0, getVelocity(), ArmSubConstants.kAtVelocityTolerance);
   }
 
   @Log(key = "Angle")
   public double getAngle() {
     double angle = (Robot.isReal()) ? encoder.getPosition() : dcEncoder.getAbsolutePosition();
-    if (angle > ArmConstants.kMaxAngleRads) {
+    if (angle > ArmSubConstants.kMaxAngleRads) {
       angle -= 2 * Math.PI;
     }
     return angle;
@@ -243,19 +243,19 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
    **************************/
 
   public Command intakePosition() {
-    return moveToGoalCommand(ArmConstants.kIntakeAngle);
+    return moveToGoalCommand(ArmSubConstants.kIntakeAngle);
   }
 
   public Command shootPosition() {
-    return moveToGoalCommand(ArmConstants.kShootAngle);
+    return moveToGoalCommand(ArmSubConstants.kShootAngle);
   }
 
   public Command ampPosition() {
-    return moveToGoalCommand(ArmConstants.kArmAmpAngle);
+    return moveToGoalCommand(ArmSubConstants.kArmAmpAngle);
   }
 
   public Command subwooferPosition() {
-    return moveToGoalCommand(ArmConstants.kSubwooferAngle);
+    return moveToGoalCommand(ArmSubConstants.kSubwooferAngle);
   }
 
   public Command ampCommandStop() {

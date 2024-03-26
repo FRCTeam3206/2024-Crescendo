@@ -155,6 +155,29 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
+    public static final double kS = 0.0;
+    public static final double kG = 1.2;
+    public static final double kV = 0.0;
+
+    public static final double kP = 1;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+
+    public static final int kArmCANId = 5;
+    public static final double kArmZeroOffset = 0.266;
+
+    public static final double kArmZeroThreshold = .15;
+
+    public static final double kArmAmpAngle = 2.0;
+    public static final double kShootAngle = 0.069;
+    public static final double kIntakeAngle = 3.535;
+    public static final double kSubwooferAngle = 1.51;
+
+    public static final double kAtAngleTolerance = 0.05;
+    public static final double kActiveAngleTolerance = .10;
+  }
+
+  public static final class ArmSubConstants {
     // Motor
     public static final int kArmCANId = 5;
     public static final int kCurrentLimit = 45;
