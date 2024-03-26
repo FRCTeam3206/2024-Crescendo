@@ -146,7 +146,6 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     angle = getAngle();
     velocity = (angle - lastAngle) / 0.020;
     lastAngle = angle;
-    this.log("error", this.setpoint.position - angle);
 
     // the mechanism should track the real or simulated arm position
     mechArm.setAngle(Units.radiansToDegrees(angle));
@@ -155,6 +154,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     this.log("Setpoint Position", setpoint.position);
     this.log("Setpoint Velocity", setpoint.velocity);
     this.log("Goal", this.goal.position);
+    this.log("Error", this.setpoint.position - angle);
     this.log(
         "Voltage",
         ((Robot.isReal()) ? motor.get() : motorSim.get()) * RobotController.getBatteryVoltage());
@@ -196,7 +196,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
   @Log(key = "Velocity")
   public double getVelocity() {
-    double velocity = (Robot.isReal()) ? encoder.getVelocity() : armSim.getVelocityRadPerSec();
+    // double velocity = (Robot.isReal()) ? encoder.getVelocity() : armSim.getVelocityRadPerSec();
     return velocity;
   }
 
