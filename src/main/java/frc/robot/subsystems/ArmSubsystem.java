@@ -103,9 +103,9 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
       motor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
 
       encoder = motor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-      encoder.setZeroOffset(ArmSubConstants.kArmZeroOffset);
+      encoder.setZeroOffset(ArmSubConstants.kArmZeroRads);
       encoder.setPositionConversionFactor(ArmSubConstants.kPositionConversionFactor);
-      encoder.setVelocityConversionFactor(ArmSubConstants.kVelocityConversionFactor);
+      // encoder.setVelocityConversionFactor(ArmSubConstants.kVelocityConversionFactor);
       encoder.setAverageDepth(ArmSubConstants.kEncoderAveragingDepth);
 
       // not used for real robot
@@ -208,7 +208,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public void reset() {
-    setpoint = new TrapezoidProfile.State(getAngle(), getVelocity());
+    setpoint = new TrapezoidProfile.State(getAngle(), 0); // getVelocity());
     feedback.reset();
   }
 
