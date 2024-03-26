@@ -103,9 +103,9 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
       motor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
 
       encoder = motor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-      encoder.setZeroOffset(ArmConstants.kArmZeroOffset);
+      encoder.setZeroOffset(ArmConstants.kArmZeroRads);
       encoder.setPositionConversionFactor(ArmConstants.kPositionConversionFactor);
-      encoder.setVelocityConversionFactor(ArmConstants.kVelocityConversionFactor);
+      // encoder.setVelocityConversionFactor(ArmConstants.kVelocityConversionFactor);
       encoder.setAverageDepth(ArmConstants.kEncoderAveragingDepth);
 
       // not used for real robot
@@ -169,8 +169,8 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   @Log(level = LogLevel.OVERRIDE_FILE_ONLY) // may want to use on driver dashboard
   public boolean atGoal() {
     return MathUtil.isNear(
-            this.goal.position, getAngle(), ArmConstants.kAtAngleTolerance, 0, 2 * Math.PI)
-        && MathUtil.isNear(0, getVelocity(), ArmConstants.kAtVelocityTolerance);
+            this.goal.position, getAngle(), ArmConstants.kAtAngleTolerance, 0, 2 * Math.PI);
+        // && MathUtil.isNear(0, getVelocity(), ArmConstants.kAtVelocityTolerance);
   }
 
   @Log(key = "Angle")
@@ -208,7 +208,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public void reset() {
-    setpoint = new TrapezoidProfile.State(getAngle(), getVelocity());
+    setpoint = new TrapezoidProfile.State(getAngle(), 0); // getVelocity());
     feedback.reset();
   }
 

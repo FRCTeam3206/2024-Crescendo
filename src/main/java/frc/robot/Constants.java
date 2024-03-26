@@ -172,19 +172,19 @@ public final class Constants {
     public static final double kMaxAngleRads = Units.degreesToRadians(210);
 
     // Trapezoid profile constraints
-    public static final double kMaxVelocity = 2.0; // raidans/second
-    public static final double kMaxAcceleration = 2.0; // radians/second^2
+    public static final double kMaxVelocity = 4.0; // raidans/second
+    public static final double kMaxAcceleration = 4.0; // radians/second^2
 
     // Feedforward constants
     public static final double kS = 0.0; // volts
-    public static final double kG = 1.2; // volts
+    public static final double kG = 0.8; // volts
     public static final double kV = 0.8; // volts*second/radian
     public static final double kA = 0.08; // volts*second^2/radian
 
     // Feedback constants
-    public static final double kP = 6;
+    public static final double kP = 6.5;
     public static final double kI = 0;
-    public static final double kD = 0.6;
+    public static final double kD = 0.3;
 
     // Simulation constants
     public static final double kArmReduction = 41;
@@ -198,17 +198,17 @@ public final class Constants {
     public static final double kArmMass = 1.33; // kg - back calculated
     public static final double kArmMOI = 1.02; // kg*m² - estimated from CAD
 
-    public static final double kArmZeroOffset = 0.266;
+    public static final double kArmZeroOffset = 5.348;  // radians
 
     public static final double kArmZeroThreshold = .15;
 
     public static final double kArmAmpAngle = 2.0;
     public static final double kShootAngle = 0.069;
-    public static final double kIntakeAngle = 3.535;
+    public static final double kIntakeAngle = 3.476;
     public static final double kSubwooferAngle = 1.51;
 
-    public static final double kAtAngleTolerance = Units.degreesToRadians(1);
-    public static final double kAtVelocityTolerance = Units.degreesToRadians(1);
+    public static final double kAtAngleTolerance = Units.degreesToRadians(2);
+    public static final double kAtVelocityTolerance = Units.degreesToRadians(2);
 
     public static final double kActiveAngleTolerance = .10;
   }
