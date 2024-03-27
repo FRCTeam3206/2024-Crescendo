@@ -36,7 +36,7 @@ public class Robot extends TimedRobot implements Logged {
     m_robotContainer = new RobotContainer();
     // AllianceUtil.setRobot(() -> m_robotContainer.m_robotDrive.getPose());
     boolean fileOnly = false;
-    boolean lazyLogging = false;
+    boolean lazyLogging = true;
     Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
   }
 
@@ -134,4 +134,10 @@ public class Robot extends TimedRobot implements Logged {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  @Override
+  public void simulationInit() {}
+
+  @Override
+  public void simulationPeriodic() {}
 }

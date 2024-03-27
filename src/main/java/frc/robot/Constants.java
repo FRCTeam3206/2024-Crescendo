@@ -177,6 +177,65 @@ public final class Constants {
     public static final double kActiveAngleTolerance = .10;
   }
 
+  public static final class ArmSubConstants {
+    // Motor
+    public static final int kArmCANId = 5;
+    public static final int kCurrentLimit = 45;
+
+    // Encoder
+    public static final double kPositionConversionFactor =
+        Units.rotationsToRadians(1.0); // radians/rotation
+    public static final double kVelocityConversionFactor =
+        Units.rotationsToRadians(1.0); // radians/rotation
+    public static final int kEncoderAveragingBits = 3; // bit depth for encoder averaging [0 to 7]
+    public static final int kEncoderAveragingDepth = 2 ^ kEncoderAveragingBits;
+
+    public static final double kArmZeroRads = 5.4;
+    public static final double kMinAngleRads = Units.degreesToRadians(-20);
+    public static final double kMaxAngleRads = Units.degreesToRadians(210);
+
+    // Trapezoid profile constraints
+    public static final double kMaxVelocity = 4.0; // raidans/second
+    public static final double kMaxAcceleration = 4.0; // radians/second^2
+
+    // Feedforward constants
+    public static final double kS = 0.0; // volts
+    public static final double kG = 0.8; // volts
+    public static final double kV = 0.8; // volts*second/radian
+    public static final double kA = 0.08; // volts*second^2/radian
+
+    // Feedback constants
+    public static final double kP = 6.5;
+    public static final double kI = 0;
+    public static final double kD = 0.3;
+
+    // Simulation constants
+    public static final double kArmReduction = 41;
+    // arm sim assumes a uniform rod in the inertia calculation
+    // this leads to dumb results when trying to simulate a real arm
+    // instead, use the moment calculated by CAD and then figure out the
+    // length that gives the right inertia
+    public static final double kArmPivotHeight = Units.inchesToMeters(12);
+    public static final double kArmRealLength = Units.inchesToMeters(21);
+    public static final double kArmLength = 1.5; // m - back calculated
+    public static final double kArmMass = 1.33; // kg - back calculated
+    public static final double kArmMOI = 1.02; // kg*m² - estimated from CAD
+
+    public static final double kArmZeroOffset = 5.348; // radians
+
+    public static final double kArmZeroThreshold = .15;
+
+    public static final double kArmAmpAngle = 2.0;
+    public static final double kShootAngle = 0.069;
+    public static final double kIntakeAngle = 3.476;
+    public static final double kSubwooferAngle = 1.51;
+
+    public static final double kAtAngleTolerance = Units.degreesToRadians(2);
+    public static final double kAtVelocityTolerance = Units.degreesToRadians(2);
+
+    public static final double kActiveAngleTolerance = .10;
+  }
+
   public static final class ClimberConstants {
     public static final int kLeftClimberCANId = 8;
     public static final int kRightClimberCANId = 9;
