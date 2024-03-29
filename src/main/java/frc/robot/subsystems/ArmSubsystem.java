@@ -8,6 +8,7 @@ import com.revrobotics.SparkAbsoluteEncoder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -32,9 +33,11 @@ import monologue.LogLevel;
 import monologue.Logged;
 
 public class ArmSubsystem extends SubsystemBase implements Logged {
-  @Log double angle = 0.0;
-  double lastAngle = 0.0;
-  @Log double velocity = 0.0;
+  @Log private double angle = 0.0;
+  private double lastAngle = 0.0;
+  @Log private double velocity = 0.0;
+
+  private LinearFilter velocitySmoother = LinearFilter.singlePoleIIR(0.080, 0.020);
 
   // Real Arm
   private final CANSparkMax motor;
@@ -111,8 +114,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
       encoder = motor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
       encoder.setZeroOffset(ArmSubConstants.kArmZeroRads);
       encoder.setPositionConversionFactor(ArmSubConstants.kPositionConversionFactor);
-      // encoder.setVelocityConversionFactor(ArmSubConstants.kVelocityConversionFactor);
-      encoder.setAverageDepth(ArmSubConstants.kEncoderAveragingDepth);
+      encoder.setAverageDepth(16);
 
       // not used for real robot
       motorSim = null;
@@ -144,7 +146,8 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   public void periodic() {
     super.periodic();
     angle = getAngle();
-    velocity = (angle - lastAngle) / 0.020;
+    velocity = velocitySmoother.calculate((angle - lastAngle) / 0.020);
+    // velocity = (angle - lastAngle) / 0.020;
     lastAngle = angle;
 
     // the mechanism should track the real or simulated arm position
@@ -157,7 +160,8 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     this.log("Error", this.setpoint.position - angle);
     this.log(
         "Voltage",
-        ((Robot.isReal()) ? motor.get() : motorSim.get()) * RobotController.getBatteryVoltage());
+        ((Robot.isReal()) ? motor.getAppliedOutput() : motorSim.get())
+            * RobotController.getBatteryVoltage());
     this.log("Current", (Robot.isReal()) ? motor.getOutputCurrent() : armSim.getCurrentDrawAmps());
   }
 
@@ -220,7 +224,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public void reset() {
-    setpoint = new TrapezoidProfile.State(getAngle(), 0); // getVelocity());
+    setpoint = new TrapezoidProfile.State(getAngle(), velocity);
     feedback.reset();
   }
 

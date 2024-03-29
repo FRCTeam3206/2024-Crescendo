@@ -187,7 +187,7 @@ public final class Constants {
         Units.rotationsToRadians(1.0); // radians/rotation
     public static final double kVelocityConversionFactor =
         Units.rotationsToRadians(1.0); // radians/rotation
-    public static final int kEncoderAveragingBits = 3; // bit depth for encoder averaging [0 to 7]
+    public static final int kEncoderAveragingBits = 4; // bit depth for encoder averaging [0 to 7]
     public static final int kEncoderAveragingDepth = 2 ^ kEncoderAveragingBits;
 
     public static final double kArmZeroRads = 5.4;
@@ -195,8 +195,8 @@ public final class Constants {
     public static final double kMaxAngleRads = Units.degreesToRadians(210);
 
     // Trapezoid profile constraints
-    public static final double kMaxVelocity = 4.0; // raidans/second
-    public static final double kMaxAcceleration = 4.0; // radians/second^2
+    public static final double kMaxVelocity = 8.0; // raidans/second
+    public static final double kMaxAcceleration = 8.0; // radians/second^2
 
     // Feedforward constants
     public static final double kS = 0.0; // volts
