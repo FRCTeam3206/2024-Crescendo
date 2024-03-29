@@ -187,7 +187,7 @@ public final class Constants {
         Units.rotationsToRadians(1.0); // radians/rotation
     public static final double kVelocityConversionFactor =
         Units.rotationsToRadians(1.0); // radians/rotation
-    public static final int kEncoderAveragingBits = 3; // bit depth for encoder averaging [0 to 7]
+    public static final int kEncoderAveragingBits = 4; // bit depth for encoder averaging [0 to 7]
     public static final int kEncoderAveragingDepth = 2 ^ kEncoderAveragingBits;
 
     public static final double kArmZeroRads = 5.4;
