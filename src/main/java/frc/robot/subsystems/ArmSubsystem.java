@@ -37,7 +37,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   private double lastAngle = 0.0;
   @Log private double velocity = 0.0;
 
-  private LinearFilter velocitySmoother = LinearFilter.singlePoleIIR(0.040, 0.020);
+  private LinearFilter velocitySmoother = LinearFilter.singlePoleIIR(0.080, 0.020);
 
   // Real Arm
   private final CANSparkMax motor;

@@ -195,8 +195,8 @@ public final class Constants {
     public static final double kMaxAngleRads = Units.degreesToRadians(210);
 
     // Trapezoid profile constraints
-    public static final double kMaxVelocity = 4.0; // raidans/second
-    public static final double kMaxAcceleration = 4.0; // radians/second^2
+    public static final double kMaxVelocity = 8.0; // raidans/second
+    public static final double kMaxAcceleration = 8.0; // radians/second^2
 
     // Feedforward constants
     public static final double kS = 0.0; // volts
