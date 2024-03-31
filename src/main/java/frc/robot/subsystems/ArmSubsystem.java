@@ -10,7 +10,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.ExponentialProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -37,19 +37,18 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   private double lastAngle = 0.0;
   @Log private double velocity = 0.0;
 
-  private LinearFilter velocitySmoother = LinearFilter.singlePoleIIR(0.080, 0.020);
+  private LinearFilter velocityFilter = LinearFilter.singlePoleIIR(0.080, 0.020);
 
   // Real Arm
   private final CANSparkMax motor;
   private final SparkAbsoluteEncoder encoder;
 
-  private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
-  private TrapezoidProfile.State goal = new TrapezoidProfile.State();
-
-  private final TrapezoidProfile profile =
-      new TrapezoidProfile(
-          new TrapezoidProfile.Constraints(
-              ArmSubConstants.kMaxVelocity, ArmSubConstants.kMaxAcceleration));
+  private ExponentialProfile.State setpoint = new ExponentialProfile.State();
+  private ExponentialProfile.State goal = new ExponentialProfile.State();
+  private static ExponentialProfile.Constraints constraints =
+      ExponentialProfile.Constraints.fromCharacteristics(
+          12, ArmSubConstants.kV, ArmSubConstants.kA);
+  private final ExponentialProfile profile = new ExponentialProfile(constraints);
   private final ArmFeedforward feedforward =
       new ArmFeedforward(
           ArmSubConstants.kS, ArmSubConstants.kG, ArmSubConstants.kG, ArmSubConstants.kA);
@@ -138,15 +137,15 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
     angle = getAngle();
     lastAngle = angle;
-    this.goal = new TrapezoidProfile.State(angle, 0);
-    this.setpoint = new TrapezoidProfile.State(angle, 0);
+    this.goal = new ExponentialProfile.State(angle, 0);
+    this.setpoint = new ExponentialProfile.State(angle, 0);
   }
 
   @Override
   public void periodic() {
     super.periodic();
     angle = getAngle();
-    velocity = velocitySmoother.calculate((angle - lastAngle) / 0.020);
+    velocity = velocityFilter.calculate((angle - lastAngle) / 0.020);
     // velocity = (angle - lastAngle) / 0.020;
     lastAngle = angle;
 
@@ -215,7 +214,8 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
 
   public void moveToGoal(double goal) {
     this.goal =
-        new TrapezoidProfile.State(goal, 0); // goal is the desired endpoint with zero velocity
+        new ExponentialProfile.State(goal, 0); // goal is the desired endpoint with zero velocity
+    var state = new ExponentialProfile.State(getAngle(), getVelocity());
     this.setpoint = profile.calculate(0.020, this.setpoint, this.goal);
     ff = feedforward.calculate(setpoint.position, setpoint.velocity);
     fb = feedback.calculate(getAngle(), setpoint.position);
@@ -224,7 +224,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public void reset() {
-    setpoint = new TrapezoidProfile.State(getAngle(), velocity);
+    setpoint = new ExponentialProfile.State(getAngle(), velocity);
     feedback.reset();
   }
 
