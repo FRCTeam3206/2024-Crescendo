@@ -201,8 +201,8 @@ public final class Constants {
     // Feedforward constants
     public static final double kS = 0.0; // volts
     public static final double kG = 0.8; // volts
-    public static final double kV = 0.8; // volts*second/radian
-    public static final double kA = 0.08; // volts*second^2/radian
+    public static final double kV = 3.2; // volts*second/radian
+    public static final double kA = 1.2; // volts*second^2/radian
 
     // Feedback constants
     public static final double kP = 6.5;
