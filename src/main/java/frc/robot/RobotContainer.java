@@ -29,16 +29,18 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AllianceNoteLocation;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.RelativeTo;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Shootake;
 import java.util.List;
 import monologue.Annotations.Log;
@@ -53,7 +55,7 @@ import monologue.Logged;
 public class RobotContainer implements Logged {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  Lights lights = new Lights();
+  LEDSubsystem lights = new LEDSubsystem(LEDConstants.kLEDPort, LEDConstants.kLEDLength);
   final Shootake shootake = new Shootake();
   private final ArmSubsystem arm = new ArmSubsystem();
   private final Climber climber = new Climber();
@@ -101,20 +103,23 @@ public class RobotContainer implements Logged {
               climber.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), 0.1));
             },
             climber));
-    lights.setDefaultCommand(
-        new RunCommand(
-            () -> {
-              if (shootake.hasNote()) {
-                if (m_robotDrive.isSpeakerAligned()) {
-                  lights.setLightColor(0, 255, 0);
-                } else {
-                  lights.setLightColor(255, 80, 0);
-                }
-              } else {
-                lights.setLightColor(0, 0, 255);
-              }
-            },
-            lights));
+
+    lights.setDefaultCommand(lights.rainbowCommand(0.05));
+
+    // lights.setDefaultCommand(
+    //     new RunCommand(
+    //         () -> {
+    //           if (shootake.hasNote()) {
+    //             if (m_robotDrive.isSpeakerAligned()) {
+    //               lights.setLightColor(0, 255, 0);
+    //             } else {
+    //               lights.setLightColor(255, 80, 0);
+    //             }
+    //           } else {
+    //             lights.setLightColor(0, 0, 255);
+    //           }
+    //         },
+    //         lights));
   }
 
   // new RunCommand(
@@ -148,6 +153,19 @@ public class RobotContainer implements Logged {
     xbox.y().whileTrue(shootake.ampCommand());
     xbox.x().whileTrue(shootake.outakeCommand());
     xbox.start().whileTrue(shootake.slowIntakeCommand());
+
+    new Trigger(shootake::hasNote)
+        .and(m_robotDrive::isSpeakerAligned)
+        .whileTrue(lights.solidColorCommand(LEDConstants.kGreen));
+    new Trigger(shootake::hasNote)
+        .and(() -> !m_robotDrive.isSpeakerAligned())
+        .whileTrue(lights.solidColorCommand(LEDConstants.kOrange));
+    new Trigger(shootake::hasNote).onFalse(lights.solidColorCommand(LEDConstants.kBlue));
+
+    xbox.rightBumper().whileTrue(lights.solidColorCommand(LEDConstants.kBlue));
+    xbox.rightBumper()
+        .and(xbox.leftBumper())
+        .whileTrue(lights.solidColorCommand(LEDConstants.kOrange));
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
     SmartDashboard.putData("Reset Climber", climber.zero());

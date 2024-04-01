@@ -21,6 +21,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.utils.AllianceUtil;
 import java.io.IOException;
 import java.util.List;
@@ -465,5 +466,14 @@ public final class Constants {
       }
       return aprilTagsToReturn;
     }
+  }
+
+  public static final class LEDConstants {
+    public static final int kLEDPort = 1;
+    public static final int kLEDLength = 150;
+    public static final Color8Bit kRed = new Color8Bit(255, 0, 0);
+    public static final Color8Bit kOrange = new Color8Bit(255, 80, 0);
+    public static final Color8Bit kGreen = new Color8Bit(0, 255, 0);
+    public static final Color8Bit kBlue = new Color8Bit(0, 0, 255);
   }
 }
