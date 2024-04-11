@@ -84,10 +84,10 @@ public class RobotContainer implements Logged {
         // x and y motion is controlled by the x and y axis of the stick.
         // turning is controlled by rotating (twisting) the stick
         m_robotDrive.driveCommand(
-            () -> -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
-            () -> -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
+            () -> -MathUtil.applyDeadband(m_driverController.getY()*.3, OIConstants.kDriveDeadband),
+            () -> -MathUtil.applyDeadband(m_driverController.getX()*.3, OIConstants.kDriveDeadband),
             () ->
-                -MathUtil.applyDeadband(m_driverController.getTwist(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getTwist()*.3, OIConstants.kDriveDeadband),
             () -> RelativeTo.DRIVER_RELATIVE,
             false));
     shootake.setDefaultCommand(shootake.idleCommand());
@@ -137,7 +137,8 @@ public class RobotContainer implements Logged {
         .whileTrue(
             shootake.variableShoot(
                 () -> (1.0 - (m_driverController.getRawAxis(3) + 1) / 2) * 3000));
-
+    m_driverController.button(4).whileTrue(shootake.intakeCommand());
+    m_driverController.button(9).whileTrue(new RunCommand(()->shootake.setRetained(true), shootake));
     // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
     // m_driverController

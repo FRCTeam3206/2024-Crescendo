@@ -154,13 +154,13 @@ public class Shootake extends SubsystemBase implements Logged {
         this.run(
                 () -> {
                   setRetained(true);
-                  setSpeed(-1.0);
+                  setSpeed(-1);
                 })
             .until(() -> shootDebounce.calculate(getAverageSpeed() > speed.get())),
         this.run(
                 () -> {
                   setRetained(false);
-                  setSpeed(-1.0);
+                  setSpeed(-1);
                 })
             .until(() -> !hasNote()),
         this.run(
