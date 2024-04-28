@@ -162,7 +162,9 @@ public class RobotContainer implements Logged {
         .whileTrue(lights.solidColorCommand(LEDConstants.kOrange));
     new Trigger(shootake::hasNote).onFalse(lights.solidColorCommand(LEDConstants.kBlue));
 
-    xbox.rightBumper().whileTrue(lights.solidColorCommand(LEDConstants.kBlue));
+    xbox.rightBumper()
+        .and(xbox.leftBumper().negate())
+        .whileTrue(lights.solidColorCommand(LEDConstants.kBlue));
     xbox.rightBumper()
         .and(xbox.leftBumper())
         .whileTrue(lights.solidColorCommand(LEDConstants.kOrange));
