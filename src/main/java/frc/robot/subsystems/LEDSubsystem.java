@@ -12,9 +12,12 @@ import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class LEDSubsystem extends SubsystemBase implements Logged {
-  private AddressableLEDSim ledsSim;
+
   private AddressableLED leds;
   @Log private AddressableLEDBuffer ledBuffer;
+
+  @SuppressWarnings("unused")
+  private AddressableLEDSim ledsSim;
 
   public LEDSubsystem(int port, int length) {
     leds = new AddressableLED(port);
