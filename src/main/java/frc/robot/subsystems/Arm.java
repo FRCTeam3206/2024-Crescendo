@@ -7,6 +7,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import monologue.Annotations.Log;
@@ -30,11 +31,16 @@ public class Arm extends SubsystemBase implements Logged {
   public double getAngle() {
     double rawAngle = armMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition();
     this.log("Raw Angle", rawAngle);
-    return (rawAngle - ArmConstants.kArmZeroOffset) * (2 * Math.PI) + (Math.PI / 2);
+    rawAngle = rawAngle - ArmConstants.kArmZeroOffset;
+    if (rawAngle > 0.75){
+      rawAngle = rawAngle -1.0;
+    }
+    return rawAngle * (2 * Math.PI) + (Math.PI / 2);
     // return 2 * Math.PI * Math.abs(armMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() -
     // 0.25);
   }
 
+  @Log
   public boolean atSpeakerAngle() {
     return Math.abs(getAngle() - ArmConstants.kShootAngle) < ArmConstants.kAtAngleTolerance;
   }
@@ -73,28 +79,41 @@ public class Arm extends SubsystemBase implements Logged {
         });
   }
 
-  public Command ampPosition() {
+  public Command higherPosition(Command finalAngleCommand) {
+    return new ConditionalCommand(finalAngleCommand, new ConditionalCommand(this.run(() -> setVoltage(2.5)), this.run(() -> setVoltage(-2.5)), () -> getAngle() < Math.PI / 2), () -> getAngle() > Math.PI / 4 && getAngle() < 3 * Math.PI / 4);
+  }
+
+  public Command ampPositionFinish() {
     return this.run(
         () -> {
           armPID.setSetpoint(ArmConstants.kArmAmpAngle);
           double pid = armPID.calculate(getAngle());
           double ff = Math.cos(getAngle()) * ArmConstants.kG;
           double voltage = pid + ff;
-          voltage = MathUtil.clamp(voltage, -2.5, 2.5);
+          voltage = MathUtil.clamp(voltage, -3.0, 3.0);
           setVoltage(voltage);
         });
   }
 
-  public Command subwooferPosition() {
+  public Command ampPosition() {
+    return higherPosition(ampPositionFinish());
+    //return new ConditionalCommand(ampPositionFinish(), new ConditionalCommand(this.run(() -> , () -> , () -> getAngle() > ArmConstants.kArmAmpAngle)), () -> MathUtil.isNear(ArmConstants.kArmAmpAngle, getAngle(), 0.4));
+  }
+
+  public Command subwooferPositionFinish() {
     return this.run(
         () -> {
           armPID.setSetpoint(ArmConstants.kSubwooferAngle);
           double pid = armPID.calculate(getAngle());
           double ff = Math.cos(getAngle()) * ArmConstants.kG;
           double voltage = pid + ff;
-          voltage = MathUtil.clamp(voltage, -2.5, 2.5);
+          voltage = MathUtil.clamp(voltage, -3.0, 3.0);
           setVoltage(voltage);
         });
+  }
+
+  public Command subwooferPosition() {
+    return higherPosition(subwooferPositionFinish());
   }
 
   public Command intakeCommandStop() {

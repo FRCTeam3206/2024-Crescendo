@@ -205,9 +205,9 @@ public class RobotContainer implements Logged {
     return new SequentialCommandGroup(
         m_robotDrive.stopCommand(),
         new ParallelCommandGroup(
-            arm.speakerCommandStop(),
+            arm.speakerCommandStop().withTimeout(3),
             new RunCommand(() -> shootake.setRetained(true), shootake).withTimeout(.5),
-            m_robotDrive.autoDriveToSpeakerShoot()),
+            m_robotDrive.autoDriveToSpeakerShoot()).withTimeout(4),
         m_robotDrive.stopCommand(),
         new ParallelRaceGroup(m_robotDrive.setXCommand(), shootake.speakerShootCommand()));
   }

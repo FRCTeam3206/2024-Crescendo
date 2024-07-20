@@ -164,7 +164,7 @@ public final class Constants {
     public static final double kD = 0.0;
 
     public static final int kArmCANId = 5;
-    public static final double kArmZeroOffset = 0.266;
+    public static final double kArmZeroOffset = 0.240;
 
     public static final double kArmZeroThreshold = .15;
 
