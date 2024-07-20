@@ -107,7 +107,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
       motor = new CANSparkMax(ArmSubConstants.kArmCANId, MotorType.kBrushless);
       motor.setSmartCurrentLimit(ArmSubConstants.kCurrentLimit);
       motor.setIdleMode(IdleMode.kBrake);
-      motor.setInverted(false);
+      motor.setInverted(true);
       motor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
       motor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
 
