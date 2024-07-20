@@ -259,11 +259,11 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
    **************************/
 
   public Command intakePosition() {
-    return moveToGoalCommand(ArmSubConstants.kIntakeAngle);
+    return moveToGoalAndStopCommand(ArmSubConstants.kIntakeAngle);
   }
 
   public Command shootPosition() {
-    return moveToGoalCommand(ArmSubConstants.kShootAngle);
+    return moveToGoalAndStopCommand(ArmSubConstants.kShootAngle);
   }
 
   public Command ampPosition() {
