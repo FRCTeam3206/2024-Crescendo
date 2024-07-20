@@ -1,13 +1,13 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import monologue.Annotations.Log;
@@ -20,6 +20,8 @@ public class Arm extends SubsystemBase implements Logged {
 
   public Arm() {
     armMotor.setSmartCurrentLimit(45);
+    armMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
+    armMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
   }
 
   public void setVoltage(double voltage) {
@@ -79,47 +81,68 @@ public class Arm extends SubsystemBase implements Logged {
         });
   }
 
-  public Command higherPosition(Command finalAngleCommand) {
-    return new ConditionalCommand(
-        finalAngleCommand,
-        new ConditionalCommand(
-            this.run(() -> setVoltage(2.5)),
-            this.run(() -> setVoltage(-2.5)),
-            () -> getAngle() < Math.PI / 2),
-        () -> getAngle() > Math.PI / 4 && getAngle() < 3 * Math.PI / 4);
+  @Log
+  public boolean inIntermediateRange() {
+    return getAngle() > Math.PI / 4 && getAngle() < 3 * Math.PI / 4;
   }
 
-  public Command ampPositionFinish() {
-    return this.run(
-        () -> {
-          armPID.setSetpoint(ArmConstants.kArmAmpAngle);
-          double pid = armPID.calculate(getAngle());
-          double ff = Math.cos(getAngle()) * ArmConstants.kG;
-          double voltage = pid + ff;
-          voltage = MathUtil.clamp(voltage, -3.0, 3.0);
-          setVoltage(voltage);
-        });
+  public void goTowardsIntermediate() {
+    if (getAngle() < Math.PI / 2) {
+      setVoltage(2.5);
+    } else {
+      setVoltage(-2.5);
+    }
   }
+
+  // public Command higherPosition(Command finalAngleCommand) {
+  //   return new ConditionalCommand(
+  //       finalAngleCommand,
+  //       new ConditionalCommand(
+  //           this.run(() -> setVoltage(2.5)),
+  //           this.run(() -> setVoltage(-2.5)),
+  //           () -> getAngle() < Math.PI / 2),
+  //       () -> inIntermediateRange());
+  // }
 
   public Command ampPosition() {
-    return higherPosition(ampPositionFinish());
-  }
-
-  public Command subwooferPositionFinish() {
     return this.run(
         () -> {
-          armPID.setSetpoint(ArmConstants.kSubwooferAngle);
-          double pid = armPID.calculate(getAngle());
-          double ff = Math.cos(getAngle()) * ArmConstants.kG;
-          double voltage = pid + ff;
-          voltage = MathUtil.clamp(voltage, -3.0, 3.0);
-          setVoltage(voltage);
+          if (inIntermediateRange()) {
+            armPID.setSetpoint(ArmConstants.kArmAmpAngle);
+            double pid = armPID.calculate(getAngle());
+            double ff = Math.cos(getAngle()) * ArmConstants.kG;
+            double voltage = pid + ff;
+            voltage = MathUtil.clamp(voltage, -3.0, 3.0);
+            setVoltage(voltage);
+          } else {
+            goTowardsIntermediate();
+          }
         });
   }
 
+  // public Command ampPosition() {
+  //   return higherPosition(ampPositionFinish());
+  // }
+
   public Command subwooferPosition() {
-    return higherPosition(subwooferPositionFinish());
+    return this.run(
+        () -> {
+          if (inIntermediateRange()) {
+            armPID.setSetpoint(ArmConstants.kSubwooferAngle);
+            double pid = armPID.calculate(getAngle());
+            double ff = Math.cos(getAngle()) * ArmConstants.kG;
+            double voltage = pid + ff;
+            voltage = MathUtil.clamp(voltage, -3.0, 3.0);
+            setVoltage(voltage);
+          } else {
+            goTowardsIntermediate();
+          }
+        });
   }
+
+  // public Command subwooferPosition() {
+  //   return higherPosition(subwooferPositionFinish());
+  // }
 
   public Command intakeCommandStop() {
     return intakePosition().until(() -> atIntakeAngle());
