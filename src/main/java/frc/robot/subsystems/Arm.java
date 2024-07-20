@@ -32,8 +32,8 @@ public class Arm extends SubsystemBase implements Logged {
     double rawAngle = armMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition();
     this.log("Raw Angle", rawAngle);
     rawAngle = rawAngle - ArmConstants.kArmZeroOffset;
-    if (rawAngle > 0.75){
-      rawAngle = rawAngle -1.0;
+    if (rawAngle > 0.75) {
+      rawAngle = rawAngle - 1.0;
     }
     return rawAngle * (2 * Math.PI) + (Math.PI / 2);
     // return 2 * Math.PI * Math.abs(armMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() -
@@ -80,7 +80,13 @@ public class Arm extends SubsystemBase implements Logged {
   }
 
   public Command higherPosition(Command finalAngleCommand) {
-    return new ConditionalCommand(finalAngleCommand, new ConditionalCommand(this.run(() -> setVoltage(2.5)), this.run(() -> setVoltage(-2.5)), () -> getAngle() < Math.PI / 2), () -> getAngle() > Math.PI / 4 && getAngle() < 3 * Math.PI / 4);
+    return new ConditionalCommand(
+        finalAngleCommand,
+        new ConditionalCommand(
+            this.run(() -> setVoltage(2.5)),
+            this.run(() -> setVoltage(-2.5)),
+            () -> getAngle() < Math.PI / 2),
+        () -> getAngle() > Math.PI / 4 && getAngle() < 3 * Math.PI / 4);
   }
 
   public Command ampPositionFinish() {
@@ -97,7 +103,6 @@ public class Arm extends SubsystemBase implements Logged {
 
   public Command ampPosition() {
     return higherPosition(ampPositionFinish());
-    //return new ConditionalCommand(ampPositionFinish(), new ConditionalCommand(this.run(() -> , () -> , () -> getAngle() > ArmConstants.kArmAmpAngle)), () -> MathUtil.isNear(ArmConstants.kArmAmpAngle, getAngle(), 0.4));
   }
 
   public Command subwooferPositionFinish() {
