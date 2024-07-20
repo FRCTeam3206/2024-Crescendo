@@ -597,13 +597,17 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     drive(xVelocity, yVelocity, angularVelocity, RelativeTo.FIELD_RELATIVE, true);
   }
 
-  public Command driveToPoseCommand(Pose2d bluePose, double translationTolerance) {
+  public Command driveToPoseCommand(Supplier<Pose2d> bluePose, double translationTolerance) {
     return this.run(
             () -> {
-              driveToGoal(AllianceUtil.getPoseForAlliance(bluePose));
+              driveToGoal(AllianceUtil.getPoseForAlliance(bluePose.get()));
             })
-        .until(() -> isAtGoal(AllianceUtil.getPoseForAlliance(bluePose), translationTolerance))
+        .until(() -> isAtGoal(AllianceUtil.getPoseForAlliance(bluePose.get()), translationTolerance))
         .andThen(stopCommand());
+  }
+
+  public Command driveToPoseCommand(Pose2d bluePose, double translationTolerance) {
+    return driveToPoseCommand(() -> bluePose, translationTolerance);
   }
 
   public Command driveToPoseCommand(Pose2d bluePose) {
@@ -720,6 +724,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
                               - (getPose().getRotation().getRadians()))
                       < AutoAlignConstants.kAtRotationGoalTolerance;
             });
+  }
+
+  public Command driveToIntermediatePose() {
+    return driveToPoseCommand(() -> new Pose2d(2, 2, getPose().getRotation()), 0.3);
   }
 
   /** Update the gyro when simulating the robot. */

@@ -332,7 +332,8 @@ public final class Constants {
   public static enum AllianceNoteLocation {
     BOTTOM(AutoAlignConstants.kBlueBottomNotePose, AutoAlignConstants.kBottomNotePickUpPose),
     CENTER(AutoAlignConstants.kBlueCenterNotePose, AutoAlignConstants.kCenterNotePickUpPose),
-    TOP(AutoAlignConstants.kBlueTopNotePose, AutoAlignConstants.kTopNotePickUpPose);
+    TOP(AutoAlignConstants.kBlueTopNotePose, AutoAlignConstants.kTopNotePickUpPose),
+    M1()
 
     private Pose2d bluePose;
     private Pose2d pickUpPose;
