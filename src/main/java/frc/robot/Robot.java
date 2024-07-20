@@ -36,7 +36,7 @@ public class Robot extends TimedRobot implements Logged {
     m_robotContainer = new RobotContainer();
     // AllianceUtil.setRobot(() -> m_robotContainer.m_robotDrive.getPose());
     boolean fileOnly = false;
-    boolean lazyLogging = true;
+    boolean lazyLogging = false;
     Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
   }
 
