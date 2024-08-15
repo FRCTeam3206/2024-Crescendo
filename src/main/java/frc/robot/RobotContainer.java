@@ -83,8 +83,8 @@ public class RobotContainer implements Logged {
         // x and y motion is controlled by the x and y axis of the stick.
         // turning is controlled by rotating (twisting) the stick
         m_robotDrive.driveCommand(
-            () -> -MathUtil.applyDeadband(xbox.getLeftY(), OIConstants.kDriveDeadband),
             () -> -MathUtil.applyDeadband(xbox.getLeftX(), OIConstants.kDriveDeadband),
+            () -> -MathUtil.applyDeadband(-xbox.getLeftY(), OIConstants.kDriveDeadband),
             () ->
                 -MathUtil.applyDeadband(xbox.getRightX(), OIConstants.kDriveDeadband),
             () -> RelativeTo.DRIVER_RELATIVE,
