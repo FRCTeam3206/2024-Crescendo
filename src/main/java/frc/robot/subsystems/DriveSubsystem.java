@@ -97,12 +97,12 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           },
           new Pose2d());
 
-  private final AprilTagVision poseCamera1 =
-      new AprilTagVision(
-          VisionConstants.kCameraName1, VisionConstants.kDistToCamera1, m_poseEstimator);
-  private final AprilTagVision poseCamera2 =
-      new AprilTagVision(
-          VisionConstants.kCameraName2, VisionConstants.kDistToCamera2, m_poseEstimator);
+  // private final AprilTagVision poseCamera1 =
+  //     new AprilTagVision(
+  //         VisionConstants.kCameraName1, VisionConstants.kDistToCamera1, m_poseEstimator);
+  // private final AprilTagVision poseCamera2 =
+  //     new AprilTagVision(
+  //         VisionConstants.kCameraName2, VisionConstants.kDistToCamera2, m_poseEstimator);
 
   private Pose2d simOdometryPose = m_poseEstimator.getEstimatedPosition();
 
@@ -195,8 +195,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
           m_rearRight.getPosition()
         });
 
-    poseCamera1.addVisionMeasurementToEstimator();
-    poseCamera2.addVisionMeasurementToEstimator();
+    // poseCamera1.addVisionMeasurementToEstimator();
+    // poseCamera2.addVisionMeasurementToEstimator();
 
     SwerveModuleState[] measuredStates =
         new SwerveModuleState[] {

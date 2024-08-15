@@ -83,10 +83,10 @@ public class RobotContainer implements Logged {
         // x and y motion is controlled by the x and y axis of the stick.
         // turning is controlled by rotating (twisting) the stick
         m_robotDrive.driveCommand(
-            () -> -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
-            () -> -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
+            () -> -MathUtil.applyDeadband(xbox.getLeftY(), OIConstants.kDriveDeadband),
+            () -> -MathUtil.applyDeadband(xbox.getLeftX(), OIConstants.kDriveDeadband),
             () ->
-                -MathUtil.applyDeadband(m_driverController.getTwist(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(xbox.getRightX(), OIConstants.kDriveDeadband),
             () -> RelativeTo.DRIVER_RELATIVE,
             true));
     shootake.setDefaultCommand(shootake.idleCommand());
@@ -128,21 +128,21 @@ public class RobotContainer implements Logged {
   private void configureButtonBindings() {
     // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
-    m_driverController
-        .button(2)
-        .whileTrue(
-            // m_robotDrive.autoDriveToSpeakerShoot()
-            speakerShoot());
-    m_driverController.button(5).whileTrue(m_robotDrive.scoreToAmpCommand());
+    // m_driverController
+    //     .button(2)
+    //     .whileTrue(
+    //         // m_robotDrive.autoDriveToSpeakerShoot()
+    //         speakerShoot());
+    // m_driverController.button(5).whileTrue(m_robotDrive.scoreToAmpCommand());
     xbox.povUp().onTrue(arm.intakePosition());
     xbox.povDown().onTrue(arm.shootPosition());
-    xbox.povRight().onTrue(arm.ampPosition());
-    xbox.povLeft().onTrue(arm.subwooferPosition());
+    // xbox.povRight().onTrue(arm.ampPosition());
+    // xbox.povLeft().onTrue(arm.subwooferPosition());
     xbox.a().whileTrue(shootake.intakeCommand());
     xbox.b().onTrue(shootake.speakerShootCommand());
-    xbox.y().whileTrue(shootake.ampCommand());
-    xbox.x().whileTrue(shootake.outakeCommand());
-    xbox.start().whileTrue(shootake.slowIntakeCommand());
+    // xbox.y().whileTrue(shootake.ampCommand());
+    xbox.y().whileTrue(shootake.outakeCommand());
+    xbox.x().whileTrue(shootake.slowIntakeCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
     SmartDashboard.putData("Reset Climber", climber.zero());
