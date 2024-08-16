@@ -94,6 +94,14 @@ public class Shootake extends SubsystemBase implements Logged {
         });
   }
 
+  public Command fastSlowIntakeCommand(BooleanSupplier fast) {
+    return this.run(
+        () -> {
+          setRetained(false);
+          setSpeed(fast.getAsBoolean() ? kIntakeSpeed : ShootakeConstants.kSlowIntakeSpeed);
+        });
+  }
+
   public Command outakeCommand() {
     return this.run(
         () -> {
