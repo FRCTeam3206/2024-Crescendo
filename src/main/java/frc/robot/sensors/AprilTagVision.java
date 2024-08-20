@@ -23,7 +23,8 @@ public class AprilTagVision {
   // private double lastEstTimestamp = 0;
 
   // public AprilTagVision(
-  //     String cameraName, Transform3d distToCamera, SwerveDrivePoseEstimator swervePoseEstimator) {
+  //     String cameraName, Transform3d distToCamera, SwerveDrivePoseEstimator swervePoseEstimator)
+  // {
   //   camera = new PhotonCamera(cameraName);
   //   AprilTagFieldLayout fieldLayout;
   //   try {
@@ -38,7 +39,8 @@ public class AprilTagVision {
   //           PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
   //           camera,
   //           distToCamera);
-  //   photonEstimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+  //
+  // photonEstimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
   //   this.swervePoseEstimator = swervePoseEstimator;
   // }
 
@@ -80,7 +82,8 @@ public class AprilTagVision {
   //   if (numTags > 1) {
   //     estStandardDeviations = VisionConstants.kMultiTagStandardDeviations;
   //   } else if (numTags == 1 && avgDist > 4) {
-  //     estStandardDeviations = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+  //     estStandardDeviations = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE,
+  // Double.MAX_VALUE);
   //   } else {
   //     estStandardDeviations = estStandardDeviations.times(1 + (avgDist * avgDist / 30));
   //   }

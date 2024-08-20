@@ -85,8 +85,7 @@ public class RobotContainer implements Logged {
         m_robotDrive.driveCommand(
             () -> -MathUtil.applyDeadband(xbox.getLeftX(), OIConstants.kDriveDeadband),
             () -> -MathUtil.applyDeadband(-xbox.getLeftY(), OIConstants.kDriveDeadband),
-            () ->
-                -MathUtil.applyDeadband(xbox.getRightX(), OIConstants.kDriveDeadband),
+            () -> -MathUtil.applyDeadband(xbox.getRightX(), OIConstants.kDriveDeadband),
             () -> RelativeTo.DRIVER_RELATIVE,
             true));
     shootake.setDefaultCommand(shootake.idleCommand());
