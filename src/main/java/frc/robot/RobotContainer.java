@@ -89,12 +89,12 @@ public class RobotContainer implements Logged {
             () -> RelativeTo.DRIVER_RELATIVE,
             true));
     shootake.setDefaultCommand(shootake.idleCommand());
-    climber.setDefaultCommand(
-        new RunCommand(
-            () -> {
-              climber.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), 0.1));
-            },
-            climber));
+    // climber.setDefaultCommand(
+    //     new RunCommand(
+    //         () -> {
+    //           climber.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), 0.1));
+    //         },
+    //         climber));
     lights.setDefaultCommand(
         new RunCommand(
             () -> {
