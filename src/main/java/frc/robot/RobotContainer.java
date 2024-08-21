@@ -137,11 +137,11 @@ public class RobotContainer implements Logged {
     xbox.povDown().onTrue(arm.shootPosition());
     // xbox.povRight().onTrue(arm.ampPosition());
     // xbox.povLeft().onTrue(arm.subwooferPosition());
-    // xbox.a().whileTrue(shootake.intakeCommand());
+    xbox.a().whileTrue(shootake.intakeCommand());
     xbox.leftBumper().whileTrue(shootake.fastSlowIntakeCommand(() -> arm.getAngle() > 2.0));
     xbox.rightBumper().whileTrue(shootake.speakerShootCommand());
     xbox.b().onTrue(shootake.speakerShootCommand());
-    xbox.y().whileTrue(shootake.ampCommand());
+    // xbox.y().whileTrue(shootake.ampCommand());
     xbox.y().whileTrue(shootake.outakeCommand());
     xbox.x().whileTrue(shootake.slowIntakeCommand());
 
