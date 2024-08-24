@@ -89,12 +89,12 @@ public class RobotContainer implements Logged {
             () -> RelativeTo.DRIVER_RELATIVE,
             true));
     shootake.setDefaultCommand(shootake.idleCommand());
-    // climber.setDefaultCommand(
-    //     new RunCommand(
-    //         () -> {
-    //           climber.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), 0.1));
-    //         },
-    //         climber));
+    climber.setDefaultCommand(
+        new RunCommand(
+            () -> {
+              climber.setSpeed(xbox.povUp().getAsBoolean() ? 1 : xbox.povDown().getAsBoolean() ? -1 : 0);// MathUtil.applyDeadband(xbox.getRightY(), 0.1));
+            },
+            climber));
     lights.setDefaultCommand(
         new RunCommand(
             () -> {
@@ -133,17 +133,17 @@ public class RobotContainer implements Logged {
     //         // m_robotDrive.autoDriveToSpeakerShoot()
     //         speakerShoot());
     // m_driverController.button(5).whileTrue(m_robotDrive.scoreToAmpCommand());
-    xbox.povUp().onTrue(arm.intakePosition());
-    xbox.povDown().onTrue(arm.shootPosition());
+    // xbox.povUp().onTrue(arm.intakePosition());
+    // xbox.povDown().onTrue(arm.shootPosition());
     // xbox.povRight().onTrue(arm.ampPosition());
     // xbox.povLeft().onTrue(arm.subwooferPosition());
-    xbox.a().whileTrue(shootake.intakeCommand());
-    xbox.leftBumper().whileTrue(shootake.fastSlowIntakeCommand(() -> arm.getAngle() > 2.0));
-    xbox.rightBumper().whileTrue(shootake.speakerShootCommand());
-    xbox.b().onTrue(shootake.speakerShootCommand());
-    // xbox.y().whileTrue(shootake.ampCommand());
-    xbox.y().whileTrue(shootake.outakeCommand());
-    xbox.x().whileTrue(shootake.slowIntakeCommand());
+    // xbox.a().whileTrue(shootake.intakeCommand());
+    // xbox.leftBumper().whileTrue(shootake.fastSlowIntakeCommand(() -> arm.getAngle() > 2.0));
+    // xbox.rightBumper().whileTrue(shootake.speakerShootCommand());
+    // xbox.b().onTrue(shootake.speakerShootCommand());
+    // // xbox.y().whileTrue(shootake.ampCommand());
+    // xbox.y().whileTrue(shootake.outakeCommand());
+    // xbox.x().whileTrue(shootake.slowIntakeCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
     SmartDashboard.putData("Reset Climber", climber.zero());

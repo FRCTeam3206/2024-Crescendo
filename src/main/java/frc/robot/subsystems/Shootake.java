@@ -20,7 +20,7 @@ import monologue.Logged;
 public class Shootake extends SubsystemBase implements Logged {
   CANSparkMax topRoller = new CANSparkMax(kTopCANID, MotorType.kBrushless);
   CANSparkMax bottomRoller = new CANSparkMax(kBottomCANID, MotorType.kBrushless);
-  Servo finger = new Servo(kFingerPort);
+  // Servo finger = new Servo(kFingerPort);
   DigitalInput hasNoteSensor = new DigitalInput(ShootakeConstants.kNoteSensorChannel);
   Debouncer shootDebounce = new Debouncer(.125);
 
@@ -51,7 +51,7 @@ public class Shootake extends SubsystemBase implements Logged {
 
   public void setRetained(boolean retained) {
     SmartDashboard.putNumber("Servo Retainer", retained ? 1 : 0);
-    finger.set(retained ? ShootakeConstants.kRetainedValue : ShootakeConstants.kNotRetainedValue);
+    // finger.set(retained ? ShootakeConstants.kRetainedValue : ShootakeConstants.kNotRetainedValue);
   }
 
   public boolean hasNote() {
