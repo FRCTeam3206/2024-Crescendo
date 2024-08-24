@@ -83,8 +83,12 @@ public class RobotContainer implements Logged {
         // x and y motion is controlled by the x and y axis of the stick.
         // turning is controlled by rotating (twisting) the stick
         m_robotDrive.driveCommand(
-            () -> -MathUtil.applyDeadband(DriveConstants.kSpeedMultiplier * -xbox.getLeftY(), OIConstants.kDriveDeadband),
-            () -> -MathUtil.applyDeadband(DriveConstants.kSpeedMultiplier * -xbox.getLeftX(), OIConstants.kDriveDeadband),
+            () ->
+                -MathUtil.applyDeadband(
+                    DriveConstants.kSpeedMultiplier * -xbox.getLeftY(), OIConstants.kDriveDeadband),
+            () ->
+                -MathUtil.applyDeadband(
+                    DriveConstants.kSpeedMultiplier * -xbox.getLeftX(), OIConstants.kDriveDeadband),
             () -> -MathUtil.applyDeadband(xbox.getRightX(), OIConstants.kDriveDeadband),
             () -> RelativeTo.DRIVER_RELATIVE,
             true));
@@ -92,7 +96,12 @@ public class RobotContainer implements Logged {
     climber.setDefaultCommand(
         new RunCommand(
             () -> {
-              climber.setSpeed(xbox.povUp().getAsBoolean() ? 1 : xbox.povDown().getAsBoolean() ? -1 : 0);// MathUtil.applyDeadband(xbox.getRightY(), 0.1));
+              climber.setSpeed(
+                  xbox.povUp().getAsBoolean()
+                      ? 1
+                      : xbox.povDown().getAsBoolean()
+                          ? -1
+                          : 0); // MathUtil.applyDeadband(xbox.getRightY(), 0.1));
             },
             climber));
     lights.setDefaultCommand(
