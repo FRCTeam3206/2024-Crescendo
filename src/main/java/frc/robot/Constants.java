@@ -150,8 +150,8 @@ public final class Constants {
     public static final double kShootakeFreeSpeed = 5100.0;
     public static final double kShootakeLoadSpeedThreshold = 4750.0;
 
-    public static final double kRetainedValue = 0;
-    public static final double kNotRetainedValue = 1;
+    public static final double kRetainedValue = 0.8;
+    public static final double kNotRetainedValue = 0.35;
   }
 
   public static final class ArmConstants {
