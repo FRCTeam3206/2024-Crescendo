@@ -52,7 +52,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
               ArmSubConstants.kMaxVelocity, ArmSubConstants.kMaxAcceleration));
   private final ArmFeedforward feedforward =
       new ArmFeedforward(
-          ArmSubConstants.kS, ArmSubConstants.kG, ArmSubConstants.kG, ArmSubConstants.kA);
+          ArmSubConstants.kS, ArmSubConstants.kG, ArmSubConstants.kV, ArmSubConstants.kA);
 
   @Log(key = "Feedforward")
   double ff = 0.0;
