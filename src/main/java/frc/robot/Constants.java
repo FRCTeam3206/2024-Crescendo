@@ -227,10 +227,10 @@ public final class Constants {
 
     public static final double kArmAmpAngle = 2.0;
     public static final double kShootAngle = -0.20; // 0.069;
-    public static final double kIntakeAngle = 3.476;
+    public static final double kIntakeAngle = 3.346;
     public static final double kSubwooferAngle = 1.51;
 
-    public static final double kAtAngleTolerance = Units.degreesToRadians(3);
+    public static final double kAtAngleTolerance = Units.degreesToRadians(5);
     public static final double kAtVelocityTolerance = Units.degreesToRadians(2);
 
     public static final double kActiveAngleTolerance = .10;
