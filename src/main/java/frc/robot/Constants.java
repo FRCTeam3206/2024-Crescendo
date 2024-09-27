@@ -190,7 +190,7 @@ public final class Constants {
     public static final int kEncoderAveragingBits = 4; // bit depth for encoder averaging [0 to 7]
     public static final int kEncoderAveragingDepth = 2 ^ kEncoderAveragingBits;
 
-    public static final double kArmZeroRads = 5.4;
+    public static final double kArmZeroRads = 5.27;
     public static final double kMinAngleRads = Units.degreesToRadians(-20);
     public static final double kMaxAngleRads = Units.degreesToRadians(210);
 
@@ -200,14 +200,14 @@ public final class Constants {
 
     // Feedforward constants
     public static final double kS = 0.0; // volts
-    public static final double kG = 0.8; // volts
+    public static final double kG = 0.9; // volts
     public static final double kV = 0.8; // volts*second/radian
     public static final double kA = 0.08; // volts*second^2/radian
 
     // Feedback constants
-    public static final double kP = 6.5;
+    public static final double kP = 8;
     public static final double kI = 0;
-    public static final double kD = 0.3;
+    public static final double kD = 0.6;
 
     // Simulation constants
     public static final double kArmReduction = 41;
@@ -221,7 +221,7 @@ public final class Constants {
     public static final double kArmMass = 1.33; // kg - back calculated
     public static final double kArmMOI = 1.02; // kg*m² - estimated from CAD
 
-    public static final double kArmZeroOffset = 5.348; // radians
+    public static final double kArmZeroOffset = 5.218; // radians
 
     public static final double kArmZeroThreshold = .15;
 
@@ -230,7 +230,7 @@ public final class Constants {
     public static final double kIntakeAngle = 3.476;
     public static final double kSubwooferAngle = 1.51;
 
-    public static final double kAtAngleTolerance = Units.degreesToRadians(2);
+    public static final double kAtAngleTolerance = Units.degreesToRadians(3);
     public static final double kAtVelocityTolerance = Units.degreesToRadians(2);
 
     public static final double kActiveAngleTolerance = .10;

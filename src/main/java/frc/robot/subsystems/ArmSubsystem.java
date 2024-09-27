@@ -50,6 +50,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
       new TrapezoidProfile(
           new TrapezoidProfile.Constraints(
               ArmSubConstants.kMaxVelocity, ArmSubConstants.kMaxAcceleration));
+
   private final ArmFeedforward feedforward =
       new ArmFeedforward(
           ArmSubConstants.kS, ArmSubConstants.kG, ArmSubConstants.kV, ArmSubConstants.kA);
@@ -218,6 +219,7 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
         new TrapezoidProfile.State(goal, 0); // goal is the desired endpoint with zero velocity
     this.setpoint = profile.calculate(0.020, this.setpoint, this.goal);
     ff = feedforward.calculate(setpoint.position, setpoint.velocity);
+    ff += -0.2 * Math.abs(Math.cos(setpoint.position));
     fb = feedback.calculate(getAngle(), setpoint.position);
 
     setVoltage(fb + ff);
