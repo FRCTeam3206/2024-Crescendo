@@ -177,7 +177,8 @@ public class RobotContainer implements Logged {
         new ParallelCommandGroup(
                 m_robotDrive.driveCommand(
                     () -> 0.15, () -> 0.0, () -> 0.0, () -> RelativeTo.ROBOT_RELATIVE, true),
-                arm.intakePosition(),
+                arm.run(arm::stop),
+                // arm.intakePosition(),
                 shootake.intakeCommand())
             .until(() -> shootake.hasNote())
             .withTimeout(2.0),
@@ -206,7 +207,7 @@ public class RobotContainer implements Logged {
         m_robotDrive.stopCommand(),
         new ParallelCommandGroup(
             arm.speakerCommandStop(),
-            new RunCommand(() -> shootake.setRetained(true), shootake).withTimeout(.5),
+            new RunCommand(() -> shootake.setRetained(true), shootake).withTimeout(.2),
             m_robotDrive.autoDriveToSpeakerShoot()),
         m_robotDrive.stopCommand(),
         new ParallelRaceGroup(m_robotDrive.setXCommand(), shootake.speakerShootCommand()));

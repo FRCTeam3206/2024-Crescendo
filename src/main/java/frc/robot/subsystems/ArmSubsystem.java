@@ -186,8 +186,8 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   @Log(level = LogLevel.OVERRIDE_FILE_ONLY) // may want to use on driver dashboard
   public boolean atGoal() {
     return MathUtil.isNear(
-            this.goal.position, getAngle(), ArmSubConstants.kAtAngleTolerance, 0, 2 * Math.PI)
-        && MathUtil.isNear(0, getVelocity(), ArmSubConstants.kAtVelocityTolerance);
+        this.goal.position, getAngle(), ArmSubConstants.kAtAngleTolerance, 0, 2 * Math.PI);
+    // && MathUtil.isNear(0, getVelocity(), ArmSubConstants.kAtVelocityTolerance);
   }
 
   @Log(key = "Angle")
@@ -277,14 +277,14 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command ampCommandStop() {
-    return ampPosition().until(this::atGoal);
+    return ampPosition().until(this::atGoal).andThen(runOnce(this::stop));
   }
 
   public Command speakerCommandStop() {
-    return shootPosition().until(this::atGoal);
+    return shootPosition().until(() -> getAngle() < 0.05).andThen(runOnce(this::stop));
   }
 
   public Command intakeCommandStop() {
-    return intakePosition().until(this::atGoal);
+    return intakePosition().until(this::atGoal).andThen(runOnce(this::stop));
   }
 }
