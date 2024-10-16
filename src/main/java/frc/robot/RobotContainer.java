@@ -134,7 +134,7 @@ public class RobotContainer implements Logged {
     // m_driverController.button(2).whileTrue(m_robotDrive.pathCommandToPose(new Pose2d(13.349,
     // 5.326,new Rotation2d(Math.PI))));
     m_driverController
-        .button(2)
+        .button(8)
         .whileTrue(
             // m_robotDrive.autoDriveToSpeakerShoot()
             speakerShoot());
