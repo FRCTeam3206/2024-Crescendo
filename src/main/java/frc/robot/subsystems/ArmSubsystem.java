@@ -256,6 +256,10 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     return moveToGoalCommand(goal).until(this::atGoal);
   }
 
+  public Command stopCommand() {
+    return this.runOnce(() -> stop());
+  }
+
   /**************************
    * Game-specific commands *
    **************************/
@@ -277,14 +281,14 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command ampCommandStop() {
-    return ampPosition().until(this::atGoal).andThen(runOnce(this::stop));
+    return ampPosition().until(this::atGoal).andThen(stopCommand());
   }
 
   public Command speakerCommandStop() {
-    return shootPosition().until(() -> getAngle() < 0.05).andThen(runOnce(this::stop));
+    return shootPosition().until(() -> getAngle() < 0.05).andThen(stopCommand());
   }
 
   public Command intakeCommandStop() {
-    return intakePosition().until(this::atGoal).andThen(runOnce(this::stop));
+    return intakePosition().until(this::atGoal).andThen(stopCommand());
   }
 }
