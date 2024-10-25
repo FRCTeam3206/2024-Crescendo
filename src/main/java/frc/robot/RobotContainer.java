@@ -300,11 +300,11 @@ public class RobotContainer implements Logged {
     autonChooser.addOption(
         "4 Note (Amp side first)",
         new SequentialCommandGroup(
-            speakerShoot(), shootake.stopCommand(), midToSpeaker(), topToSpeaker(), bottomToSpeaker()));
+            speakerShoot(), shootake.stopCommand(), topToSpeaker(), midToSpeaker(), bottomToSpeaker()));
     autonChooser.addOption(
         "4 Note (Stage side first)",
         new SequentialCommandGroup(
-            speakerShoot(), shootake.stopCommand(), midToSpeaker(), bottomToSpeaker(), topToSpeaker()));
+            speakerShoot(), shootake.stopCommand(), bottomToSpeaker(), midToSpeaker(), topToSpeaker()));
     SmartDashboard.putData(autonChooser);
   }
 
@@ -312,10 +312,11 @@ public class RobotContainer implements Logged {
     if (autonChooser.getSelected() == null) {
       return m_robotDrive.stopCommand();
     }
-    return new ConditionalCommand(
-        m_robotDrive.stopCommand(),
-        autonChooser.getSelected(),
-        () -> m_robotDrive.getPose().getX() < .1 && m_robotDrive.getPose().getY() < .1);
+    return autonChooser.getSelected();
+    // return new ConditionalCommand(
+    //     m_robotDrive.stopCommand(),
+    //     autonChooser.getSelected(),
+    //     () -> m_robotDrive.getPose().getX() < .1 && m_robotDrive.getPose().getY() < .1);
   }
 
   /**
