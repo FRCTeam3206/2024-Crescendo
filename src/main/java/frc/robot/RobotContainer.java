@@ -189,28 +189,18 @@ public class RobotContainer implements Logged {
   }
 
   public Command alignToNoteCommand(AllianceNoteLocation noteLocation) {
-    return new SequentialCommandGroup(
-        new ParallelRaceGroup(
-            m_robotDrive.pickUpNotePoseCommand(noteLocation),
-            // m_robotDrive.driveToPoseCommand(
-            //     pickupPose, AutoAlignConstants.kAtNotePickupGoalTolerance),
-            arm.intakePosition(),
-            shootake.intakeCommand()),
-        m_robotDrive.driveToPoseCommand(noteLocation.getPose()),
-        // pickUpNoteCommand(),
-        m_robotDrive.stopCommand());
-    // return alignToNoteCommand(noteLocation.getPickUpPose());
+    return alignToNoteCommand(noteLocation.getPickUpPose());
   }
 
-  // public Command alignToNoteCommand(Pose2d pickupPose) {
-  //   return new SequentialCommandGroup(
-  //       new ParallelRaceGroup(
-  //           m_robotDrive.driveToPoseCommand(
-  //               pickupPose, AutoAlignConstants.kAtNotePickupGoalTolerance),
-  //           arm.intakePosition()),
-  //       pickUpNoteCommand(),
-  //       m_robotDrive.stopCommand());
-  // }
+  public Command alignToNoteCommand(Pose2d pickupPose) {
+    return new SequentialCommandGroup(
+        new ParallelRaceGroup(
+            m_robotDrive.driveToPoseCommand(
+                pickupPose, AutoAlignConstants.kAtNotePickupGoalTolerance),
+            arm.intakePosition()),
+        pickUpNoteCommand(),
+        m_robotDrive.stopCommand());
+  }
 
   public Command speakerShoot() {
     return new SequentialCommandGroup(
@@ -250,15 +240,15 @@ public class RobotContainer implements Logged {
     return new SequentialCommandGroup(alignToNoteCommand(AllianceNoteLocation.TOP), ampShoot());
   }
 
-  // public Command topToAmpWallSide() {
-  //   return new SequentialCommandGroup(
-  //       alignToNoteCommand(
-  //           AllianceNoteLocation.TOP
-  //               .getPose()
-  //               .transformBy(
-  //                   new Transform2d(-AutoAlignConstants.kPickUpNoteDist, 0, new Rotation2d()))),
-  //       ampShoot());
-  // }
+  public Command topToAmpWallSide() {
+    return new SequentialCommandGroup(
+        alignToNoteCommand(
+            AllianceNoteLocation.TOP
+                .getPose()
+                .transformBy(
+                    new Transform2d(-AutoAlignConstants.kPickUpNoteDist, 0, new Rotation2d()))),
+        ampShoot());
+  }
 
   public void autons() {
     autonChooser.setDefaultOption("Nothing", m_robotDrive.stopCommand());
@@ -292,9 +282,9 @@ public class RobotContainer implements Logged {
     autonChooser.addOption(
         "2 Note (Stage-Side Shoot)",
         new SequentialCommandGroup(speakerShoot(), shootake.stopCommand(), bottomToSpeaker()));
-    // autonChooser.addOption(
-    //     "2 Note (Amp Score)",
-    //     new SequentialCommandGroup(speakerShoot(), shootake.stopCommand(), topToAmpWallSide()));
+    autonChooser.addOption(
+        "2 Note (Amp Score)",
+        new SequentialCommandGroup(speakerShoot(), shootake.stopCommand(), topToAmpWallSide()));
     autonChooser.addOption(
         "3 Note (Amp Side All Speaker)",
         new SequentialCommandGroup(
@@ -310,11 +300,11 @@ public class RobotContainer implements Logged {
     autonChooser.addOption(
         "4 Note (Amp side first)",
         new SequentialCommandGroup(
-            speakerShoot(), shootake.stopCommand(), topToSpeaker(), midToSpeaker(), bottomToSpeaker()));
+            speakerShoot(), shootake.stopCommand(), midToSpeaker(), topToSpeaker(), bottomToSpeaker()));
     autonChooser.addOption(
         "4 Note (Stage side first)",
         new SequentialCommandGroup(
-            speakerShoot(), shootake.stopCommand(), bottomToSpeaker(), midToSpeaker(), topToSpeaker()));
+            speakerShoot(), shootake.stopCommand(), midToSpeaker(), bottomToSpeaker(), topToSpeaker()));
     SmartDashboard.putData(autonChooser);
   }
 
@@ -322,11 +312,10 @@ public class RobotContainer implements Logged {
     if (autonChooser.getSelected() == null) {
       return m_robotDrive.stopCommand();
     }
-    return autonChooser.getSelected();
-    // return new ConditionalCommand(
-    //     m_robotDrive.stopCommand(),
-    //     autonChooser.getSelected(),
-    //     () -> m_robotDrive.getPose().getX() < .1 && m_robotDrive.getPose().getY() < .1);
+    return new ConditionalCommand(
+        m_robotDrive.stopCommand(),
+        autonChooser.getSelected(),
+        () -> m_robotDrive.getPose().getX() < .1 && m_robotDrive.getPose().getY() < .1);
   }
 
   /**
