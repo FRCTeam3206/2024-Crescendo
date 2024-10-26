@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.struct.Pose3dStruct;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -349,6 +350,17 @@ public final class Constants {
     public Pose2d getPickUpPose() {
       return AllianceUtil.getPoseForAlliance(pickUpPose);
     }
+  }
+
+  public class AllianceNote {
+    private Pose2d bluePose;
+    private Pose2d pickUpPose;
+
+    public AllianceNote(Pose2d bluePose, Pose2d pickUpPose) {
+      this.bluePose = bluePose;
+      this.pickUpPose = pickUpPose;
+    }
+    public Pose2d getPose
   }
 
   public static final class OIConstants {
