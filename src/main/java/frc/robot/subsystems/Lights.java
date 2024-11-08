@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase {
@@ -11,7 +12,6 @@ public class Lights extends SubsystemBase {
   private int m_rainbowFirstPixelHue = 0;
   private int count = 0;
   private int count2 = 0;
-  private boolean count3 = false;
   /*
    * showColor 0 - Rainbow
    * showColor 1 - Solid color (blue)
@@ -19,7 +19,7 @@ public class Lights extends SubsystemBase {
    * r2,g2,b2
    * showColor 3 - rainbow for 1 sec, theatre chase for 1 sec
    */
-  public int showColor = 0;
+  public String showColor = "blue";
 
   public Lights() {
     // PWM port 0
@@ -39,21 +39,20 @@ public class Lights extends SubsystemBase {
 
   public void periodic() {
     // Chooses and uses a mode for the lights based on showColor
-    if (showColor == 0) {
+    if (showColor == "rainbow") {
       rainbow(m_rainbowFirstPixelHue);
       m_led.setData(m_ledBuffer);
       m_rainbowFirstPixelHue += 3;
       // Check bounds
       m_rainbowFirstPixelHue %= 180;
-    } else if (showColor == 1) {
-    } else if (showColor == 2) {
+    } else if (showColor == "blue" || showColor == "alternate") {
       if (count >= 25) {
         ColorSwitch(0, 0, 200, 150, 150, 150);
         m_led.setData(m_ledBuffer);
         count = 0;
       }
       count++;
-    } else if (showColor == 3) {
+    } else if (showColor == "fancy") {
       if (count2 < 50) {
         rainbow(m_rainbowFirstPixelHue);
         m_led.setData(m_ledBuffer);
@@ -72,8 +71,8 @@ public class Lights extends SubsystemBase {
     m_led.setData(m_ledBuffer);
   }
 
-  public void setRainbow() {
-    showColor = 0;
+  public void changeColor(String color) {
+    showColor = color;
   }
 
   /** sets all LED's to the rgb color specified from the three aproprately named variables */
@@ -81,16 +80,8 @@ public class Lights extends SubsystemBase {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
       m_ledBuffer.setRGB(i, ColorRed, ColorGreen, ColorBlue);
     }
-    showColor = 1;
+    showColor = "blue";
     m_led.setData(m_ledBuffer);
-  }
-
-  public void setColorSwitch() {
-    showColor = 2;
-  }
-
-  public void showOff() {
-    showColor = 3;
   }
 
   /**
@@ -108,29 +99,20 @@ public class Lights extends SubsystemBase {
     }
   }
 
+  public void stop() {
+    m_led.stop();
+  }
+
   /** Alternates colors for each led, then switches them every time it's called */
   private void ColorSwitch(int r1, int g1, int b1, int r2, int g2, int b2) {
-
-    if (count3 == false) {
-
-      for (var i = 0; i < m_ledBuffer.getLength(); i += 2) {
+    for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+      if (i%2 == 0) {
         m_ledBuffer.setRGB(i, r1, g1, b1);
-      }
-
-      for (var i = 1; i < m_ledBuffer.getLength(); i += 2) {
+        SmartDashboard.putString("color", "poop");
+      } else {
         m_ledBuffer.setRGB(i, r2, g2, b2);
+        SmartDashboard.putString("color", "pee");
       }
-      count3 = true;
-    } else if (count3 == true) {
-
-      for (var i = 1; i < m_ledBuffer.getLength(); i += 2) {
-        m_ledBuffer.setRGB(i, r1, g1, b1);
-      }
-
-      for (var i = 0; i < m_ledBuffer.getLength(); i += 2) {
-        m_ledBuffer.setRGB(i, r2, g2, b2);
-      }
-      count3 = false;
     }
   }
 }

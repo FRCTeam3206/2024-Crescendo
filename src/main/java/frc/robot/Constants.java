@@ -360,8 +360,17 @@ public final class Constants {
       this.bluePose = bluePose;
       this.pickUpPose = pickUpPose;
     }
-    public Pose2d getPose
+
+    public Pose2d getPose(){
+      return AllianceUtil.getPoseForAlliance(bluePose);
+    }
+
+    public Pose2d pickUPose2d(){
+      return AllianceUtil.getPoseForAlliance(pickUpPose);
+    }
   }
+
+  public AllianceNote topNote = new AllianceNote(new Pose2d(), new Pose2d());
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
