@@ -17,9 +17,19 @@ import java.util.function.BooleanSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
+// For this exercise, fix problems and add pieces of code where there are comments saying to do so.
+//
+
 public class Shootake extends SubsystemBase implements Logged {
-  CANSparkMax topRoller = new CANSparkMax(kTopCANID, MotorType.kBrushless);
-  CANSparkMax bottomRoller = new CANSparkMax(kBottomCANID, MotorType.kBrushless);
+  CANSparkMax topRoller = new CANSparkMax(); // TODO: Give the constructor the necessary information
+  CANSparkMax bottomRoller = new CANSparkMax(); // TODO: Give the constructor the necessary information
+  // A constructor is a method that allows you to create an instance of an object.
+  // For more information about any of the following, you can visit the following websites:
+  // Method: https://www.w3schools.com/java/java_methods.asp
+  // Object: https://www.w3schools.com/java/java_classes.asp
+  // Constructor: https://www.w3schools.com/java/java_constructors.asp
+  // Hint: hovering over "CANSparkMax()" will give you more information about it
+  // Hint: there is some important information you will need in ShootakeConstants
   Servo finger = new Servo(kFingerPort);
   DigitalInput hasNoteSensor = new DigitalInput(ShootakeConstants.kNoteSensorChannel);
   Debouncer shootDebounce = new Debouncer(.125);
@@ -45,13 +55,18 @@ public class Shootake extends SubsystemBase implements Logged {
   }
 
   public void setSpeed(double speed) {
-    topRoller.set(speed);
-    bottomRoller.set(speed);
+    // TODO: Set the speeds of topRoller and bottomRoller to the given speed.
+    // Hint: You will need to use the "set" method in the CANSparkMax objects
   }
 
   public void setRetained(boolean retained) {
     SmartDashboard.putNumber("Servo Retainer", retained ? 1 : 0);
-    finger.set(retained ? ShootakeConstants.kRetainedValue : ShootakeConstants.kNotRetainedValue);
+    // TODO: Set the finger to the retained value (found in ShootakeConstants) if the "retained"
+    // true/false (boolean) variable is true; otherwise, set it to the
+    // not-retained value (also found in ShootakeConstants).
+    // Hint: you will need to make an if-else statement
+    // For more information about if-else statements, you can look at https://www.w3schools.com/java/java_conditions.asp
+    // Hint: you will need to use the "set" method of "finger"
   }
 
   public boolean hasNote() {
@@ -66,95 +81,11 @@ public class Shootake extends SubsystemBase implements Logged {
         });
   }
 
-  public Command retainCommand() {
-    return this.run(
-            () -> {
-              setRetained(true);
-            })
-        .withTimeout(.25);
-  }
-
   public Command stopCommand() {
     return this.runOnce(() -> this.setSpeed(0));
   }
 
-  public Command intakeCommand() {
-    return this.run(
-        () -> {
-          setRetained(false);
-          setSpeed(kIntakeSpeed);
-        });
-  }
-
-  public Command slowIntakeCommand() {
-    return this.run(
-        () -> {
-          setRetained(false);
-          setSpeed(ShootakeConstants.kSlowIntakeSpeed);
-        });
-  }
-
-  public Command outakeCommand() {
-    return this.run(
-        () -> {
-          setRetained(false);
-          setSpeed(ShootakeConstants.kOutakeSpeed);
-        });
-  }
-
-  public Command ampCommand() {
-    return this.run(
-        () -> {
-          setRetained(false);
-          topRoller.set(-.1);
-          bottomRoller.set(ShootakeConstants.kAmpSpeed);
-        });
-  }
-
-  public Command speakerShootCommand() {
-    return new SequentialCommandGroup(
-        this.run(
-                () -> {
-                  setRetained(true);
-                  setSpeed(-1.0);
-                })
-            .until(() -> shootDebounce.calculate(getAverageSpeed() > kShootakeFreeSpeed)),
-        this.run(
-                () -> {
-                  setRetained(false);
-                  setSpeed(-1.0);
-                })
-            .until(() -> !hasNote()),
-        this.run(
-                () -> {
-                  setRetained(false);
-                  setSpeed(-1.0);
-                })
-            .withTimeout(.5));
-  }
-
-  /**
-   * @deprecated Use {@code speakerShootCommand()} instead.
-   */
-  public Command shootCommand(BooleanSupplier releaseOverride) {
-    return new SequentialCommandGroup(
-        new FunctionalCommand(
-            () -> {},
-            () -> {
-              setRetained(true);
-              setSpeed(-1.0);
-            },
-            (Boolean b) -> {},
-            () -> getAverageSpeed() > kShootakeFreeSpeed || releaseOverride.getAsBoolean(),
-            this),
-        new FunctionalCommand(
-            () -> {},
-            () -> {
-              setRetained(false);
-              setSpeed(-1.0);
-            },
-            (Boolean b) -> {},
-            () -> getAverageSpeed() < kShootakeLoadSpeedThreshold,
-            this));
-  }
+  // TODO: Make a method in the space below that will return a Command to intake a note.
+  // Hint: look at the idleCommand to help you.
+  //Think about what speed you will want to set it to and whether it should be retained.
 }
