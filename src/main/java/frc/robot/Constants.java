@@ -24,6 +24,7 @@ import edu.wpi.first.math.util.Units;
 import frc.utils.AllianceUtil;
 import java.io.IOException;
 import java.util.List;
+import java.util.HashMap;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -327,6 +328,11 @@ public final class Constants {
     ROBOT_RELATIVE,
     DRIVER_RELATIVE,
     FIELD_RELATIVE;
+  }
+
+  public static final class Colors {
+    HashMap<String, int> colors = new HashMap<String, int>();
+    colors.put("red", 0);
   }
 
   public static enum AllianceNoteLocation {
