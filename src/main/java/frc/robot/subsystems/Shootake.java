@@ -21,8 +21,8 @@ import monologue.Logged;
 //
 
 public class Shootake extends SubsystemBase implements Logged {
-  CANSparkMax topRoller = new CANSparkMax(); // TODO: Give the constructor the necessary information
-  CANSparkMax bottomRoller = new CANSparkMax(); // TODO: Give the constructor the necessary information
+  CANSparkMax topRoller = new CANSparkMax(kTopCANID, MotorType.kBrushless); // TODO: Give the constructor the necessary information
+  CANSparkMax bottomRoller = new CANSparkMax(kBottomCANID, MotorType.kBrushless); // TODO: Give the constructor the necessary information
   // A constructor is a method that allows you to create an instance of an object.
   // For more information about any of the following, you can visit the following websites:
   // Method: https://www.w3schools.com/java/java_methods.asp
