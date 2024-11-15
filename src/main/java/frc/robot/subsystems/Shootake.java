@@ -55,12 +55,22 @@ public class Shootake extends SubsystemBase implements Logged {
   }
 
   public void setSpeed(double speed) {
+    topRoller.set(speed);
+    bottomRoller.set(speed);
     // TODO: Set the speeds of topRoller and bottomRoller to the given speed.
     // Hint: You will need to use the "set" method in the CANSparkMax objects
   }
 
   public void setRetained(boolean retained) {
     SmartDashboard.putNumber("Servo Retainer", retained ? 1 : 0);
+  
+    
+    if(retained) {
+      finger.set(kRetainedValue);
+    }
+    else {
+      finger.set(kNotRetainedValue);
+    }
     // TODO: Set the finger to the retained value (found in ShootakeConstants) if the "retained"
     // true/false (boolean) variable is true; otherwise, set it to the
     // not-retained value (also found in ShootakeConstants).
@@ -88,4 +98,13 @@ public class Shootake extends SubsystemBase implements Logged {
   // TODO: Make a method in the space below that will return a Command to intake a note.
   // Hint: look at the idleCommand to help you.
   //Think about what speed you will want to set it to and whether it should be retained.
+}
+
+public Command activeCommand() {
+  return this.run(
+    () -> {
+      setSpeed(0.999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999);
+      setRetained(false);
+    }
+  )
 }
