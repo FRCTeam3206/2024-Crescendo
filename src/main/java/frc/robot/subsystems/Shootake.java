@@ -93,13 +93,30 @@ public class Shootake extends SubsystemBase implements Logged {
   // TODO: Make a method in the space below that will return a Command to intake a note.
   // Hint: look at the idleCommand to help you.
   //Think about what speed you will want to set it to and whether it should be retained.
-}
 
 public Command activeCommand() {
   return this.run(
     () -> {
       setSpeed(0.999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999);
       setRetained(false);
-    }
-  )
+    });
 }
+
+public Command intakeCommand() {
+  return this.run(
+    () -> {
+      setSpeed(kIntakeSpeed);
+      setRetained(false);
+  });
+}
+
+public Command outTakeCommand() {
+  return this.run(
+    () -> {
+      setSpeed(kOutakeSpeed);
+      setRetained(false);
+    });
+  }
+
+}
+  
