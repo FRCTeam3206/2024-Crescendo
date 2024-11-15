@@ -111,7 +111,7 @@ public class RobotContainer implements Logged {
                   lights.setLightColor(255, 80, 0);
                 }
               } else {
-                lights.setLightColor(255 , 0, 255);
+                lights.setLightColor(255 , 255, 255);
               }
             },
             lights));
