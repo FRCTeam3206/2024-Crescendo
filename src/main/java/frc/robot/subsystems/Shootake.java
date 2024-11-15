@@ -21,8 +21,8 @@ import monologue.Logged;
 //
 
 public class Shootake extends SubsystemBase implements Logged {
-  CANSparkMax topRoller = new CANSparkMax(ShootakeConstants.kTopCANID); // TODO: Give the constructor the necessary information
-  CANSparkMax bottomRoller = new CANSparkMax(ShootakeConstants.kBottomCANID); // TODO: Give the constructor the necessary information
+  CANSparkMax topRoller = new CANSparkMax(ShootakeConstants.kTopCANID, MotorType.kBrushless); // TODO: Give the constructor the necessary information
+  CANSparkMax bottomRoller = new CANSparkMax(ShootakeConstants.kBottomCANID, MotorType.kBrushless); // TODO: Give the constructor the necessary information
   // A constructor is a method that allows you to create an instance of an object.
   // For more information about any of the following, you can visit the following websites:
   // Method: https://www.w3schools.com/java/java_methods.asp
@@ -57,6 +57,8 @@ public class Shootake extends SubsystemBase implements Logged {
   public void setSpeed(double speed) {
     // TODO: Set the speeds of topRoller and bottomRoller to the given speed.
     // Hint: You will need to use the "set" method in the CANSparkMax objects
+    topRoller.set(speed);
+    bottomRoller.set(speed);
   }
 
   public void setRetained(boolean retained) {
@@ -67,6 +69,11 @@ public class Shootake extends SubsystemBase implements Logged {
     // Hint: you will need to make an if-else statement
     // For more information about if-else statements, you can look at https://www.w3schools.com/java/java_conditions.asp
     // Hint: you will need to use the "set" method of "finger"
+    if (retained){
+      finger.set(1);   
+     } else {
+      finger.set(0);
+    }
   }
 
   public boolean hasNote() {
