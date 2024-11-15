@@ -330,11 +330,6 @@ public final class Constants {
     FIELD_RELATIVE;
   }
 
-  public static final class Colors {
-    HashMap<String, int> colors = new HashMap<String, int>();
-    colors.put("red", 0);
-  }
-
   public static enum AllianceNoteLocation {
     BOTTOM(AutoAlignConstants.kBlueBottomNotePose, AutoAlignConstants.kBottomNotePickUpPose),
     CENTER(AutoAlignConstants.kBlueCenterNotePose, AutoAlignConstants.kCenterNotePickUpPose),

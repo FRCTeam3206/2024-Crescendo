@@ -42,8 +42,7 @@ public class Lights extends SubsystemBase {
     // Chooses and uses a mode for the lights based on showColor
     switch (showColor) {
       case "rainbow":
-        rainbow(m_rainbowFirstPixelHue);
-        m_led.setData(m_ledBuffer);
+        rainbow();
         m_rainbowFirstPixelHue += 3;
         // Check bounds
         m_rainbowFirstPixelHue %= 180;
@@ -52,19 +51,16 @@ public class Lights extends SubsystemBase {
       case "alternate":
         if (count >= 25) {
           ColorSwitch(0, 0, 200, 150, 150, 150);
-          m_led.setData(m_ledBuffer);
           count = 0;
-        }
+        } 
         count++;
       break;
       case "rainbow-alternate":
         if (count2 < 50) {
-          rainbow(m_rainbowFirstPixelHue);
-          m_led.setData(m_ledBuffer);
+          rainbow();
         } else if (count2 < 100) {
           if (count == 13) {
             ColorSwitch(0, 0, 200, 150, 150, 150);
-            m_led.setData(m_ledBuffer);
             count = 0;
           }
           count++;
@@ -74,15 +70,29 @@ public class Lights extends SubsystemBase {
         count2++;
       break;
     }
-    m_led.setData(m_ledBuffer);
-  }
+    }
 
   /** sets all LED's to the rgb color specified from the three aproprately named variables */
-  public void setLightColor(int ColorRed, int ColorGreen, int ColorBlue) {
-    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+  public void setAllRGB(int ColorRed, int ColorGreen, int ColorBlue) {
+    for (int i = howManyLights; i>0; i--) {
       m_ledBuffer.setRGB(i, ColorRed, ColorGreen, ColorBlue);
     }
-    showColor = "blue";
+    m_led.setData(m_ledBuffer);
+  }
+  public void setAlternateRGB(int red1, int green1, int blue1, int red2, int green2, int blue2) {
+    for (int i = howManyLights; i > 0; i--) {
+      if (i%2 == 0) {
+        m_ledBuffer.setRGB(i, red1, green1, blue1);
+      } else {
+        m_ledBuffer.setRGB(i, red2, green2, blue2);
+      }
+    }
+    m_led.setData(m_ledBuffer);
+  }
+  public void setAllHSV(int hue, int sat, int value) {
+    for (int i = howManyLights; i>0; i--) {
+      m_ledBuffer.setHSV(i, hue, sat, value);
+    }
     m_led.setData(m_ledBuffer);
   }
 
@@ -91,48 +101,38 @@ public class Lights extends SubsystemBase {
    *
    * <p>Copied from the addressable LED library WPILib documentation
    */
-  private void rainbow(int m_rainbowFirstPixelHue) {
-    for (var i = 0; i < howManyLights; i++) {
+  private void rainbow() {
+    for (int i = howManyLights; i > 0; i--) {
       // Calculate the hue - hue is easier for rainbows because the color
       // shape is a circle so only one value needs to precess
       final var hue = (m_rainbowFirstPixelHue + (i * 180 / howManyLights)) % 180;
       // Set the value
       m_ledBuffer.setHSV(i, hue, 255, 128);
     }
+    m_led.setData(m_ledBuffer);
   }
-  private int[] wordToHSV(String word) {
-    final int hue;
-    final int value;
+  private void setColorWord(String word) {
+    int hue;
     switch (word){
-      case "red": hue = 20; value=20;
-      case ""
+      case "red": hue = 0; break;
+      case "orange": hue = 20; break;
+      case "yellow": hue = 30; break;
+      case "green": hue = 60; break;
+      case "blue": hue = 120; break;
+      case "purple": hue = 140; break;
+      case "pink": hue = 160; break;
+      default: hue = 90; break;
     }
-    return int[]{hue, 50, value}
+    setAllHSV(hue, 255, 128);
   }
 
   /** Alternates colors for each led, then switches them every time it's called */
   private void ColorSwitch(int r1, int g1, int b1, int r2, int g2, int b2) {
-
     if (count3 == false) {
-
-      for (var i = 0; i < howManyLights; i += 2) {
-        m_ledBuffer.setRGB(i, r1, g1, b1);
-      }
-
-      for (var i = 1; i < howManyLights; i += 2) {
-        m_ledBuffer.setRGB(i, r2, g2, b2);
-      }
-      count3 = true;
-    } else if (count3 == true) {
-
-      for (var i = 1; i < howManyLights; i += 2) {
-        m_ledBuffer.setRGB(i, r1, g1, b1);
-      }
-
-      for (var i = 0; i < howManyLights; i += 2) {
-        m_ledBuffer.setRGB(i, r2, g2, b2);
-      }
-      count3 = false;
+      setAlternateRGB(r1, g1, b1, r2, g2, b2);
+    } else {
+      setAlternateRGB(r2, g2, b2, r1, g1, b1);
     }
+    count3 = !count3;
   }
 }
