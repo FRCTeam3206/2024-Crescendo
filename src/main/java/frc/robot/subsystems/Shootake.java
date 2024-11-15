@@ -63,14 +63,9 @@ public class Shootake extends SubsystemBase implements Logged {
 
   public void setRetained(boolean retained) {
     SmartDashboard.putNumber("Servo Retainer", retained ? 1 : 0);
-  
     
-    if(retained) {
-      finger.set(kRetainedValue);
-    }
-    else {
-      finger.set(kNotRetainedValue);
-    }
+      finger.set(retained?kRetainedValue:kNotRetainedValue);
+
     // TODO: Set the finger to the retained value (found in ShootakeConstants) if the "retained"
     // true/false (boolean) variable is true; otherwise, set it to the
     // not-retained value (also found in ShootakeConstants).
