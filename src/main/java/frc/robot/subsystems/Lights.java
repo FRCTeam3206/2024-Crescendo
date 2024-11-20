@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase {
@@ -121,7 +122,7 @@ public class Lights extends SubsystemBase {
       case "blue": hue = 120; break;
       case "purple": hue = 140; break;
       case "pink": hue = 160; break;
-      default: hue = 90; break;
+      default: SmartDashboard.putBoolean("", count3) hue = 0; break;
     }
     setAllHSV(hue, 255, 128);
   }
