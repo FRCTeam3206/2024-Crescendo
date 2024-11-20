@@ -57,6 +57,8 @@ public class Shootake extends SubsystemBase implements Logged {
   public void setSpeed(double speed) {
     // TODO: Set the speeds of topRoller and bottomRoller to the given speed.
     // Hint: You will need to use the "set" method in the CANSparkMax objects
+     topRoller.set(speed);
+     bottomRoller.set(speed);
   }
 
   public void setRetained(boolean retained) {
@@ -67,6 +69,11 @@ public class Shootake extends SubsystemBase implements Logged {
     // Hint: you will need to make an if-else statement
     // For more information about if-else statements, you can look at https://www.w3schools.com/java/java_conditions.asp
     // Hint: you will need to use the "set" method of "finger"
+    if retained(){
+      finger.set(1);
+        } else {
+      finger.set(0);
+    }
   }
 
   public boolean hasNote() {
