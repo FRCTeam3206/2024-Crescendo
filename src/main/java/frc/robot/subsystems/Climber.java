@@ -7,7 +7,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 import monologue.Logged;
 
-public class Climber extends SubsystemBase implements Logged {
+// TODO: our subsystem class needs to be based on another class called SubsystemBase.
+// Hint: In order to make a class based on another class, you use the word "extends". The new class is
+// a subclass of the class that it's based on. For example, you could do "Blueberry extends Fruit"
+// (Blueberry is then a subclass of Fruit) or "Car extends Vehicle" (Car is then a subclass of Vehicle).
+public class Climber implements Logged {
   // TODO: add missing arguments (hint: it's the same type of object as the shootake motors are)
   CANSparkMax leftClimber =
       new CANSparkMax();
@@ -33,7 +37,6 @@ public class Climber extends SubsystemBase implements Logged {
         || speed < 0) {
       rightClimber.set(-speed);
     } else rightClimber.set(0);
-    this.log("Climb Speed", speed);
   }
 
   public Command zero() {
@@ -57,25 +60,11 @@ public class Climber extends SubsystemBase implements Logged {
   // - Look at the end of Shootake for help with the syntax (or ask questions)
   // - Make sure that the speed is a parameter and that you're setting it based on that
   // - You will want to use the existing setSpeed method within it
+  // When this method is used, it returns a Command based on the information given to it at the time
+  // that the method was called (which is essentially right away). Therefore, if parameters given to
+  // this method will change (such as inputs from the driver), it will cause problems if they're just
+  // normal parameters for the method. Don't worry about this for now (unless you are interested in
+  // learning more about it), but we would want to do this a little differently for it to truly work.
 
-  // Extra challenge (optional; probably difficult, but helpful to understand if you're interested):
-  // Modify the above method to take a Supplier as its argument instead of just a value.
-  // This allows the value you use to change after the method is used to create the Command, which would
-  // be important in order for its values to be based on driver inputs. A Supplier is a type of
-  // FunctionalInterface. The "run" method takes a FunctionalInterface as an argument (in that case,
-  // it needs a Runnable). FunctionalInterfaces are sort of like classes that only one thing (a method
-  // that hasn't been defined), which objects can be created of by giving it the definition for that
-  // method (this isn't a fully accurate definition, but it mostly conveys the idea behind them). The
-  // definition of that method is given as a "lambda", which is in the form of () -> {} Essentially,
-  // the parameters of the method you're defining go in the parenthesis and the action goes in the 
-  // curly brackets. For Runnable, there aren't any parameters, so the parenthesis stay empty, and it
-  // doesn't return anything; it only does action(s). A Supplier returns a value, but it doesn't take any
-  // parameters. For the case of this particular challenge, you will want to have a Supplier so that it
-  // can be defined based on a method that will give different values (for example, a method that gets
-  // input from a joystick) and then in the Runnable that you give to the run method, you will want to
-  // get the value from the Supplier that is a parameter. A more fully accurate explanation of what a
-  // FunctionalInterface is: in Java, you can create classes from other classes. To do that, in the
-  // line where you say "class", you say "MyClass extends OtherClass" (for example, Blueberry extends
-  // Fruit). The class that extends another class (for example, MyClass or Blueberry) is a subclass of
-  // the other class (for example, OtherClass or Fruit). (To be continued)
+  // TODO: Use the method you have now defined in RobotContainer (go to line 84).
 }

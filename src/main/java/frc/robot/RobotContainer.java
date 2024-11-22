@@ -81,6 +81,11 @@ public class RobotContainer implements Logged {
 
     autons();
 
+    // TODO (if you haven't done the parts in Climber yet, do that first).
+    // Set the default command for "climber" with the method you defined in the class.
+    // For the sake of this exercise, you can just set the climber speeds to a value that you choose.
+    // Hint: Look at how the default commands are set for m_robotDrive and shootake.
+
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // Uses a joystick.
