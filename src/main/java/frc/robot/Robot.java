@@ -79,7 +79,7 @@ public class Robot extends TimedRobot implements Logged {
   public void autonomousInit() {
     // hasBeenEnabled = true;
 
-    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (AllianceUtil.getAlliance() == RobotContainer.AllianceColor.UNKNOWN) {
       AllianceUtil.setAlliance();

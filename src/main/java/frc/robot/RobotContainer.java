@@ -79,6 +79,23 @@ public class RobotContainer implements Logged {
     // Configure the button bindings
     configureButtonBindings();
   }
+  public void autons() {
+    
+    autonChooser.addOption("spin in a circle", m_robotDrive.driveCommand(
+    ()->0.1,
+    ()->0.5,
+    ()->30.0,
+    null,
+    false)
+    );
+  }
+  public Command getAutonomousCommand() {
+    if (autonChooser.getSelected() == null) {
+      return m_robotDrive.stopCommand();
+    } else {
+      return autonChooser.getSelected();
+    }
+  }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
