@@ -70,9 +70,9 @@ public class Shootake extends SubsystemBase implements Logged {
     // For more information about if-else statements, you can look at https://www.w3schools.com/java/java_conditions.asp
     // Hint: you will need to use the "set" method of "finger"
     if (retained){
-      finger.set(1);   
-     } else {
-      finger.set(0);
+      finger.set(kRetainedValue);
+    } else {
+      finger.set(kNotRetainedValue);
     }
   }
 
@@ -95,4 +95,23 @@ public class Shootake extends SubsystemBase implements Logged {
   // TODO: Make a method in the space below that will return a Command to intake a note.
   // Hint: look at the idleCommand to help you.
   //Think about what speed you will want to set it to and whether it should be retained.
+  public Command intakeNote() {
+    return this.run(
+      () -> {
+        setSpeed(kIntakeSpeed);
+        setRetained(false);
+      });
+  }
+  public Command outtakeNote() {
+    return this.run(
+      () -> {
+        setSpeed(kOutakeSpeed);
+        setRetained(false);
+      });
+  }
+  public Command retainSpeed() {
+    return this.run(
+      
+    )
+  }
 }
