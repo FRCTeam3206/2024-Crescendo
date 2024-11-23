@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShootakeConstants;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -56,6 +58,10 @@ public class Shootake extends SubsystemBase implements Logged {
 
   public boolean hasNote() {
     return !hasNoteSensor.get();
+  }
+
+  public BooleanSupplier hasNoteSupplier() {
+    return () -> this.hasNote();
   }
 
   public Command idleCommand() {

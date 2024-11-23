@@ -117,13 +117,6 @@ public class RobotContainer implements Logged {
             lights));
   }
 
-  // new RunCommand(
-  //             () -> {
-  //               shootake.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), kXboxDeadband));
-  //               shootake.setRetained(xbox.getHID().getAButton());
-  //             },
-  //             shootake)
-
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its subclasses ({@link
@@ -141,12 +134,11 @@ public class RobotContainer implements Logged {
     m_driverController.button(5).whileTrue(m_robotDrive.scoreToAmpCommand());
     xbox.povUp().whileTrue(arm.intakePosition());
     xbox.povDown().whileTrue(arm.shootPosition());
-    xbox.povRight().whileTrue(arm.ampPosition());
+    // TODO: add another button binding: make the arm go to the amp position while the right POV button is pressed.
     xbox.povLeft().whileTrue(arm.subwooferPosition());
     xbox.a().whileTrue(shootake.intakeCommand());
-    xbox.b().onTrue(shootake.speakerShootCommand());
     xbox.y().whileTrue(shootake.ampCommand());
-    xbox.x().whileTrue(shootake.outakeCommand());
+    // TODO: add another button binding: make the shootake outake while the x button is pressed.
     xbox.start().whileTrue(shootake.slowIntakeCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
@@ -164,11 +156,6 @@ public class RobotContainer implements Logged {
                       m_robotDrive.getPose().getRotation()));
             }));
   }
-
-  // public Command pickUpNoteCommand(NoteLocation noteLocation) {
-  //   return new ParallelRaceGroup(m_robotDrive.pickUpNotePoseCommand(noteLocation), new
-  // ConditionalCommand(getAutonomousCommand(), getAutonomousCommand(), () -> )));
-  // }
 
   public Command pickUpNoteCommand() {
     return new SequentialCommandGroup(
@@ -251,6 +238,28 @@ public class RobotContainer implements Logged {
 
   public void autons() {
     autonChooser.setDefaultOption("Nothing", m_robotDrive.stopCommand());
+
+    // TODO: add an option for autonomous (it can be whatever you would like).
+    // Hint: use methods of the subsystem objects that return Commands.
+
+    // TODO: add an autonomous that tells the robot to drive forward.
+    // Hint: The driveCommand() method of the object of DriveSubsystem will be helpful.
+
+    // TODO: add an autonomous that tells the robot to drive to a certain position.
+    // Hint: There is a very helpful method for this.
+
+    // TODO: add an autonomous that tells the robot to drive forward until it has a note.
+    // Hint: you will need to use ".until()"
+    // Hint: There is a method in Shootake that will return a BooleanSupplier for whether it has a note.
+
+    // TODO: add an autonomous that tells the robot to drive forward until it has a note and then drive backward.
+    // Hint: you can either use ".andThen()" to add a following Command or you can
+    // make a SequentialCommandGroup (this is a class that you will need to instantiate) and give its
+    // constructor the Commands that you want to do in the order you want to do them.
+
+    // TODO: add an autonomous that tells the robot to drive forward until it has a note, then drive
+    // backwards for three seconds.
+    // Hint: you will now need to use ".withTimeout()"
 
     autonChooser.addOption(
         "1 Note",
@@ -356,8 +365,4 @@ public class RobotContainer implements Logged {
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(m_robotDrive::stopCommand);
   }
-
-  // public void setAdjustmentForGyro(double adjustment) {
-  //   m_robotDrive.setGyroAdjustment(adjustment);
-  // }
 }
