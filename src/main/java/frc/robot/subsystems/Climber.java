@@ -10,13 +10,13 @@ import monologue.Logged;
 // TODO: our subsystem class needs to be based on another class called SubsystemBase.
 // Hint: In order to make a class based on another class, you use the word "extends". The new class is
 // a subclass of the class that it's based on. For example, you could do "Blueberry extends Fruit"
-// (Blueberry is then a subclass of Fruit) or "Car extends Vehicle" (Car is then a subclass of Vehicle).
-public class Climber implements Logged {
+// (Blueberry is then a subclass of Fruit) or "Car extends Vehicle" (Car is then a subclass of Vehicl
+public class Climber extends SubsystemBase implements Logged {
   // TODO: add missing arguments (hint: it's the same type of object as the shootake motors are)
-  CANSparkMax leftClimber =
-      new CANSparkMax();
+  CANSparkMax leftClimber = 
+      new CANSparkMax(ClimberConstants.kLeftClimberCANId, MotorType.kBrushless);
   CANSparkMax rightClimber =
-      new CANSparkMax();
+      new CANSparkMax(ClimberConstants.kRightClimberCANId, MotorType.kBrushless);
 
   public Climber() {
     leftClimber.setSmartCurrentLimit(30);
@@ -43,8 +43,8 @@ public class Climber implements Logged {
     // TODO: give the methods the correct argument for the positions to be zeroed
     return this.runOnce(
         () -> {
-          rightClimber.getEncoder().setPosition();
-          leftClimber.getEncoder().setPosition();
+          rightClimber.getEncoder().setPosition(0);
+          leftClimber.getEncoder().setPosition(0);
         });
   }
 
