@@ -31,7 +31,7 @@ public class Shootake extends SubsystemBase implements Logged {
 
   @Log
   private double getAverageSpeed() {
-    return bottomRoller.getEncoder().getVelocity();
+    return -bottomRoller.getEncoder().getVelocity();
   }
 
   @Log
