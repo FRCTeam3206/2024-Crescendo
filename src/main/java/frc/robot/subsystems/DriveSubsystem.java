@@ -5,11 +5,6 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.MathUtil;
@@ -23,7 +18,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AllianceNoteLocation;
 import frc.robot.Constants.AutoAlignConstants;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RelativeTo;
 import frc.robot.Constants.VisionConstants;
@@ -122,33 +115,33 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
 
     AllianceUtil.setRobot(this::getPose);
 
-    AutoBuilder.configureHolonomic(
-        this::getPose,
-        (Pose2d pose) -> {
-          resetOdometry(pose);
-        },
-        this::getRobotRelativeChassisSpeeds,
-        (ChassisSpeeds speeds) -> {
-          drive(
-              speeds.vxMetersPerSecond,
-              speeds.vyMetersPerSecond,
-              speeds.omegaRadiansPerSecond,
-              RelativeTo.ROBOT_RELATIVE,
-              true);
-        },
-        new HolonomicPathFollowerConfig(
-            PathPlannerConstants.translationPID,
-            PathPlannerConstants.rotationPID,
-            AutoConstants.kMaxModuleSpeedMetersPerSecond,
-            Math.sqrt(
-                    Math.pow(DriveConstants.kTrackWidth, 2)
-                        + Math.pow(DriveConstants.kWheelBase, 2))
-                / 2,
-            new ReplanningConfig()),
-        () -> {
-          return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-        },
-        this);
+    // AutoBuilder.configureHolonomic(
+    //     this::getPose,
+    //     (Pose2d pose) -> {
+    //       resetOdometry(pose);
+    //     },
+    //     this::getRobotRelativeChassisSpeeds,
+    //     (ChassisSpeeds speeds) -> {
+    //       drive(
+    //           speeds.vxMetersPerSecond,
+    //           speeds.vyMetersPerSecond,
+    //           speeds.omegaRadiansPerSecond,
+    //           RelativeTo.ROBOT_RELATIVE,
+    //           true);
+    //     },
+    //     new HolonomicPathFollowerConfig(
+    //         PathPlannerConstants.translationPID,
+    //         PathPlannerConstants.rotationPID,
+    //         AutoConstants.kMaxModuleSpeedMetersPerSecond,
+    //         Math.sqrt(
+    //                 Math.pow(DriveConstants.kTrackWidth, 2)
+    //                     + Math.pow(DriveConstants.kWheelBase, 2))
+    //             / 2,
+    //         new ReplanningConfig()),
+    //     () -> {
+    //       return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+    //     },
+    //     this);
   }
 
   @Override
@@ -741,20 +734,20 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
                 speeds.omegaRadiansPerSecond * timeDelta));
   }
 
-  public Command pathCommandToPose(Pose2d goalPose) {
-    return AutoBuilder.pathfindToPose(
-        goalPose,
-        new PathConstraints(
-            AutoConstants.kMaxSpeedMetersPerSecond,
-            AutoConstants.kMaxAccelerationMetersPerSecondSquared,
-            AutoConstants.kMaxAngularSpeedRadiansPerSecond,
-            AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared));
-  }
+  // public Command pathCommandToPose(Pose2d goalPose) {
+  //   return AutoBuilder.pathfindToPose(
+  //       goalPose,
+  //       new PathConstraints(
+  //           AutoConstants.kMaxSpeedMetersPerSecond,
+  //           AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+  //           AutoConstants.kMaxAngularSpeedRadiansPerSecond,
+  //           AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared));
+  // }
 
-  public static final class PathPlannerConstants {
-    public static final PIDConstants translationPID =
-        new PIDConstants(1.0, 0.0, 0.0); // TODO Find value
-    public static final PIDConstants rotationPID =
-        new PIDConstants(1.0, 0.0, 0.0); // TODO Find value
-  }
+  // public static final class PathPlannerConstants {
+  //   public static final PIDConstants translationPID =
+  //       new PIDConstants(1.0, 0.0, 0.0); // TODO Find value
+  //   public static final PIDConstants rotationPID =
+  //       new PIDConstants(1.0, 0.0, 0.0); // TODO Find value
+  // }
 }
