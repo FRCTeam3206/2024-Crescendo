@@ -140,13 +140,13 @@ public class RobotContainer implements Logged {
     // m_driverController.button(5).whileTrue(m_robotDrive.scoreToAmpCommand());
     xbox.povUp().whileTrue(arm.intakePosition());
     xbox.povDown().whileTrue(arm.shootPosition());
-    xbox.povRight().whileTrue(arm.ampPosition());
-    xbox.povLeft().whileTrue(arm.subwooferPosition());
+    // xbox.povRight().whileTrue(arm.ampPosition());
+    // xbox.povLeft().whileTrue(arm.subwooferPosition());
     xbox.a().whileTrue(shootake.intakeCommand());
     xbox.b().onTrue(shootake.speakerShootCommand());
-    xbox.y().whileTrue(shootake.ampCommand());
+    // xbox.y().whileTrue(shootake.ampCommand());
     xbox.x().whileTrue(shootake.outakeCommand());
-    xbox.start().whileTrue(shootake.slowIntakeCommand());
+    xbox.y().whileTrue(shootake.slowIntakeCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
     // SmartDashboard.putData("Reset Climber", climber.zero());
