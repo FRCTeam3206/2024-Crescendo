@@ -36,7 +36,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.RelativeTo;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Shootake;
@@ -56,7 +55,7 @@ public class RobotContainer implements Logged {
   Lights lights = new Lights();
   final Shootake shootake = new Shootake();
   private final ArmSubsystem arm = new ArmSubsystem();
-  private final Climber climber = new Climber();
+  // private final Climber climber = new Climber();
   @Log.Once private final String currentBranch = BuildConstants.GIT_BRANCH;
 
   // The driver's controller
@@ -95,12 +94,12 @@ public class RobotContainer implements Logged {
             true));
     arm.setDefaultCommand(arm.run(arm::stop));
     shootake.setDefaultCommand(shootake.idleCommand());
-    climber.setDefaultCommand(
-        new RunCommand(
-            () -> {
-              climber.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), 0.1));
-            },
-            climber));
+    // climber.setDefaultCommand(
+    //     new RunCommand(
+    //         () -> {
+    //           climber.setSpeed(MathUtil.applyDeadband(xbox.getRightY(), 0.1));
+    //         },
+    //         climber));
     lights.setDefaultCommand(
         new RunCommand(
             () -> {
@@ -150,7 +149,7 @@ public class RobotContainer implements Logged {
     xbox.start().whileTrue(shootake.slowIntakeCommand());
 
     SmartDashboard.putData("Reset Gyro", m_robotDrive.zeroHeadingCommand());
-    SmartDashboard.putData("Reset Climber", climber.zero());
+    // SmartDashboard.putData("Reset Climber", climber.zero());
     SmartDashboard.putNumber("X to Reset", 0);
     SmartDashboard.putNumber("Y to Reset", 0);
     SmartDashboard.putData(
