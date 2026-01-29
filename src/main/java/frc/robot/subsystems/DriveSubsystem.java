@@ -310,17 +310,20 @@ public class DriveSubsystem extends SubsystemBase implements Logged {
     SwerveModuleState[] desiredStates;
     switch (relativeTo) {
       case ROBOT_RELATIVE:
+        SmartDashboard.putString("RelativeTo", "RobotRelative");
         desiredStates =
             DriveConstants.kDriveKinematics.toSwerveModuleStates(
                 new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
         break;
       case DRIVER_RELATIVE:
+        SmartDashboard.putString("RelativeTo", "DriverRelative");
         desiredStates =
             DriveConstants.kDriveKinematics.toSwerveModuleStates(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                     xSpeedDelivered, ySpeedDelivered, rotDelivered, m_gyro.getRotation2d()));
         break;
       case FIELD_RELATIVE:
+        SmartDashboard.putString("RelativeTo", "FieldRelative");
         desiredStates =
             DriveConstants.kDriveKinematics.toSwerveModuleStates(
                 ChassisSpeeds.fromFieldRelativeSpeeds(

@@ -90,8 +90,8 @@ public class RobotContainer implements Logged {
             () -> -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
             () ->
                 -MathUtil.applyDeadband(m_driverController.getTwist(), OIConstants.kDriveDeadband),
-            () -> RelativeTo.DRIVER_RELATIVE,
-            true));
+            () -> RelativeTo.FIELD_RELATIVE,
+            false));
     arm.setDefaultCommand(arm.run(arm::stop));
     shootake.setDefaultCommand(shootake.idleCommand());
     // climber.setDefaultCommand(
@@ -175,7 +175,7 @@ public class RobotContainer implements Logged {
         new ParallelRaceGroup(arm.intakeCommandStop(), shootake.intakeCommand()),
         new ParallelCommandGroup(
                 m_robotDrive.driveCommand(
-                    () -> 0.15, () -> 0.0, () -> 0.0, () -> RelativeTo.FIELD_RELATIVE, true),
+                    () -> 0.15, () -> 0.0, () -> 0.0, () -> RelativeTo.ROBOT_RELATIVE, true),
                 arm.intakePosition(),
                 shootake.intakeCommand())
             .until(() -> shootake.hasNote())
